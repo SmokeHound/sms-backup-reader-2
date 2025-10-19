@@ -23,7 +23,7 @@ export class MainComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.messagesPlaceholder = 'Messages will appear here. Please select a backup file. Large backups will freeze the UI.';
+        this.messagesPlaceholder = 'Messages will appear here. Please select a backup file. Large backups may take a moment to load.';
         this.countryCodePlaceholder = 'Note: Please check SETTINGS to change your country code before loading!';
         this.contactsPlaceholder = 'Contacts will appear here. Please select a backup file.';
         this.loadingSubscription = this.smsStoreService.messagesLoaded$
