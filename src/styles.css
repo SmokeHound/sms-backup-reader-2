@@ -50,12 +50,12 @@ contact-list {
 	   height: auto!important;
 }
 .message-sent {
-  background: #FFF123;
+  background: #DCF8C6;
   text-align: right;
 }
 
 .message-received {
-  background: #DDD123;
+  background: #E8E8E8;
   text-align: left;
 }
 
