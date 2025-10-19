@@ -113,3 +113,59 @@ img {
 	transition: background 0.2s ease;
 }
 
+/* Responsive design for mobile devices */
+@media (max-width: 768px) {
+	.contacts {
+		width: 100%;
+		position: relative;
+		border-right: none;
+		max-height: 40vh;
+	}
+
+	.messages {
+		width: 100%;
+		position: relative;
+		padding: 12px;
+		min-height: 50vh;
+	}
+
+	.page-content {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.message-sent,
+	.message-received {
+		max-width: 85%;
+	}
+}
+
+/* Smooth transitions */
+.contact-item,
+.message-sent,
+.message-received {
+	transition: all 0.2s ease;
+}
+
+/* Improve scrollbar styling for webkit browsers */
+.contacts::-webkit-scrollbar,
+.messages::-webkit-scrollbar {
+	width: 8px;
+}
+
+.contacts::-webkit-scrollbar-track,
+.messages::-webkit-scrollbar-track {
+	background: #f1f1f1;
+}
+
+.contacts::-webkit-scrollbar-thumb,
+.messages::-webkit-scrollbar-thumb {
+	background: #c1c1c1;
+	border-radius: 4px;
+}
+
+.contacts::-webkit-scrollbar-thumb:hover,
+.messages::-webkit-scrollbar-thumb:hover {
+	background: #a8a8a8;
+}
+
