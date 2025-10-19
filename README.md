@@ -1,6 +1,6 @@
 # SMS Backup Reader 2
 
-[![Build Status](https://travis-ci.org/devadvance/sms-backup-reader-2.svg?branch=master)](https://travis-ci.org/devadvance/sms-backup-reader-2)
+[![Build Status](https://travis-ci.org/SmokeHound/sms-backup-reader-2.svg?branch=master)](https://travis-ci.org/SmokeHound/sms-backup-reader-2)
 
 This is an Angular-based web app designed to read the XML backup files produced by the Android app SMS Backup & Restore by Ritesh. It is designed to work in modern browsers, including Chrome, Firefox, Edge, and Safari. This app works locally and your SMS data **does not** leave your machine.
 
@@ -10,7 +10,7 @@ This app is currently in alpha.
 
 ## Features
 
-* Load SMS backup files produced by and Android app SMS Backup & Restore by Ritesh
+* Load SMS backup files produced by an Android app SMS Backup & Restore by Ritesh
 * International support (non-latin character) and emoji support
 * MSS support (thanks to JLTRY)
 * VCF support (thanks to JLTRY)
@@ -19,11 +19,10 @@ This app is currently in alpha.
 
 * Styles need serious work and overall UX is clunky
 * All data is loaded into JS memory, which means:
-* Large backups (>3,000 SMS) will freeze the UI until they are loaded
-* Loading specific conversations may be slow and freeze the UI
-* App breaks when using settings after loading data
+  * Large backups (>3,000 SMS) will freeze the UI until they are loaded
+  * Loading specific conversations may be slow and freeze the UI
 
-If you encounter other issues, please add the issues here: [https://github.com/devadvance/sms-backup-reader-2/issues](https://github.com/devadvance/sms-backup-reader-2/issues).
+If you encounter other issues, please add the issues here: [https://github.com/SmokeHound/sms-backup-reader-2/issues](https://github.com/SmokeHound/sms-backup-reader-2/issues).
 
 ## Roadmap (no timeline defined)
 
@@ -31,7 +30,7 @@ If you encounter other issues, please add the issues here: [https://github.com/d
 * Support for exporting media from MMS
 * More?
 
-## Note about emoji and text handing in this app (mostly for devs)
+## Note about emoji and text handling in this app (mostly for devs)
 
 SMS Backup & Restore saves emojis and other special characters in a very interesting way.
 
