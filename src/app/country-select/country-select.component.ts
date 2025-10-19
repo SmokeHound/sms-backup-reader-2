@@ -119,7 +119,7 @@ export class CountrySelectComponent implements OnInit {
         { "value": "HU", "label": "Hungary" },
         { "value": "IS", "label": "Iceland" },
         { "value": "IN", "label": "India" },
-        { "value": "value", "label": "Indonesia" },
+        { "value": "ID", "label": "Indonesia" },
         { "value": "IR", "label": "Iran (Islamic Republic of)" },
         { "value": "IQ", "label": "Iraq" },
         { "value": "IE", "label": "Ireland" },
@@ -274,10 +274,17 @@ export class CountrySelectComponent implements OnInit {
     changeCountry(selectEvent: any): void {
         console.log(`Country selected: ${selectEvent.target.value}`);
         this.vcfStoreService.changeCountry(selectEvent.target.value);
-		this.smsStoreService.changeCountry(selectEvent.target.value);
-		this.vcfStoreService.getAllContacts().then(contactsMap => {
-			this.smsStoreService.fillContactNames(contactsMap);
-			this.smsStoreService.broadcastMessagesLoaded(true);	
+		this.smsStoreService.changeCountry(selectEvent.target.value).then(() => {
+			// Only fill contact names if both messages and contacts are loaded
+			this.vcfStoreService.areContactsLoaded().then(contactsLoaded => {
+				this.smsStoreService.areMessagesLoaded().then(messagesLoaded => {
+					if (contactsLoaded && messagesLoaded) {
+						this.vcfStoreService.getAllContacts().then(contactsMap => {
+							this.smsStoreService.fillContactNames(contactsMap);
+						});
+					}
+				});
+			});
 		});
     }
 

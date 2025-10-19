@@ -30,10 +30,16 @@ export class SmsStoreService {
 			{
 				this.countryCode = countryCode;
 				if (this.messagesLoaded) {
-					this.loadAllMessages(this.messages);
+					this.loadAllMessages(this.messages).then(() => {
+						this.broadcastMessagesLoaded(true);
+						resolve();
+					});
+				} else {
+					resolve();
 				}
+			} else {
+				resolve();
 			}
-            resolve();
         });
     }
 
