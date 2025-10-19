@@ -27,10 +27,15 @@ export class VcfStoreService {
 			{
 				this.countryCode = countryCode;
 				if (this.contacts) {
-					this.loadAllContacts(this.contacts);
+					this.loadAllContacts(this.contacts).then(() => {
+						resolve();
+					});
+				} else {
+					resolve();
 				}
+			} else {
+				resolve();
 			}
-            resolve();
         });
     }
 
