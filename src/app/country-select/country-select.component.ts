@@ -119,7 +119,7 @@ export class CountrySelectComponent implements OnInit {
         { "value": "HU", "label": "Hungary" },
         { "value": "IS", "label": "Iceland" },
         { "value": "IN", "label": "India" },
-        { "value": "value", "label": "Indonesia" },
+        { "value": "ID", "label": "Indonesia" },
         { "value": "IR", "label": "Iran (Islamic Republic of)" },
         { "value": "IQ", "label": "Iraq" },
         { "value": "IE", "label": "Ireland" },
