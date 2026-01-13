@@ -139,9 +139,9 @@ export class MessageListComponent implements OnInit {
             'dateIso',
             'bodyText',
             'bodyHtml'
-        ];
+        ] as const;
         
-        return allColumns.filter(col => fields[col]);
+        return allColumns.filter(col => fields[col as keyof ExportOptions['fields']]);
     }
 
 }

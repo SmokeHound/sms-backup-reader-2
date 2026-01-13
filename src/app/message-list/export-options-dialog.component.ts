@@ -53,13 +53,13 @@ export class ExportOptionsDialogComponent {
 
 	selectAllFields(): void {
 		Object.keys(this.fields).forEach(key => {
-			this.fields[key] = true;
+			this.fields[key as keyof typeof this.fields] = true;
 		});
 	}
 
 	deselectAllFields(): void {
 		Object.keys(this.fields).forEach(key => {
-			this.fields[key] = false;
+			this.fields[key as keyof typeof this.fields] = false;
 		});
 	}
 }
