@@ -2,10 +2,16 @@
 <div style="padding: 8px 0;" *ngIf="selectedContact && messages?.length">
 	<button
 		class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
-		(click)="exportConversation()">
+		(click)="openExportDialog()">
 		Export Conversation CSV
 	</button>
 </div>
+
+<export-options-dialog
+	[isOpen]="showExportDialog"
+	(onCancel)="closeExportDialog()"
+	(onExport)="handleExport($event)">
+</export-options-dialog>
 
 <div class="message-container">
     <div *ngFor="let message of messages"
