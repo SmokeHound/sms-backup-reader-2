@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class VcfLoaderService {
-    vcards: string = '';
+  vcards : string;
   constructor() { }
 
     private handleError(error: any): Promise<any> {
@@ -15,18 +15,17 @@ export class VcfLoaderService {
 
         reader.readAsText(file, 'UTF-8');
 
-
         return new Promise<string>((resolve, reject) => {
 				reader.onload = (event: any) => { // Shouldn't need 'any' but this fixes an issue with TS definitions			
 				this.vcards = event.target.result;
-                resolve(this.vcards);				
+				resolve(<string>this.vcards);				
 			}
         }).catch(this.handleError);
     }
 	
-    getLoadedContacts(): Promise<string> {
-        return new Promise<string>((resolve, reject) => {			
-            resolve(this.vcards);
+	getLoadedContacts(): Promise<any> {
+        return new Promise((resolve, reject) => {			
+            resolve(<string>this.vcards);
         }).catch(this.handleError);
     }
 }

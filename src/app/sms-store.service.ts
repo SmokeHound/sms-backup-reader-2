@@ -73,7 +73,7 @@ export class SmsStoreService {
 		this.messages = messages;
         this.messageMap = new Map();
         this.contacts = new Array<Contact>();
-        return new Promise<void>((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             this.messages = messages;
             
             // Process messages in chunks to avoid freezing UI
@@ -165,7 +165,7 @@ export class SmsStoreService {
     }
 	
 	fillContactNames(contactMap: Map<string, string>): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
+		return new Promise((resolve, reject) => {
 			//console.log(this.contacts);
 			this.contacts.forEach(function(contact)
 			{

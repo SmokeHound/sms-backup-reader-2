@@ -7,9 +7,9 @@ import { SmsStoreService }  from '../sms-store.service';
 
 @Component({
     selector: 'message-list',
-    standalone: false,
     templateUrl: './message-list.component.html',
-    styleUrls: ['./message-list.component.css']
+    styleUrls: ['./message-list.component.css'],
+    standalone: false
 })
 
 export class MessageListComponent implements OnInit {

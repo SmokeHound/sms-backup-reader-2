@@ -8,9 +8,9 @@ import { SmsLoaderService } from '../sms-loader.service';
 
 @Component({
     selector: 'app-main',
-    standalone: false,
     templateUrl: './main.component.html',
-    styleUrls: ['./main.component.css']
+    styleUrls: ['./main.component.css'],
+    standalone: false
 })
 export class MainComponent implements OnInit {
 
