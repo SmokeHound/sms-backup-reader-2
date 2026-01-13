@@ -19,12 +19,21 @@
             "browser": "src/main.ts",
             "index": "src/index.html",
             "tsConfig": "tsconfig.app.json",
+            "allowedCommonJsDependencies": [
+              "awesome-phonenumber",
+              "material-design-lite",
+              "vcf"
+            ],
             "assets": [
               "src/favicon.ico",
               "src/assets"
             ],
             "styles": [
+              "node_modules/material-design-lite/dist/material.light_blue-green.min.css",
               "src/styles.css"
+            ],
+            "scripts": [
+              "node_modules/material-design-lite/material.min.js"
             ]
           },
           "configurations": {
@@ -32,8 +41,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "1MB",
+                  "maximumError": "2MB"
                 },
                 {
                   "type": "anyComponentStyle",

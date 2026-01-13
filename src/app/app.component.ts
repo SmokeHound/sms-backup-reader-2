@@ -7,8 +7,6 @@ import { SmsStoreService } from './sms-store.service';
 import { SmsLoaderService } from './sms-loader.service';
 import { VcfLoaderService } from './vcf-loader.service';
 import { VcfStoreService } from './vcf-store.service';
-var URLSearchParams = require('url-search-params');
-const { version: appVersion } = require('../../package.json');
 
 @Component({
     selector: 'app-root',
@@ -21,7 +19,6 @@ export class AppComponent implements OnInit  {
     title = 'SMS Backup Reader 2.0';
     smsloaded: boolean = false;
 	vcfloaded: boolean = false;
-    private appVersion;	
 	country: string = "US";
 
 
@@ -30,7 +27,6 @@ export class AppComponent implements OnInit  {
 				private vcfLoaderService: VcfLoaderService,
 				private vcfStoreService: VcfStoreService) 
 	{
-        this.appVersion = appVersion;
     }
 	private getQueryParameter(key: string): string {
 		const parameters = new URLSearchParams(window.location.search);

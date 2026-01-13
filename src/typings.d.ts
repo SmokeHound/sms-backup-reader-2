@@ -2,6 +2,7 @@
 declare var require: any;
 
 declare module 'awesome-phonenumber';
+declare module 'vcf';
 declare var module: NodeModule;
 interface NodeModule {
   id: string;
