@@ -1,3 +1,12 @@
+
+<div style="padding: 8px 0;" *ngIf="selectedContact && messages?.length">
+	<button
+		class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+		(click)="exportConversation()">
+		Export Conversation CSV
+	</button>
+</div>
+
 <div class="message-container">
     <div *ngFor="let message of messages"
         [ngClass]="{'message-sent': message.type == 2 || message.type == 4, 'message-received': message.type == 1 || message.type == 3}">

@@ -148,6 +148,11 @@ export class SmsStoreService {
         });
     }
 
+	// Get the raw loaded messages (flat list)
+	getRawMessages(): Promise<Message[]> {
+		return Promise.resolve(this.messages ?? []);
+	}
+
     // this.contacts = [...messageMap.keys()]; // need to target ES6 for this to work
     getAllContacts(): Promise<Contact[]> {
         return new Promise((resolve, reject) => {

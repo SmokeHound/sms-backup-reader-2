@@ -10,6 +10,24 @@
                 <p class="setting-help">Select your country to properly format phone numbers.</p>
                 <country-select></country-select>
             </div>
+
+            <hr />
+            <h3 class="setting-label">Export</h3>
+            <p class="setting-help">Download the currently loaded data as CSV.</p>
+            <div>
+                <button
+                    class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+                    (click)="exportAllMessages()"
+                    [disabled]="!messagesLoaded">
+                    Export Messages CSV
+                </button>
+                <button
+                    class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+                    (click)="exportContacts()"
+                    [disabled]="!messagesLoaded">
+                    Export Contacts CSV
+                </button>
+            </div>
         </div>
         <div class="mdl-card__actions mdl-card--border">
             <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect" routerLink="/main" routerLinkActive="active">

@@ -2,6 +2,8 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
+import { CsvExportService } from '../csv-export.service';
+import { SmsStoreService } from '../sms-store.service';
 import { SettingsComponent } from './settings.component';
 
 describe('SettingsComponent', () => {
@@ -12,6 +14,7 @@ describe('SettingsComponent', () => {
         await TestBed.configureTestingModule({
             imports: [RouterTestingModule],
             declarations: [ SettingsComponent ],
+            providers: [SmsStoreService, CsvExportService],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
         })
         .compileComponents();
