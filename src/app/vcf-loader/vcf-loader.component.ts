@@ -4,6 +4,7 @@ import { VcfLoaderService } from '../vcf-loader.service';
 
 @Component({
     selector: 'vcf-loader',
+    standalone: false,
     templateUrl: './vcf-loader.component.html',
     styleUrls: ['./vcf-loader.component.css']
 })

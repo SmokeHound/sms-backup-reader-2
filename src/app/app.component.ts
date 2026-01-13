@@ -12,6 +12,7 @@ const { version: appVersion } = require('../../package.json');
 
 @Component({
     selector: 'app-root',
+	standalone: false,
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css']
 })

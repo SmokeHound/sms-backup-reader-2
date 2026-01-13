@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {Subscription} from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 import { SmsLoaderComponent } from '../sms-loader/sms-loader.component';
 import { MessageListComponent } from '../message-list/message-list.component';
@@ -8,6 +8,7 @@ import { SmsLoaderService } from '../sms-loader.service';
 
 @Component({
     selector: 'app-main',
+    standalone: false,
     templateUrl: './main.component.html',
     styleUrls: ['./main.component.css']
 })

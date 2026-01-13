@@ -4,6 +4,7 @@ import { SmsStoreService } from '../sms-store.service';
 
 @Component({
     selector: 'sms-loader',
+    standalone: false,
     templateUrl: './sms-loader.component.html',
     styleUrls: ['./sms-loader.component.css']
 })

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 import { Contact } from './contact';
 var vCard = require('vcf');
 import awesomePhone from 'awesome-phonenumber';
@@ -22,7 +22,7 @@ export class VcfStoreService {
     }
 
     changeCountry(countryCode: string): Promise<void> {
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
 			if (this.countryCode != countryCode)
 			{
 				this.countryCode = countryCode;
@@ -77,7 +77,7 @@ export class VcfStoreService {
     loadAllContacts(contacts: string): Promise<void> {
 		this.contacts = contacts;
         this.contactMap = new Map();
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
 			/*console.log(contacts);*/
 			var arcontacts = vCard.parse(contacts);			
             var content = '';
@@ -106,7 +106,7 @@ export class VcfStoreService {
     }
 
     clearAllContacts(): Promise<void> {
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             this.contactMap = new Map();
             this.contactsLoaded = false;
             console.log('Cleared in service: ');
@@ -116,7 +116,7 @@ export class VcfStoreService {
 
    
     getAllContacts(): Promise<Map<string, string>> {
-        return new Promise((resolve, reject) => {
+        return new Promise<Map<string, string>>((resolve, reject) => {
             resolve(this.contactMap);
         });
     }
@@ -124,7 +124,7 @@ export class VcfStoreService {
     // Get the contact name
     getContact(numberId: string): Promise<string> {
         let contact: string;
-        return new Promise((resolve, reject) => {
+        return new Promise<string>((resolve, reject) => {
             contact = this.contactMap.get(numberId);
             resolve(contact);
         });

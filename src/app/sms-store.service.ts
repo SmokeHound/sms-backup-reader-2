@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 
 import { Message } from './message';
 import { Contact } from './contact';
@@ -24,8 +24,8 @@ export class SmsStoreService {
         return Promise.resolve(this.messagesLoaded);
     }
 
-    changeCountry(countryCode: string): Promise<any> {
-        return new Promise((resolve, reject) => {
+    changeCountry(countryCode: string): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
 			if (this.countryCode != countryCode)
 			{
 				this.countryCode = countryCode;
@@ -73,7 +73,7 @@ export class SmsStoreService {
 		this.messages = messages;
         this.messageMap = new Map();
         this.contacts = new Array<Contact>();
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             this.messages = messages;
             
             // Process messages in chunks to avoid freezing UI
@@ -131,8 +131,8 @@ export class SmsStoreService {
         });
     }
 
-    clearAllMessages(): Promise<any> {
-        return new Promise((resolve, reject) => {
+    clearAllMessages(): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             this.messageMap = new Map();
             this.messages = new Array<Message>();
             this.messagesLoaded = false;
@@ -165,7 +165,7 @@ export class SmsStoreService {
     }
 	
 	fillContactNames(contactMap: Map<string, string>): Promise<void> {
-		return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
 			//console.log(this.contacts);
 			this.contacts.forEach(function(contact)
 			{
