@@ -14,6 +14,7 @@ This app is currently in alpha.
 * International support (non-latin character) and emoji support
 * MSS support (thanks to JLTRY)
 * VCF support (thanks to JLTRY)
+* Export conversations to CSV format
 
 ## Issues
 
@@ -21,7 +22,8 @@ If you encounter issues, please add the issues here: [https://github.com/devadva
 
 ## Roadmap (no timeline defined)
 
-* Export SMS to CSV or TXT
+* Export all messages to a single CSV file
+* Export SMS to TXT format
 * Support for exporting media from MMS
 * More?
 

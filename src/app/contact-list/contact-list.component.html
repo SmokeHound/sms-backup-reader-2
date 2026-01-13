@@ -4,6 +4,13 @@
             <input class="mdl-textfield__input" type="text" id="contact-filter" [(ngModel)]="numfilter" />
             <label class="mdl-textfield__label" for="contact-filter">Filter Contacts...</label>
         </div>
+        <div style="margin-top: 12px;" *ngIf="messagesLoaded && contacts?.length">
+            <button
+                class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"
+                (click)="exportAllMessages()">
+                Export All Messages CSV
+            </button>
+        </div>
     </div>
     <ul class="demo-list-two mdl-list">
         <li class="mdl-list__item mdl-list__item--two-line contact-item" [ngClass]="{'selected-contact': contact==selectedContact}"
