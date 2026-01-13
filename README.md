@@ -17,12 +17,7 @@ This app is currently in alpha.
 
 ## Issues
 
-* Styles need serious work and overall UX is clunky
-* All data is loaded into JS memory, which means:
-  * Large backups (>3,000 SMS) will freeze the UI until they are loaded
-  * Loading specific conversations may be slow and freeze the UI
-
-If you encounter other issues, please add the issues here: [https://github.com/SmokeHound/sms-backup-reader-2/issues](https://github.com/SmokeHound/sms-backup-reader-2/issues).
+If you encounter issues, please add the issues here: [https://github.com/devadvance/sms-backup-reader-2/issues](https://github.com/devadvance/sms-backup-reader-2/issues).
 
 ## Roadmap (no timeline defined)
 

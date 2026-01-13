@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 import { Contact } from './contact';
 var vCard = require('vcf');
 import awesomePhone from 'awesome-phonenumber';

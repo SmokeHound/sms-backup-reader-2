@@ -5,7 +5,8 @@ import { VcfStoreService }  from '../vcf-store.service';
 @Component({
     selector: 'country-select',
     templateUrl: './country-select.component.html',
-    styleUrls: ['./country-select.component.css']
+    styleUrls: ['./country-select.component.css'],
+    standalone: false
 })
 
 export class CountrySelectComponent implements OnInit {
