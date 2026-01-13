@@ -1,6 +1,6 @@
 # SMS Backup Reader 2
 
-[![Build Status](https://travis-ci.org/devadvance/sms-backup-reader-2.svg?branch=master)](https://travis-ci.org/devadvance/sms-backup-reader-2)
+[![Build Status](https://travis-ci.org/SmokeHound/sms-backup-reader-2.svg?branch=master)](https://travis-ci.org/SmokeHound/sms-backup-reader-2)
 
 This is an Angular-based web app designed to read the XML backup files produced by the Android app SMS Backup & Restore by Ritesh. It is designed to work in modern browsers, including Chrome, Firefox, Edge, and Safari. This app works locally and your SMS data **does not** leave your machine.
 
@@ -10,7 +10,7 @@ This app is currently in alpha.
 
 ## Features
 
-* Load SMS backup files produced by and Android app SMS Backup & Restore by Ritesh
+* Load SMS backup files produced by an Android app SMS Backup & Restore by Ritesh
 * International support (non-latin character) and emoji support
 * MSS support (thanks to JLTRY)
 * VCF support (thanks to JLTRY)
@@ -25,7 +25,7 @@ If you encounter issues, please add the issues here: [https://github.com/devadva
 * Support for exporting media from MMS
 * More?
 
-## Note about emoji and text handing in this app (mostly for devs)
+## Note about emoji and text handling in this app (mostly for devs)
 
 SMS Backup & Restore saves emojis and other special characters in a very interesting way.
 
