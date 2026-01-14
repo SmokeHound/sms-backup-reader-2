@@ -69,6 +69,39 @@ This app loads backups in the browser and currently parses XML by reading the en
 - Recommended workaround: export **SMS only** / **no media**, or split the export.
 - The SMS loader supports selecting **multiple** `.xml` files at once; it will merge them into a single message list.
 
+## Desktop app (Tauri)
+
+This repo can be packaged as a native desktop app using Tauri.
+
+### Windows prerequisites
+
+- Rust toolchain (MSVC): install via `https://rustup.rs/`
+- Microsoft C++ Build Tools (Visual Studio Build Tools)
+- WebView2 Runtime (usually already installed on Windows 10/11)
+
+### Run the desktop app in dev mode
+
+This starts the Angular dev server and launches the Tauri window.
+
+```bash
+npm run tauri:dev
+```
+
+Note: `tauri:dev` uses `npm run start:tauri` under the hood so the dev server uses the Tauri index file (no Google Tag Manager).
+
+### Build an installable desktop bundle
+
+```bash
+npm run tauri:build
+```
+
+The build will run the Angular `tauri` configuration (see `angular.json`) and then package the app.
+
+### Offline notes
+
+- Material Icons are bundled locally (no Google Fonts dependency).
+- The desktop build uses `src/index.tauri.html` (no Google Tag Manager).
+
 ## Running unit tests
 
 Run `npm test` (or `npm run test:watch`) to execute the unit tests via Vitest.

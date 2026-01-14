@@ -43,6 +43,8 @@ If you encounter issues, please add the issues here: [https://github.com/devadva
 
 See [DEVELOPING.md](DEVELOPING.md) for development workflows.
 
+Want a desktop app? This repo includes a Tauri wrapper; see the Desktop (Tauri) section in [DEVELOPING.md](DEVELOPING.md).
+
 ## Note about emoji and text handling in this app (mostly for devs)
 
 SMS Backup & Restore saves emojis and other special characters in a very interesting way.

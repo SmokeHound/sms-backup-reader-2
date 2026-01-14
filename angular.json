@@ -29,6 +29,7 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/material-icons/iconfont/material-icons.css",
               "node_modules/material-design-lite/dist/material.light_blue-green.min.css",
               "src/styles.css"
             ],
@@ -57,6 +58,28 @@
                 }
               ],
               "outputHashing": "all"
+            },
+            "tauri": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "index": "src/index.tauri.html",
+              "outputHashing": "all",
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "1MB",
+                  "maximumError": "2MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ]
             },
             "development": {
               "optimization": false,

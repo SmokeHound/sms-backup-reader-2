@@ -1,0 +1,37 @@
+{
+  "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
+  "productName": "SMS Backup Reader 2",
+  "version": "0.1.0",
+  "identifier": "io.github.devadvance.sms-backup-reader-2",
+  "build": {
+    "frontendDist": "../dist/sms-back-reader-2/browser",
+    "devUrl": "http://localhost:4200",
+    "beforeDevCommand": "npm run start:tauri",
+    "beforeBuildCommand": "npm run build -- --configuration tauri"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "SMS Backup Reader 2",
+        "width": 800,
+        "height": 600,
+        "resizable": true,
+        "fullscreen": false
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
+  }
+}
