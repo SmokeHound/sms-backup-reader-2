@@ -1,19 +1,25 @@
 # SMS Backup Reader 2
 
-[![Build Status](https://travis-ci.org/SmokeHound/sms-backup-reader-2.svg?branch=master)](https://travis-ci.org/SmokeHound/sms-backup-reader-2)
-
 This is an Angular-based web app designed to read the XML backup files produced by the Android app SMS Backup & Restore by Ritesh. It is designed to work in modern browsers, including Chrome, Firefox, Edge, and Safari. This app works locally and your SMS data **does not** leave your machine.
 
-This app is currently in alpha.
+## Quick start
 
-**You can access the app here: [http://mattj.io/sms-backup-reader-2/](http://mattj.io/sms-backup-reader-2/)**
+```bash
+npm install
+npm start
+```
+
+Then open `http://localhost:4200/`.
+
+Note: if `ng` is not found on your machine, that’s expected unless you installed Angular CLI globally. Use the project scripts (`npm start`, `npm run build`, etc.) or `npx ng ...`.
 
 ## Features
 
 * Load SMS backup files produced by an Android app SMS Backup & Restore by Ritesh
 * International support (non-latin character) and emoji support
-* MSS support (thanks to JLTRY)
+* MMS support (thanks to JLTRY)
 * VCF support (thanks to JLTRY)
+* Export messages and contacts to CSV
 
 ## Issues
 
@@ -21,9 +27,12 @@ If you encounter issues, please add the issues here: [https://github.com/devadva
 
 ## Roadmap (no timeline defined)
 
-* Export SMS to CSV or TXT
 * Support for exporting media from MMS
 * More?
+
+## Development
+
+See [DEVELOPING.md](DEVELOPING.md) for development workflows.
 
 ## Note about emoji and text handling in this app (mostly for devs)
 
