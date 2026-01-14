@@ -15,6 +15,13 @@ Note: if `ng` is not found on your machine, that’s expected unless you install
 
 If you build the app (`npm run build`) and then open the generated `dist/.../index.html` via `file://`, your browser will likely block the JS bundles (CORS). To preview the built output, run `npm run preview:dist` and open `http://localhost:8080/`.
 
+## Large backups / split files
+
+Very large XML backups (especially with MMS media) may be too large for the browser to load/parse as a single file.
+
+- Prefer exporting **SMS only** / **no media** when possible.
+- If you need to split your export, you can select **multiple** `.xml` files at once in the SMS loader — they will be merged into a single combined message list.
+
 ## Features
 
 * Load SMS backup files produced by an Android app SMS Backup & Restore by Ritesh

@@ -61,6 +61,14 @@ Alternative: if you just want the dev server with production settings (not the `
 npm run start:prod
 ```
 
+## Handling very large backups
+
+This app loads backups in the browser and currently parses XML by reading the entire file as text.
+
+- Multi-GB backups (common when exporting MMS media inline) are likely to fail in the browser.
+- Recommended workaround: export **SMS only** / **no media**, or split the export.
+- The SMS loader supports selecting **multiple** `.xml` files at once; it will merge them into a single message list.
+
 ## Running unit tests
 
 Run `npm test` (or `npm run test:watch`) to execute the unit tests via Vitest.
