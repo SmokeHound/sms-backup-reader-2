@@ -1,5 +1,8 @@
-<label for="file-upload" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent file-upload-button">
+<label
+    for="file-upload"
+    class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent file-upload-button"
+    [attr.title]="sampleText">
     <i class="material-icons" style="margin-right: 8px;">file_upload</i>
     Select SMS Backup
 </label>
-<input id="file-upload"  [(ngModel)]="filename" type="file" name="xml" (change)="fileChange($event)" accept=".xml" />
+<input id="file-upload" type="file" name="xml" (change)="fileChange($event)" accept=".xml,.XML" />

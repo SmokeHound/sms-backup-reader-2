@@ -21,13 +21,29 @@ export class VcfLoaderComponent implements OnInit {
     }
 
     fileChange(fileEvent: any): void {
+        this.sampleText = 'Loading...';
+        this.loaded = false;
+
         var file: File;
         if (fileEvent.target.files && fileEvent.target.files.length >= 1) {
             file = fileEvent.target.files[0];
-            this.VcfLoaderService.loadVCFFile(file).then(result => {
-                this.sampleText = 'Loaded!';
-                this.onLoaded.emit(true);
-                this.loaded = true;
+            this.VcfLoaderService
+                .loadVCFFile(file)
+                .then(() => {
+                    this.sampleText = 'Loaded!';
+                    this.onLoaded.emit(true);
+                    this.loaded = true;
+                })
+                .catch((err) => {
+                    this.sampleText = 'Failed to load';
+                    this.onLoaded.emit(false);
+                    this.loaded = false;
+                    console.error('Failed to load VCF file', err);
+                })
+                .finally(() => {
+                    if (fileEvent?.target) {
+                        fileEvent.target.value = '';
+                    }
                 });
         }
     }

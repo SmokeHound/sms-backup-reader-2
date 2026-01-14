@@ -1,5 +1,8 @@
-<label for="vcf-file-upload" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent file-upload-button">
+<label
+    for="vcf-file-upload"
+    class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent file-upload-button"
+    [attr.title]="sampleText">
     <i class="material-icons" style="margin-right: 8px;">contacts</i>
     Select VCF file
 </label>
-<input id="vcf-file-upload" type="file" name="xml" (change)="fileChange($event)" accept=".vcf" />
+<input id="vcf-file-upload" type="file" name="xml" (change)="fileChange($event)" accept=".vcf,.VCF" />

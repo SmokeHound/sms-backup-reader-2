@@ -50,6 +50,20 @@ export class SmsLoaderService {
             reader.onload = (event: any) => { // Shouldn't need 'any' but this fixes an issue with TS definitions
             var cleanedText = this.cleanString(event.target.result);
             xmlDoc = parser.parseFromString(cleanedText, 'text/xml');
+
+			// Detect parse errors (browser-dependent, but widely supported).
+			if (xmlDoc.getElementsByTagName('parsererror')?.length) {
+				reject(new Error('Invalid XML file. Expected an SMS Backup & Restore XML backup.'));
+				return;
+			}
+
+			const smsNodes = xmlDoc.getElementsByTagName('sms');
+			const mmsNodes = xmlDoc.getElementsByTagName('mms');
+			if ((!smsNodes || smsNodes.length === 0) && (!mmsNodes || mmsNodes.length === 0)) {
+				reject(new Error('No <sms> or <mms> entries found in XML. Is this the correct backup file?'));
+				return;
+			}
+
             for (let sms of xmlDoc.getElementsByTagName('sms')) {
                 this.messages.push({
                     //contactNumber: sms.getAttribute('address'),
@@ -79,11 +93,11 @@ export class SmsLoaderService {
 				for (let part of mms.getElementsByTagName('part')) {
 					if (part.getAttribute('ct') == "image/jpeg")
 					{
-						body = body + '<img style="vertical-align:top" src="data:image/jpeg;base64,' +  part.getAttribute('data') + '"/>';
+						body = body + '<img style="vertical-align:top" src="data:image/jpeg;base64,' +  (part.getAttribute('data') ?? '') + '"/>';
 					}
 					if (part.getAttribute('ct') == "text/plain")
 					{
-						body = body + '<div>'+ part.getAttribute('text') + '<div/>';
+						body = body + '<div>' + (part.getAttribute('text') ?? '') + '</div>';
 					}
 				}
                 this.messages.push({
@@ -97,6 +111,8 @@ export class SmsLoaderService {
             }
             resolve();
         }
+
+		reader.onerror = (e) => reject(e);
 
  
     }).catch(this.handleError);
