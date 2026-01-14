@@ -1,0 +1,96 @@
+<div class="export-dialog-overlay" *ngIf="isOpen" (click)="cancel()">
+	<div class="export-dialog-container" (click)="$event.stopPropagation()">
+		<div class="export-dialog-header">
+			<h4>Export Options</h4>
+		</div>
+		
+		<div class="export-dialog-content">
+			<!-- Scope Selection -->
+			<div class="export-section">
+				<h5>Export Scope</h5>
+				<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="scope-conversation">
+					<input type="radio" id="scope-conversation" class="mdl-radio__button" 
+						name="scope" value="conversation" [(ngModel)]="scope">
+					<span class="mdl-radio__label">Current Conversation Only</span>
+				</label>
+				<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="scope-all">
+					<input type="radio" id="scope-all" class="mdl-radio__button" 
+						name="scope" value="all" [(ngModel)]="scope">
+					<span class="mdl-radio__label">All Messages</span>
+				</label>
+			</div>
+
+			<!-- Field Selection -->
+			<div class="export-section">
+				<h5>Fields to Export</h5>
+				<div class="field-selection-actions">
+					<button class="mdl-button mdl-js-button mdl-button--primary" (click)="selectAllFields()">
+						Select All
+					</button>
+					<button class="mdl-button mdl-js-button" (click)="deselectAllFields()">
+						Deselect All
+					</button>
+				</div>
+				
+				<div class="field-checkboxes">
+					<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="field-conversationId">
+						<input type="checkbox" id="field-conversationId" class="mdl-checkbox__input" 
+							[(ngModel)]="fields.conversationId">
+						<span class="mdl-checkbox__label">Conversation ID</span>
+					</label>
+					
+					<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="field-contactName">
+						<input type="checkbox" id="field-contactName" class="mdl-checkbox__input" 
+							[(ngModel)]="fields.contactName">
+						<span class="mdl-checkbox__label">Contact Name</span>
+					</label>
+					
+					<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="field-direction">
+						<input type="checkbox" id="field-direction" class="mdl-checkbox__input" 
+							[(ngModel)]="fields.direction">
+						<span class="mdl-checkbox__label">Direction</span>
+					</label>
+					
+					<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="field-type">
+						<input type="checkbox" id="field-type" class="mdl-checkbox__input" 
+							[(ngModel)]="fields.type">
+						<span class="mdl-checkbox__label">Type</span>
+					</label>
+					
+					<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="field-timestampMs">
+						<input type="checkbox" id="field-timestampMs" class="mdl-checkbox__input" 
+							[(ngModel)]="fields.timestampMs">
+						<span class="mdl-checkbox__label">Timestamp (ms)</span>
+					</label>
+					
+					<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="field-dateIso">
+						<input type="checkbox" id="field-dateIso" class="mdl-checkbox__input" 
+							[(ngModel)]="fields.dateIso">
+						<span class="mdl-checkbox__label">Date (ISO)</span>
+					</label>
+					
+					<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="field-bodyText">
+						<input type="checkbox" id="field-bodyText" class="mdl-checkbox__input" 
+							[(ngModel)]="fields.bodyText">
+						<span class="mdl-checkbox__label">Body (Plain Text)</span>
+					</label>
+					
+					<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="field-bodyHtml">
+						<input type="checkbox" id="field-bodyHtml" class="mdl-checkbox__input" 
+							[(ngModel)]="fields.bodyHtml">
+						<span class="mdl-checkbox__label">Body (HTML)</span>
+					</label>
+				</div>
+			</div>
+		</div>
+
+		<div class="export-dialog-actions">
+			<button class="mdl-button mdl-js-button" (click)="cancel()">
+				Cancel
+			</button>
+			<button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="export()">
+				Export
+			</button>
+		</div>
+	</div>
+</div>

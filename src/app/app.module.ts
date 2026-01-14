@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 import { SmsLoaderComponent } from './sms-loader/sms-loader.component';
 import { ContactListComponent } from './contact-list/contact-list.component';
 import { MessageListComponent } from './message-list/message-list.component';
+import { ExportOptionsDialogComponent } from './message-list/export-options-dialog.component';
 
 import { SmsStoreService }  from './sms-store.service';
 import { SmsLoaderService }  from './sms-loader.service';
@@ -32,6 +33,7 @@ pathMatch: 'full'
     SmsLoaderComponent,
     ContactListComponent,
     MessageListComponent,
+    ExportOptionsDialogComponent,
     CountrySelectComponent,
     MessageTypePipe,
     MainComponent,
