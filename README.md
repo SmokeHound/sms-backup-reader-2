@@ -13,6 +13,8 @@ Then open `http://localhost:4200/`.
 
 Note: if `ng` is not found on your machine, that’s expected unless you installed Angular CLI globally. Use the project scripts (`npm start`, `npm run build`, etc.) or `npx ng ...`.
 
+If you build the app (`npm run build`) and then open the generated `dist/.../index.html` via `file://`, your browser will likely block the JS bundles (CORS). To preview the built output, run `npm run preview:dist` and open `http://localhost:8080/`.
+
 ## Features
 
 * Load SMS backup files produced by an Android app SMS Backup & Restore by Ritesh

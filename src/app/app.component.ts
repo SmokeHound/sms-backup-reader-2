@@ -37,14 +37,11 @@ export class AppComponent implements OnInit  {
 			this.country = this.getQueryParameter('country');
 			this.smsStoreService.changeCountry(this.country);
 			this.vcfStoreService.changeCountry(this.country);
-			console.log(this.getQueryParameter('country'));
 		}
 	}
     onSmsLoaded(loaded: boolean) {
-        console.log('Event emit!');
         if (loaded) {
             if (this.smsloaded) {
-                console.log('Clear then load :)');
                 this.smsloaded = false;
                 this.smsStoreService.clearAllMessages().then(() => {
                     this.loadMessages(loaded);
@@ -56,9 +53,7 @@ export class AppComponent implements OnInit  {
     }
 	
 	onVcfLoaded(loaded: boolean) {
-        console.log('Event emit!');
 		if (this.vcfloaded) {
-			console.log('Clear then load :)');
 			this.vcfloaded = false;
 			this.vcfStoreService.clearAllContacts().then(() => {
 				this.loadContacts(loaded);				

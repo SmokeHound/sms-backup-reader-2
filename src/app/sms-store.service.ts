@@ -136,7 +136,6 @@ export class SmsStoreService {
             this.messageMap = new Map();
             this.messages = new Array<Message>();
             this.messagesLoaded = false;
-            console.log('Cleared in service: ' + JSON.stringify(this.messages));
             resolve();
         });
     }
@@ -171,20 +170,13 @@ export class SmsStoreService {
 	
 	fillContactNames(contactMap: Map<string, string>): Promise<void> {
 		return new Promise((resolve, reject) => {
-			//console.log(this.contacts);
 			this.contacts.forEach(function(contact)
 			{
 				let name: string;
-				console.log(contact.address);
 				name = contactMap.get(contact.address);
 				if (name)
 				{
 					contact.name = name;
-					console.log(contact.name);
-				}
-				else
-				{
-					console.log("not found");
 				}
 			});
 			resolve();

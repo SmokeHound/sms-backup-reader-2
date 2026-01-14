@@ -22,8 +22,6 @@ export class SmsLoaderComponent implements OnInit {
     }
 
     fileChange(fileEvent: any): void {
-        console.log(fileEvent.target.files);
-		console.log(this);
         var file: File;
         if (fileEvent.target.files && fileEvent.target.files.length >= 1) {
             file = fileEvent.target.files[0];
@@ -32,7 +30,6 @@ export class SmsLoaderComponent implements OnInit {
                 this.onLoaded.emit(true);
                 this.loaded = true;
 				this.filename = '';
-				console.log(this);
 			});
         }
     }

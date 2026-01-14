@@ -273,7 +273,6 @@ export class CountrySelectComponent implements OnInit {
     }
 
     changeCountry(selectEvent: any): void {
-        console.log(`Country selected: ${selectEvent.target.value}`);
         this.vcfStoreService.changeCountry(selectEvent.target.value);
 		this.smsStoreService.changeCountry(selectEvent.target.value).then(() => {
 			// Only fill contact names if both messages and contacts are loaded

@@ -42,6 +42,25 @@ npm run watch
 npm run build -- --configuration production
 ```
 
+## Preview the production build
+
+Do **not** open the built `dist/.../browser/index.html` directly with your browser (a `file://` URL). Modern browsers will block loading the built JS bundles (e.g. `main.js`) due to CORS / origin restrictions.
+
+Instead, serve the build output over HTTP:
+
+```bash
+npm run build -- --configuration production
+npm run preview:dist
+```
+
+Then open `http://localhost:8080/`.
+
+Alternative: if you just want the dev server with production settings (not the `dist/` output), run:
+
+```bash
+npm run start:prod
+```
+
 ## Running unit tests
 
 Run `npm test` (or `npm run test:watch`) to execute the unit tests via Vitest.

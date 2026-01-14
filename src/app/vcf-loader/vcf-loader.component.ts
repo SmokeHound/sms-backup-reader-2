@@ -21,7 +21,6 @@ export class VcfLoaderComponent implements OnInit {
     }
 
     fileChange(fileEvent: any): void {
-        console.log(fileEvent.target.files);
         var file: File;
         if (fileEvent.target.files && fileEvent.target.files.length >= 1) {
             file = fileEvent.target.files[0];

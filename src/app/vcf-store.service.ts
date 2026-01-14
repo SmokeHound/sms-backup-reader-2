@@ -69,7 +69,6 @@ export class VcfStoreService {
 			if (!contactNum) {
 				contactNum = tel["_data"];
 			}
-			console.log(contactNum + ":" + name);
 			this.contactMap.set(contactNum, name);					
 		}
 	}
@@ -109,7 +108,6 @@ export class VcfStoreService {
         return new Promise((resolve, reject) => {
             this.contactMap = new Map();
             this.contactsLoaded = false;
-            console.log('Cleared in service: ');
             resolve();
         });
     }
