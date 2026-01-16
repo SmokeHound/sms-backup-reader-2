@@ -83,6 +83,12 @@ This repo can be packaged as a native desktop app using Tauri.
 
 This starts the Angular dev server and launches the Tauri window.
 
+If you hit errors like `cargo metadata ... program not found`, run the preflight check first:
+
+```bash
+npm run tauri:check
+```
+
 ```bash
 npm run tauri:dev
 ```

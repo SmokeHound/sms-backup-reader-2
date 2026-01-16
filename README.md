@@ -29,14 +29,15 @@ Very large XML backups (especially with MMS media) may be too large for the brow
 * MMS support (thanks to JLTRY)
 * VCF support (thanks to JLTRY)
 * Export messages and contacts to CSV
+* Export MMS media embedded in message HTML (via CSV export including `bodyHtml`)
 
 ## Issues
 
-If you encounter issues, please add the issues here: [https://github.com/devadvance/sms-backup-reader-2/issues](https://github.com/devadvance/sms-backup-reader-2/issues).
+If you encounter issues, please add them to the issues section.
 
 ## Roadmap (no timeline defined)
 
-* Support for exporting media from MMS
+* Export MMS media as separate files (instead of inline/base64 HTML)
 * More?
 
 ## Development

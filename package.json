@@ -11,6 +11,7 @@
     "watch": "ng build --watch --configuration development",
     "preview:dist": "npx http-server dist/sms-back-reader-2/browser -p 8080 -c-1",
     "tauri": "tauri",
+    "tauri:check": "node scripts/tauri-check.mjs",
     "tauri:dev": "tauri dev",
     "tauri:build": "tauri build",
     "test": "ng test --watch=false",
