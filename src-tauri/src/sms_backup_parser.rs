@@ -2,7 +2,7 @@ use serde::Serialize;
 use std::{
   collections::BTreeMap,
   fs::File,
-  io::{BufReader, Read},
+  io::{BufRead, BufReader},
   path::Path,
 };
 
@@ -43,10 +43,10 @@ pub struct ParseDone {
   pub parsedCount: u64,
 }
 
-fn attr_value<R: Read>(reader: &Reader<R>, start: &BytesStart, key: &[u8]) -> Option<String> {
+fn attr_value<R: BufRead>(reader: &Reader<R>, start: &BytesStart, key: &[u8]) -> Option<String> {
   for attr in start.attributes().with_checks(false).flatten() {
     if attr.key.as_ref() == key {
-      if let Ok(v) = attr.decode_and_unescape_value(reader) {
+      if let Ok(v) = attr.decode_and_unescape_value(reader.decoder()) {
         return Some(v.into_owned());
       }
     }
@@ -107,9 +107,8 @@ struct MmsAcc {
   media_counts: BTreeMap<String, u32>,
 }
 
-fn parse_mms_inner<R: Read>(
+fn parse_mms_inner<R: BufRead>(
   reader: &mut Reader<R>,
-  total_bytes: u64,
   parsed_count: u64,
 ) -> Result<(MmsAcc, u64, u64), String> {
   let mut buf = Vec::new();
@@ -183,8 +182,6 @@ fn parse_mms_inner<R: Read>(
 
     buf.clear();
 
-    // Keep the reader progressing; progress reporting happens in the outer loop.
-    let _ = total_bytes;
   }
 }
 
@@ -204,7 +201,7 @@ where
     .unwrap_or(0);
 
   let mut reader = Reader::from_reader(BufReader::new(file));
-  reader.trim_text(true);
+  reader.config_mut().trim_text(true);
 
   const BATCH_SIZE: usize = 500;
   const PROGRESS_EVERY: u64 = 2_000;
@@ -264,8 +261,7 @@ where
             let timestamp = attr_value(&reader, &e, b"date").unwrap_or_default();
             let date_ms = parse_i64(Some(timestamp.clone()), 0);
 
-            let (acc, _bytes_read, parsed_so_far) =
-              parse_mms_inner(&mut reader, total_bytes, parsed_count)?;
+            let (acc, _bytes_read, parsed_so_far) = parse_mms_inner(&mut reader, parsed_count)?;
 
             let body = mms_body(&acc.text_parts, &acc.media_counts);
 
