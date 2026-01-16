@@ -44,10 +44,10 @@ export class AppComponent implements OnInit  {
             if (this.smsloaded) {
                 this.smsloaded = false;
                 this.smsStoreService.clearAllMessages().then(() => {
-                    this.loadMessages(loaded);
+					this.loadMessages(loaded);
                 });
             } else {
-                this.loadMessages(loaded);
+				this.loadMessages(loaded);
             }
         }		
     }
@@ -66,23 +66,38 @@ export class AppComponent implements OnInit  {
 	
 	
     private loadMessages(loaded: boolean): void {
-        this.smsLoaderService.getLoadedMessages().then(messages => {
-            this.smsStoreService.loadAllMessages(messages).then(() => {
-                this.smsloaded = loaded;
-				if ((this.vcfloaded)&&
-					(loaded))
-				{					
-					this.vcfStoreService.getAllContacts().then(contactsMap => {
+		// If a Tauri streaming load already populated the store, don't re-load from SmsLoaderService.
+		if (this.smsStoreService.messagesLoaded) {
+			this.smsloaded = loaded;
+			if (this.vcfloaded && loaded) {
+				this.vcfStoreService.getAllContacts().then((contactsMap) => {
+					this.smsStoreService.fillContactNames(contactsMap);
+					this.smsStoreService.broadcastMessagesLoaded(this.smsloaded);
+				});
+			}
+			if (loaded) {
+				this.smsStoreService.broadcastMessagesLoaded(this.smsloaded);
+			}
+			return;
+		}
+
+		this.smsLoaderService.getLoadedMessages().then((messages) => {
+			if (!messages?.length) {
+				return;
+			}
+			this.smsStoreService.loadAllMessages(messages).then(() => {
+				this.smsloaded = loaded;
+				if (this.vcfloaded && loaded) {
+					this.vcfStoreService.getAllContacts().then((contactsMap) => {
 						this.smsStoreService.fillContactNames(contactsMap);
-						this.smsStoreService.broadcastMessagesLoaded(this.smsloaded);	
+						this.smsStoreService.broadcastMessagesLoaded(this.smsloaded);
 					});
 				}
-				if (loaded)
-				{
-					this.smsStoreService.broadcastMessagesLoaded(this.smsloaded);					
+				if (loaded) {
+					this.smsStoreService.broadcastMessagesLoaded(this.smsloaded);
 				}
-            });
-        });
+			});
+		});
     }
 	
 	private loadContacts(loaded: boolean): void {

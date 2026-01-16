@@ -6,3 +6,20 @@
     Select SMS Backup
 </label>
 <input id="file-upload" type="file" name="xml" (change)="fileChange($event)" accept=".xml,.XML" multiple />
+
+<div *ngIf="isTauri" style="margin-top: 12px;">
+    <div style="margin-bottom: 6px; font-size: 12px; opacity: 0.8;">
+        Tauri mode: paste a full file path to parse multi-GB XML backups.
+    </div>
+    <input
+        type="text"
+        [(ngModel)]="tauriPath"
+        placeholder="C:\\path\\to\\sms-backup.xml"
+        style="width: 100%; padding: 8px; box-sizing: border-box;" />
+    <button
+        class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+        style="margin-top: 8px;"
+        (click)="loadFromTauriPath()">
+        Load from path (Tauri)
+    </button>
+</div>

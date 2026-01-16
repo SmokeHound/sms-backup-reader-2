@@ -20,6 +20,62 @@ export class SmsStoreService {
         this.countryCode = 'US';
     }
 
+    beginIngest(): void {
+        this.messages = [];
+        this.messageMap = new Map();
+        this.contacts = [];
+        this.messagesLoaded = false;
+    }
+
+    ingestMessagesBatch(messages: Message[]): void {
+        if (!messages?.length) {
+            return;
+        }
+        if (!this.messages) {
+            this.messages = [];
+        }
+        if (!this.messageMap) {
+            this.messageMap = new Map();
+        }
+        for (const message of messages) {
+            this.messages.push(message);
+            let phone = new awesomePhone(message.contactAddress, this.countryCode);
+            let contactAddress: string = phone.getNumber('international');
+            if (!contactAddress) {
+                contactAddress = message.contactAddress;
+            }
+
+            let mapEntry = this.messageMap.get(contactAddress);
+            if (!mapEntry) {
+                mapEntry = [];
+                this.messageMap.set(contactAddress, mapEntry);
+            }
+            mapEntry.push(message);
+        }
+    }
+
+    finishIngest(): void {
+        if (!this.messageMap) {
+            this.messageMap = new Map();
+        }
+        this.messageMap.forEach((value: Message[], key: string) => {
+            value = value.sort((message1, message2) => message1.date.getTime() - message2.date.getTime());
+            this.messageMap.set(key, value);
+        });
+
+        this.contacts = [];
+        this.messageMap.forEach((value: Message[], key: string) => {
+            let contactName = value[0]?.contactName;
+            this.contacts.push({
+                name: (contactName != '(Unknown)') ? contactName : null,
+                address: key as string,
+                messageCount: value.length
+            });
+        });
+
+        this.messagesLoaded = true;
+    }
+
     areMessagesLoaded(): Promise<boolean> {
         return Promise.resolve(this.messagesLoaded);
     }
