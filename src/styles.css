@@ -2,12 +2,12 @@
 
 /* Global styles */
 :root {
-	--bg: #f6f7fb;
+	--bg: #e9edf5;
 	--surface: #ffffff;
-	--surface-2: #fbfcff;
+	--surface-2: #f4f6fb;
 	--text: rgba(0, 0, 0, 0.87);
 	--muted: rgba(0, 0, 0, 0.60);
-	--border: rgba(0, 0, 0, 0.10);
+	--border: rgba(0, 0, 0, 0.14);
 	--primary: #2563eb;
 	--primary-weak: rgba(37, 99, 235, 0.12);
 	--success: #16a34a;
@@ -36,15 +36,18 @@ body {
 
 /* Buttons (MDL overrides for a modern look) */
 .mdl-button {
-	border-radius: 12px;
+	border-radius: 14px;
 	text-transform: none;
 	font-weight: 600;
 	letter-spacing: 0.01em;
-	min-height: 36px;
+	min-height: 38px;
+	padding: 0 14px;
+	transition: transform 0.14s ease, box-shadow 0.14s ease, background-color 0.14s ease, border-color 0.14s ease;
 }
 
 .mdl-button--raised {
 	box-shadow: var(--shadow-sm) !important;
+	border: 1px solid var(--border);
 }
 
 .mdl-button--raised:hover {
@@ -54,8 +57,15 @@ body {
 
 .mdl-button--raised.mdl-button--colored,
 .mdl-button--raised.mdl-button--accent {
-	background: var(--primary) !important;
+	background: linear-gradient(180deg, rgba(59, 130, 246, 1) 0%, var(--primary) 100%) !important;
 	color: #fff !important;
+	border-color: rgba(37, 99, 235, 0.40);
+}
+
+/* Neutral raised buttons */
+.mdl-button--raised:not(.mdl-button--colored):not(.mdl-button--accent) {
+	background: var(--surface) !important;
+	color: var(--text) !important;
 }
 
 /* Text/outline accent buttons (e.g. Settings) */
@@ -63,8 +73,8 @@ body {
 .mdl-button--colored:not(.mdl-button--raised),
 .mdl-button--primary:not(.mdl-button--raised) {
 	color: var(--primary) !important;
-	border: 1px solid rgba(37, 99, 235, 0.25);
-	background: rgba(255, 255, 255, 0.90);
+	border: 1px solid rgba(37, 99, 235, 0.28);
+	background: rgba(255, 255, 255, 0.70);
 }
 
 .mdl-button--accent:not(.mdl-button--raised):hover,
@@ -73,12 +83,28 @@ body {
 	background: var(--primary-weak);
 }
 
+.mdl-button:focus {
+	outline: none;
+}
+
+.mdl-button:focus-visible {
+	box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25) !important;
+}
+
 .mdl-button[disabled],
 .mdl-button.is-disabled {
 	opacity: 0.55;
 	cursor: not-allowed;
 	transform: none !important;
 	box-shadow: none !important;
+}
+
+/* Consistent spacing for horizontal button groups */
+.button-row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	align-items: center;
 }
 
 input[type="file"] {

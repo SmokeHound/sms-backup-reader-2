@@ -4,7 +4,7 @@
     align-items: flex-start;
     padding: 40px 20px;
     min-height: 100vh;
-    background: #f5f5f5;
+	background: var(--bg);
 }
 
 .settings-card {
@@ -14,7 +14,7 @@
 }
 
 .mdl-card__title {
-    background: linear-gradient(135deg, #03a9f4 0%, #0288d1 100%);
+	background: linear-gradient(135deg, rgba(59, 130, 246, 1) 0%, var(--primary) 100%);
     color: white;
 }
 
