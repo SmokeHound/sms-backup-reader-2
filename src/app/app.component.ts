@@ -19,7 +19,7 @@ export class AppComponent implements OnInit  {
 	title = 'SMS Backup Viewer';
     smsloaded: boolean = false;
 	vcfloaded: boolean = false;
-	country: string = "US";
+	country: string = "AU";
 
 
     constructor(private smsStoreService: SmsStoreService,
@@ -33,8 +33,14 @@ export class AppComponent implements OnInit  {
 		return parameters.get(key);
 	}
 	ngOnInit() {
-		if (this.getQueryParameter('country')) {
-			this.country = this.getQueryParameter('country');
+		// Apply default country on startup.
+		this.smsStoreService.changeCountry(this.country);
+		this.vcfStoreService.changeCountry(this.country);
+
+		// URL override (e.g. ?country=US)
+		const qpCountry = this.getQueryParameter('country');
+		if (qpCountry) {
+			this.country = qpCountry;
 			this.smsStoreService.changeCountry(this.country);
 			this.vcfStoreService.changeCountry(this.country);
 		}
