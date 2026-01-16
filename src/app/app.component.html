@@ -7,11 +7,12 @@
             <!-- Add spacer, to align navigation to the right -->
             <div class="mdl-layout-spacer"></div>
             <!-- Navigation. We hide it in small screens. -->
-            <nav class="mdl-navigation mdl-layout--large-screen-only">
+            <nav class="mdl-navigation header-tools">
                 <sms-loader (onLoaded)="onSmsLoaded($event)" (statusChanged)="onSmsStatusChanged($event)"></sms-loader>
 				<vcf-loader (onLoaded)="onVcfLoaded($event)" (statusChanged)="onVcfStatusChanged($event)"></vcf-loader>
-                <button class="mdl-button mdl-js-button mdl-button--accent" style="float:right;" routerLink="/settings" routerLinkActive="active">
-                    Settings
+                <button class="mdl-button mdl-js-button mdl-button--accent header-settings" style="float:right;" routerLink="/settings" routerLinkActive="active">
+                    <i class="material-icons">settings</i>
+                    <span class="settings-label">Settings</span>
                 </button>
             </nav>
         </div>

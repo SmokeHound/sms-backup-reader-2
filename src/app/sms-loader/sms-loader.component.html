@@ -3,8 +3,8 @@
         for="file-upload"
         class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent file-upload-button"
         [attr.title]="sampleText">
-        <i class="material-icons" style="margin-right: 8px;">file_upload</i>
-        Select SMS Backup
+        <i class="material-icons">file_upload</i>
+        <span class="file-upload-label">Select SMS Backup</span>
     </label>
     <input id="file-upload" type="file" name="xml" (change)="fileChange($event)" accept=".xml,.XML" multiple />
 </div>

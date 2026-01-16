@@ -4,6 +4,10 @@
     justify-content: center;
 }
 
+.file-upload-button .material-icons {
+    margin-right: 8px;
+}
+
 input[type="file"] {
     display: none;
 }
