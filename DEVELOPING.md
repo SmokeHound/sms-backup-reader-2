@@ -69,6 +69,14 @@ This app loads backups in the browser and currently parses XML by reading the en
 - Recommended workaround: export **SMS only** / **no media**, or split the export.
 - The SMS loader supports selecting **multiple** `.xml` files at once; it will merge them into a single message list.
 
+## Exporting MMS media as separate files
+
+When exporting from the message list, you can enable **Export MMS media as separate files (creates a .zip)**.
+
+- Output is a ZIP that contains `messages.csv` plus extracted media files under `media/<conversation-id>/...`.
+- `bodyHtml` in the CSV is rewritten so `<img src="data:...">` becomes `<img src="media/...">`.
+- This is useful to avoid huge CSV files when a backup contains inline/base64 MMS images.
+
 ## Desktop app (Tauri)
 
 This repo can be packaged as a native desktop app using Tauri.
