@@ -24,10 +24,10 @@ Very large XML backups (especially with MMS media) may be too large for the brow
 
 ## Features
 
-* Load SMS backup files produced by an Android app SMS Backup & Restore by Ritesh
+* Load SMS backup files produced by the Android app SMS Backup & Restore by Ritesh
 * International support (non-latin character) and emoji support
-* MMS support (thanks to JLTRY)
-* VCF support (thanks to JLTRY)
+* MMS support
+* VCF support
 * Export messages and contacts to CSV
 * Export MMS media embedded in message HTML (via CSV export including `bodyHtml`)
 * Export MMS media as separate files (ZIP export)
@@ -38,7 +38,7 @@ If you encounter issues, please add them to the issues section.
 
 ## Roadmap (no timeline defined)
 
-* More?
+* Request any features/improvements you would like to be added.
 
 ## Development
 
