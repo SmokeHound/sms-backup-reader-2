@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.0](https://github.com/SmokeHound/sms-backup-reader-2/compare/sms-back-reader-2-v0.3.0...sms-back-reader-2-v0.4.0) (2026-01-16)
+
+
+### Features
+
+* enhance styling and layout across components with improved variables and structure ([fc493b1](https://github.com/SmokeHound/sms-backup-reader-2/commit/fc493b118654de8417128cd0ed647ad6f4bcea06))
+* update styles for improved UI consistency and responsiveness ([21b019d](https://github.com/SmokeHound/sms-backup-reader-2/commit/21b019d0f79bd16544f6f2cf36156b905f165427))
+
 ## [0.3.0](https://github.com/SmokeHound/sms-backup-reader-2/compare/sms-back-reader-2-v0.2.0...sms-back-reader-2-v0.3.0) (2026-01-16)
 
 
