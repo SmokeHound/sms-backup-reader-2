@@ -60,32 +60,80 @@
     gap: 6px;
 }
 
-.mdl-layout__header .load-status,
-.mdl-layout__drawer .load-status {
-    margin-top: 0;
-    padding: 2px 8px;
-    border-radius: 999px;
-    font-size: 12px;
-    line-height: 18px;
-    max-width: 260px;
+/* Keep the Tauri path UI out of the header row */
+.mdl-layout__header app-sms-loader .tauri-tools {
+    display: none;
 }
 
-.mdl-layout__header .status-text,
-.mdl-layout__drawer .status-text {
+.app-statusbar {
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.92);
+    border-top: 1px solid rgba(0, 0, 0, 0.10);
+}
+
+.app-statusbar-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.app-status-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 280px;
+    flex: 1 1 320px;
+}
+
+.app-status-item::before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.35);
+}
+
+.app-status-item.busy::before {
+    background: rgba(33, 150, 243, 0.95);
+}
+
+.app-status-item.ok::before {
+    background: rgba(76, 175, 80, 0.95);
+}
+
+.app-status-item.error::before {
+    background: rgba(244, 67, 54, 0.95);
+}
+
+.app-status-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    opacity: 0.7;
+}
+
+.app-status-text {
+    font-size: 13px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.mdl-layout__header .status-icon,
-.mdl-layout__drawer .status-icon {
-    font-size: 16px;
+.app-statusbar-progress {
+    margin-top: 6px;
+    height: 4px;
+    border-radius: 999px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.10);
 }
 
-/* Hide verbose progress/path controls in the header; keep them in the drawer/main content */
-.mdl-layout__header app-sms-loader .progress,
-.mdl-layout__header app-sms-loader .tauri-tools {
-    display: none;
+.app-statusbar-progress-fill {
+    height: 100%;
+    background: rgba(33, 150, 243, 0.75);
+    width: 0%;
+    transition: width 120ms linear;
 }
 
 .mdl-mini-footer .mdl-logo {

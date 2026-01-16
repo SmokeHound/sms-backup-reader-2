@@ -7,6 +7,7 @@ import { SmsStoreService } from './sms-store.service';
 import { SmsLoaderService } from './sms-loader.service';
 import { VcfLoaderService } from './vcf-loader.service';
 import { VcfStoreService } from './vcf-store.service';
+import { LoaderStatusUpdate } from './loader-status';
 
 @Component({
     selector: 'app-root',
@@ -20,6 +21,20 @@ export class AppComponent implements OnInit  {
     smsloaded: boolean = false;
 	vcfloaded: boolean = false;
 	country: string = "AU";
+
+	smsStatus: LoaderStatusUpdate = {
+		source: 'sms',
+		status: 'idle',
+		text: 'not loaded',
+		updatedAt: 0
+	};
+
+	vcfStatus: LoaderStatusUpdate = {
+		source: 'vcf',
+		status: 'idle',
+		text: 'not loaded',
+		updatedAt: 0
+	};
 
 
     constructor(private smsStoreService: SmsStoreService,
@@ -44,6 +59,31 @@ export class AppComponent implements OnInit  {
 			this.smsStoreService.changeCountry(this.country);
 			this.vcfStoreService.changeCountry(this.country);
 		}
+	}
+
+	onSmsStatusChanged(update: LoaderStatusUpdate): void {
+		this.smsStatus = this.mergeStatus(this.smsStatus, update, 'sms');
+	}
+
+	onVcfStatusChanged(update: LoaderStatusUpdate): void {
+		this.vcfStatus = this.mergeStatus(this.vcfStatus, update, 'vcf');
+	}
+
+	private mergeStatus(
+		current: LoaderStatusUpdate,
+		incoming: LoaderStatusUpdate,
+		expectedSource: 'sms' | 'vcf'
+	): LoaderStatusUpdate {
+		if (!incoming || incoming.source !== expectedSource) {
+			return current;
+		}
+		// Prefer newest update; fall back to current if timestamps are missing.
+		const currentAt = current?.updatedAt ?? 0;
+		const incomingAt = incoming?.updatedAt ?? 0;
+		if (incomingAt < currentAt) {
+			return current;
+		}
+		return incoming;
 	}
     onSmsLoaded(loaded: boolean) {
         if (loaded) {

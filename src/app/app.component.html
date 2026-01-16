@@ -8,8 +8,8 @@
             <div class="mdl-layout-spacer"></div>
             <!-- Navigation. We hide it in small screens. -->
             <nav class="mdl-navigation mdl-layout--large-screen-only">
-                <sms-loader (onLoaded)="onSmsLoaded($event)"></sms-loader>
-				<vcf-loader (onLoaded)="onVcfLoaded($event)"></vcf-loader>
+                <sms-loader (onLoaded)="onSmsLoaded($event)" (statusChanged)="onSmsStatusChanged($event)"></sms-loader>
+				<vcf-loader (onLoaded)="onVcfLoaded($event)" (statusChanged)="onVcfStatusChanged($event)"></vcf-loader>
                 <button class="mdl-button mdl-js-button mdl-button--accent" style="float:right;" routerLink="/settings" routerLinkActive="active">
                     Settings
                 </button>
@@ -19,8 +19,8 @@
     <div class="mdl-layout__drawer">
         <span class="mdl-layout-title">Menu</span>
         <nav class="mdl-navigation">
-            <vcf-loader (onLoaded)="onVcfLoaded($event)"></vcf-loader>
-            <sms-loader (onLoaded)="onSmsLoaded($event)"></sms-loader>
+            <vcf-loader (onLoaded)="onVcfLoaded($event)" (statusChanged)="onVcfStatusChanged($event)"></vcf-loader>
+            <sms-loader (onLoaded)="onSmsLoaded($event)" (statusChanged)="onSmsStatusChanged($event)"></sms-loader>
             <a class="mdl-navigation__link" routerLink="/settings" routerLinkActive="active">Settings</a>
         </nav>
     </div>
@@ -30,6 +30,21 @@
 
         </div>
     </main>
+    <div class="app-statusbar" aria-live="polite">
+        <div class="app-statusbar-row">
+            <div class="app-status-item" [ngClass]="smsStatus.status">
+                <span class="app-status-label">SMS</span>
+                <span class="app-status-text">{{ smsStatus.text }}</span>
+            </div>
+            <div class="app-status-item" [ngClass]="vcfStatus.status">
+                <span class="app-status-label">Contacts</span>
+                <span class="app-status-text">{{ vcfStatus.text }}</span>
+            </div>
+        </div>
+        <div class="app-statusbar-progress" *ngIf="smsStatus.status === 'busy' && (smsStatus.totalBytes || 0) > 0">
+            <div class="app-statusbar-progress-fill" [style.width.%]="smsStatus.progressPercent || 0"></div>
+        </div>
+    </div>
     <footer class="mdl-mini-footer">
         <div class="mdl-mini-footer__left-section">
             <div class="mdl-logo">SMS Backup Viewer</div>

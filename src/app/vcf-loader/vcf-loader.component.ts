@@ -1,5 +1,6 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { VcfLoaderService } from '../vcf-loader.service';
+import { LoaderStatusUpdate } from '../loader-status';
 
 
 @Component({
@@ -10,7 +11,8 @@ import { VcfLoaderService } from '../vcf-loader.service';
 })
 export class VcfLoaderComponent implements OnInit {
     @Output() onLoaded = new EventEmitter<boolean>();
-    sampleText: String = 'not loaded';
+    @Output() statusChanged = new EventEmitter<LoaderStatusUpdate>();
+    sampleText: string = 'not loaded';
     loaded: boolean = false;
 	status: 'idle' | 'busy' | 'ok' | 'error' = 'idle';
 
@@ -20,12 +22,14 @@ export class VcfLoaderComponent implements OnInit {
 
     ngOnInit() {
 		this.status = 'idle';
+		this.emitStatus();
     }
 
     fileChange(fileEvent: any): void {
         this.sampleText = 'Loading...';
 		this.status = 'busy';
         this.loaded = false;
+		this.emitStatus();
 
         var file: File;
         if (fileEvent.target.files && fileEvent.target.files.length >= 1) {
@@ -35,12 +39,14 @@ export class VcfLoaderComponent implements OnInit {
                 .then(() => {
                     this.sampleText = 'Loaded!';
 					this.status = 'ok';
+					this.emitStatus();
                     this.onLoaded.emit(true);
                     this.loaded = true;
                 })
                 .catch((err) => {
                     this.sampleText = 'Failed to load';
 					this.status = 'error';
+					this.emitStatus();
                     this.onLoaded.emit(false);
                     this.loaded = false;
                     console.error('Failed to load VCF file', err);
@@ -51,6 +57,15 @@ export class VcfLoaderComponent implements OnInit {
                     }
                 });
         }
+    }
+
+    private emitStatus(): void {
+        this.statusChanged.emit({
+            source: 'vcf',
+            status: this.status,
+            text: this.sampleText,
+            updatedAt: Date.now()
+        });
     }
 }
 

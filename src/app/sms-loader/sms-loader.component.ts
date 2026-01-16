@@ -2,6 +2,7 @@ import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { SmsLoaderService } from '../sms-loader.service';
 import { SmsStoreService } from '../sms-store.service';
 import { Message } from '../message';
+import { LoaderStatusUpdate } from '../loader-status';
 
 @Component({
     selector: 'sms-loader',
@@ -11,6 +12,7 @@ import { Message } from '../message';
 })
 export class SmsLoaderComponent implements OnInit {
     @Output() onLoaded = new EventEmitter<boolean>();
+    @Output() statusChanged = new EventEmitter<LoaderStatusUpdate>();
     sampleText: string = 'not loaded';
     loaded: boolean = false;
     status: 'idle' | 'busy' | 'ok' | 'error' = 'idle';
@@ -28,6 +30,7 @@ export class SmsLoaderComponent implements OnInit {
     ngOnInit() {
         this.isTauri = this.detectTauri();
 		this.status = 'idle';
+		this.emitStatus();
     }
 
     ngOnDestroy() {
@@ -95,6 +98,7 @@ export class SmsLoaderComponent implements OnInit {
         if (!this.isTauri) {
             this.sampleText = 'Not running under Tauri.';
             this.status = 'error';
+			this.emitStatus();
             this.onLoaded.emit(false);
             return;
         }
@@ -102,6 +106,7 @@ export class SmsLoaderComponent implements OnInit {
         if (!path) {
             this.sampleText = 'Enter a file path to an XML backup.';
             this.status = 'error';
+			this.emitStatus();
             this.onLoaded.emit(false);
             return;
         }
@@ -110,6 +115,7 @@ export class SmsLoaderComponent implements OnInit {
         this.status = 'busy';
         this.loaded = false;
         this.resetProgress();
+		this.emitStatus();
         this.smsStoreService.beginIngest();
 
         // Clear prior listeners for repeated loads.
@@ -168,6 +174,7 @@ export class SmsLoaderComponent implements OnInit {
             this.smsStoreService.ingestMessagesBatch(msgs);
             this.sampleText = this.progressText();
             this.status = 'busy';
+			this.emitStatus();
         });
 
         await this.tauriListen<ParseProgress>('sms_parse_progress', (p) => {
@@ -176,12 +183,14 @@ export class SmsLoaderComponent implements OnInit {
             this.parsedCount = p?.parsedCount ?? this.parsedCount;
             this.sampleText = this.progressText();
             this.status = 'busy';
+			this.emitStatus();
         });
 
         await this.tauriListen<string>('sms_parse_error', (err) => {
             this.sampleText = `Failed to load: ${String(err ?? 'Unknown error')}`;
             this.status = 'error';
             this.loaded = false;
+			this.emitStatus();
             this.onLoaded.emit(false);
         });
 
@@ -194,6 +203,7 @@ export class SmsLoaderComponent implements OnInit {
             this.sampleText = `Loaded! (${this.parsedCount.toLocaleString()} msgs)`;
             this.status = 'ok';
             this.loaded = true;
+			this.emitStatus();
             this.onLoaded.emit(true);
         });
 
@@ -201,10 +211,12 @@ export class SmsLoaderComponent implements OnInit {
             await this.tauriInvoke<void>('start_parse_sms_backup', { path });
             this.sampleText = this.progressText();
             this.status = 'busy';
+			this.emitStatus();
         } catch (e) {
             this.sampleText = `Failed to start parse: ${(e as any)?.message ?? String(e)}`;
             this.status = 'error';
             this.loaded = false;
+			this.emitStatus();
             this.onLoaded.emit(false);
         }
     }
@@ -227,6 +239,7 @@ export class SmsLoaderComponent implements OnInit {
         this.sampleText = 'Loading...';
 		this.status = 'busy';
         this.loaded = false;
+		this.emitStatus();
 
         const selected: File[] = Array.from(fileEvent?.target?.files ?? []);
         if (selected.length >= 1) {
@@ -238,6 +251,7 @@ export class SmsLoaderComponent implements OnInit {
             if (tooLarge) {
                 this.sampleText = `File too large (${this.formatBytes(tooLarge.size)}). Export a smaller XML (no media) or split it.`;
 				this.status = 'error';
+				this.emitStatus();
                 this.onLoaded.emit(false);
                 this.loaded = false;
                 if (fileEvent?.target) {
@@ -247,17 +261,20 @@ export class SmsLoaderComponent implements OnInit {
             }
 
             this.sampleText = `Loading 1/${selected.length}...`;
+			this.emitStatus();
             this.smsLoaderService
                 .loadSMSFiles(selected)
                 .then(() => {
                     this.sampleText = 'Loaded!';
 					this.status = 'ok';
+					this.emitStatus();
                     this.onLoaded.emit(true);
                     this.loaded = true;
                 })
                 .catch((err) => {
                     this.sampleText = 'Failed to load';
 					this.status = 'error';
+					this.emitStatus();
                     this.onLoaded.emit(false);
                     this.loaded = false;
                     console.error('Failed to load SMS backup file', err);
@@ -269,6 +286,19 @@ export class SmsLoaderComponent implements OnInit {
                     }
                 });
         }
+    }
+
+    private emitStatus(): void {
+        this.statusChanged.emit({
+            source: 'sms',
+            status: this.status,
+            text: this.sampleText,
+            updatedAt: Date.now(),
+            progressPercent: this.status === 'busy' ? this.progressPercent : undefined,
+            bytesRead: this.bytesRead,
+            totalBytes: this.totalBytes,
+            parsedCount: this.parsedCount
+        });
     }
 
 }

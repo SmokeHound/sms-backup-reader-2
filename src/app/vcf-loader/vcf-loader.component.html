@@ -7,12 +7,4 @@
 		Select VCF file
 	</label>
 	<input id="vcf-file-upload" type="file" name="xml" (change)="fileChange($event)" accept=".vcf,.VCF" />
-
-	<div class="load-status" [ngClass]="status" aria-live="polite">
-		<i class="material-icons status-icon" *ngIf="status === 'idle'">info_outline</i>
-		<i class="material-icons status-icon" *ngIf="status === 'busy'">hourglass_top</i>
-		<i class="material-icons status-icon" *ngIf="status === 'ok'">check_circle</i>
-		<i class="material-icons status-icon" *ngIf="status === 'error'">error_outline</i>
-		<span class="status-text">{{ sampleText }}</span>
-	</div>
 </div>
