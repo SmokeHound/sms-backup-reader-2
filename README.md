@@ -38,6 +38,7 @@ If you encounter issues, please add them to the issues section.
 
 ## Roadmap (no timeline defined)
 
+* Desktop app.(Work in progress)
 * Request any features/improvements you would like to be added.
 
 ## Development
