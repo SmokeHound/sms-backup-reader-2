@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "SMS Backup Viewer",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "identifier": "io.github.devadvance.sms-backup-reader-2",
   "build": {
     "frontendDist": "../dist/sms-back-reader-2/browser",
