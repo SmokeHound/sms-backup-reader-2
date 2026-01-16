@@ -48,6 +48,45 @@
     min-height: 0;
     line-height: 1.2;
 }
+.mdl-mini-footer__logo {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.1;
+}
+
+/* Compact loader controls when placed in the header nav/drawer */
+.mdl-layout__header .loader-inline,
+.mdl-layout__drawer .loader-inline {
+    gap: 6px;
+}
+
+.mdl-layout__header .load-status,
+.mdl-layout__drawer .load-status {
+    margin-top: 0;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    line-height: 18px;
+    max-width: 260px;
+}
+
+.mdl-layout__header .status-text,
+.mdl-layout__drawer .status-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mdl-layout__header .status-icon,
+.mdl-layout__drawer .status-icon {
+    font-size: 16px;
+}
+
+/* Hide verbose progress/path controls in the header; keep them in the drawer/main content */
+.mdl-layout__header app-sms-loader .progress,
+.mdl-layout__header app-sms-loader .tauri-tools {
+    display: none;
+}
 
 .mdl-mini-footer .mdl-logo {
     font-size: 13px;
