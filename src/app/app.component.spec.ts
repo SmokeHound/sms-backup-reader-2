@@ -27,6 +27,6 @@ describe('AppComponent', () => {
     it('should have the expected title', () => {
         const fixture = TestBed.createComponent(AppComponent);
         const app = fixture.componentInstance;
-        expect(app.title).toEqual('SMS Backup Reader 2.0');
+        expect(app.title).toEqual('SMS Backup Viewer');
     });
 });

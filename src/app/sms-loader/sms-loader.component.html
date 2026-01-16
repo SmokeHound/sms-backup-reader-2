@@ -7,6 +7,18 @@
 </label>
 <input id="file-upload" type="file" name="xml" (change)="fileChange($event)" accept=".xml,.XML" multiple />
 
+<div class="load-status" [ngClass]="status" aria-live="polite">
+    <i class="material-icons status-icon" *ngIf="status === 'idle'">info_outline</i>
+    <i class="material-icons status-icon" *ngIf="status === 'busy'">hourglass_top</i>
+    <i class="material-icons status-icon" *ngIf="status === 'ok'">check_circle</i>
+    <i class="material-icons status-icon" *ngIf="status === 'error'">error_outline</i>
+    <span class="status-text">{{ sampleText }}</span>
+</div>
+
+<div class="progress" *ngIf="status === 'busy' && totalBytes > 0">
+    <div class="progress-fill" [style.width.%]="progressPercent"></div>
+</div>
+
 <div *ngIf="isTauri" style="margin-top: 12px;">
     <div style="margin-bottom: 6px; font-size: 12px; opacity: 0.8;">
         Tauri mode: paste a full file path to parse multi-GB XML backups.

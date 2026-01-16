@@ -12,6 +12,7 @@ use quick_xml::{
 };
 
 #[derive(Debug, Clone, Serialize)]
+#[allow(non_snake_case)]
 pub struct ParsedMessage {
   pub contactAddress: String,
   pub contactName: Option<String>,
@@ -22,6 +23,7 @@ pub struct ParsedMessage {
 }
 
 #[derive(Debug, Clone, Serialize)]
+#[allow(non_snake_case)]
 pub struct ParseBatch {
   pub messages: Vec<ParsedMessage>,
   pub bytesRead: u64,
@@ -30,6 +32,7 @@ pub struct ParseBatch {
 }
 
 #[derive(Debug, Clone, Serialize)]
+#[allow(non_snake_case)]
 pub struct ParseProgress {
   pub bytesRead: u64,
   pub totalBytes: u64,
@@ -37,6 +40,7 @@ pub struct ParseProgress {
 }
 
 #[derive(Debug, Clone, Serialize)]
+#[allow(non_snake_case)]
 pub struct ParseDone {
   pub bytesRead: u64,
   pub totalBytes: u64,

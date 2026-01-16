@@ -1,4 +1,4 @@
-# SMS Backup Reader 2
+# SMS Backup Viewer
 
 This is an Angular-based web app designed to read the XML backup files produced by the Android app SMS Backup & Restore by Ritesh. It is designed to work in modern browsers, including Chrome, Firefox, Edge, and Safari. This app works locally and your SMS data **does not** leave your machine.
 
@@ -59,4 +59,4 @@ Likely, it goes back to how characters are encoded in SMS.
 
 ## License
 
-SMS Backup Reader 2 is made available under the MIT license. See the LICENSE file for details.
+SMS Backup Viewer is made available under the MIT license. See the LICENSE file for details.

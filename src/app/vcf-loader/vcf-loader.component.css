@@ -9,3 +9,42 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transition: all 0.2s ease;
 }
+
+.load-status {
+    margin-top: 8px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    line-height: 1.2;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    background: rgba(0, 0, 0, 0.03);
+}
+
+.load-status .status-icon {
+    font-size: 18px;
+}
+
+.load-status.idle {
+    color: rgba(0, 0, 0, 0.75);
+}
+
+.load-status.busy {
+    color: rgba(0, 0, 0, 0.85);
+    background: rgba(33, 150, 243, 0.08);
+    border-color: rgba(33, 150, 243, 0.25);
+}
+
+.load-status.ok {
+    color: rgba(0, 0, 0, 0.85);
+    background: rgba(76, 175, 80, 0.10);
+    border-color: rgba(76, 175, 80, 0.25);
+}
+
+.load-status.error {
+    color: rgba(0, 0, 0, 0.9);
+    background: rgba(244, 67, 54, 0.10);
+    border-color: rgba(244, 67, 54, 0.25);
+}

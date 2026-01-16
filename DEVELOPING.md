@@ -1,4 +1,4 @@
-# Developing SMS Backup Reader 2
+# Developing SMS Backup Viewer
 
 This repo uses Angular (via the locally-installed Angular CLI) and Vitest.
 

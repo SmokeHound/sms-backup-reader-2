@@ -13,12 +13,13 @@ export class SmsLoaderComponent implements OnInit {
     @Output() onLoaded = new EventEmitter<boolean>();
     sampleText: string = 'not loaded';
     loaded: boolean = false;
+    status: 'idle' | 'busy' | 'ok' | 'error' = 'idle';
 	isTauri: boolean = false;
     tauriPath: string = '';
 	private unlistenFns: Array<() => void> = [];
-	private parsedCount: number = 0;
-	private totalBytes: number = 0;
-	private bytesRead: number = 0;
+    parsedCount: number = 0;
+    totalBytes: number = 0;
+    bytesRead: number = 0;
     constructor(
         private smsLoaderService: SmsLoaderService,
         private smsStoreService: SmsStoreService
@@ -26,6 +27,7 @@ export class SmsLoaderComponent implements OnInit {
 
     ngOnInit() {
         this.isTauri = this.detectTauri();
+		this.status = 'idle';
     }
 
     ngOnDestroy() {
@@ -71,6 +73,17 @@ export class SmsLoaderComponent implements OnInit {
         this.bytesRead = 0;
     }
 
+    get progressPercent(): number {
+        if (!this.totalBytes || this.totalBytes <= 0) {
+            return 0;
+        }
+        const pct = (this.bytesRead / this.totalBytes) * 100;
+        if (!Number.isFinite(pct)) {
+            return 0;
+        }
+        return Math.max(0, Math.min(100, pct));
+    }
+
     private progressText(): string {
         if (this.totalBytes > 0 && this.bytesRead >= 0) {
             return `Parsing... ${this.formatBytes(this.bytesRead)} / ${this.formatBytes(this.totalBytes)} (${this.parsedCount.toLocaleString()} msgs)`;
@@ -81,17 +94,20 @@ export class SmsLoaderComponent implements OnInit {
     async loadFromTauriPath(): Promise<void> {
         if (!this.isTauri) {
             this.sampleText = 'Not running under Tauri.';
+            this.status = 'error';
             this.onLoaded.emit(false);
             return;
         }
         const path = (this.tauriPath || '').trim();
         if (!path) {
             this.sampleText = 'Enter a file path to an XML backup.';
+            this.status = 'error';
             this.onLoaded.emit(false);
             return;
         }
 
         this.sampleText = 'Starting Tauri parse...';
+        this.status = 'busy';
         this.loaded = false;
         this.resetProgress();
         this.smsStoreService.beginIngest();
@@ -151,6 +167,7 @@ export class SmsLoaderComponent implements OnInit {
             });
             this.smsStoreService.ingestMessagesBatch(msgs);
             this.sampleText = this.progressText();
+            this.status = 'busy';
         });
 
         await this.tauriListen<ParseProgress>('sms_parse_progress', (p) => {
@@ -158,10 +175,12 @@ export class SmsLoaderComponent implements OnInit {
             this.totalBytes = p?.totalBytes ?? this.totalBytes;
             this.parsedCount = p?.parsedCount ?? this.parsedCount;
             this.sampleText = this.progressText();
+            this.status = 'busy';
         });
 
         await this.tauriListen<string>('sms_parse_error', (err) => {
             this.sampleText = `Failed to load: ${String(err ?? 'Unknown error')}`;
+            this.status = 'error';
             this.loaded = false;
             this.onLoaded.emit(false);
         });
@@ -173,6 +192,7 @@ export class SmsLoaderComponent implements OnInit {
             this.smsStoreService.finishIngest();
             this.smsStoreService.broadcastMessagesLoaded(true);
             this.sampleText = `Loaded! (${this.parsedCount.toLocaleString()} msgs)`;
+            this.status = 'ok';
             this.loaded = true;
             this.onLoaded.emit(true);
         });
@@ -180,8 +200,10 @@ export class SmsLoaderComponent implements OnInit {
         try {
             await this.tauriInvoke<void>('start_parse_sms_backup', { path });
             this.sampleText = this.progressText();
+            this.status = 'busy';
         } catch (e) {
             this.sampleText = `Failed to start parse: ${(e as any)?.message ?? String(e)}`;
+            this.status = 'error';
             this.loaded = false;
             this.onLoaded.emit(false);
         }
@@ -203,6 +225,7 @@ export class SmsLoaderComponent implements OnInit {
 
     fileChange(fileEvent: any): void {
         this.sampleText = 'Loading...';
+		this.status = 'busy';
         this.loaded = false;
 
         const selected: File[] = Array.from(fileEvent?.target?.files ?? []);
@@ -214,6 +237,7 @@ export class SmsLoaderComponent implements OnInit {
             const tooLarge = selected.find((f) => f.size > MAX_BYTES);
             if (tooLarge) {
                 this.sampleText = `File too large (${this.formatBytes(tooLarge.size)}). Export a smaller XML (no media) or split it.`;
+				this.status = 'error';
                 this.onLoaded.emit(false);
                 this.loaded = false;
                 if (fileEvent?.target) {
@@ -227,11 +251,13 @@ export class SmsLoaderComponent implements OnInit {
                 .loadSMSFiles(selected)
                 .then(() => {
                     this.sampleText = 'Loaded!';
+					this.status = 'ok';
                     this.onLoaded.emit(true);
                     this.loaded = true;
                 })
                 .catch((err) => {
                     this.sampleText = 'Failed to load';
+					this.status = 'error';
                     this.onLoaded.emit(false);
                     this.loaded = false;
                     console.error('Failed to load SMS backup file', err);

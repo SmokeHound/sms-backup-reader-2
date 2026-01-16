@@ -16,7 +16,7 @@ import { VcfStoreService } from './vcf-store.service';
 })
 
 export class AppComponent implements OnInit  {
-    title = 'SMS Backup Reader 2.0';
+	title = 'SMS Backup Viewer';
     smsloaded: boolean = false;
 	vcfloaded: boolean = false;
 	country: string = "US";

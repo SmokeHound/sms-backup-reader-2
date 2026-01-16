@@ -12,16 +12,19 @@ export class VcfLoaderComponent implements OnInit {
     @Output() onLoaded = new EventEmitter<boolean>();
     sampleText: String = 'not loaded';
     loaded: boolean = false;
+	status: 'idle' | 'busy' | 'ok' | 'error' = 'idle';
 
     constructor(
         private VcfLoaderService: VcfLoaderService,
         ) { }
 
     ngOnInit() {
+		this.status = 'idle';
     }
 
     fileChange(fileEvent: any): void {
         this.sampleText = 'Loading...';
+		this.status = 'busy';
         this.loaded = false;
 
         var file: File;
@@ -31,11 +34,13 @@ export class VcfLoaderComponent implements OnInit {
                 .loadVCFFile(file)
                 .then(() => {
                     this.sampleText = 'Loaded!';
+					this.status = 'ok';
                     this.onLoaded.emit(true);
                     this.loaded = true;
                 })
                 .catch((err) => {
                     this.sampleText = 'Failed to load';
+					this.status = 'error';
                     this.onLoaded.emit(false);
                     this.loaded = false;
                     console.error('Failed to load VCF file', err);

@@ -16,10 +16,52 @@
     margin: 0 8px;
 }
 
+.top-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px;
+    margin: 8px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.75);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.top-tools .tool {
+    min-width: 220px;
+    flex: 1 1 320px;
+}
+
+.top-tools .tool-settings {
+    flex: 0 0 auto;
+    min-width: auto;
+    display: flex;
+    align-items: flex-start;
+}
+
 /* Footer improvements */
 .mdl-mini-footer {
     background-color: #424242;
     color: rgba(255, 255, 255, 0.87);
+    padding: 6px 16px;
+    min-height: 0;
+    line-height: 1.2;
+}
+
+.mdl-mini-footer .mdl-logo {
+    font-size: 13px;
+    line-height: 1.2;
+    padding: 0;
+    margin: 0;
+}
+
+.mdl-mini-footer__link-list {
+    margin: 0;
+}
+
+.mdl-mini-footer__link-list li {
+    line-height: 1.2;
 }
 
 .mdl-mini-footer a {
