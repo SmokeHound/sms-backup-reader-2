@@ -43,6 +43,10 @@ describe('ExportOptionsDialogComponent', () => {
 		expect(component.fields.bodyHtml).toBe(true);
 	});
 
+	it('should default to not exporting MMS media as files', () => {
+		expect(component.mmsMediaAsFiles).toBe(false);
+	});
+
 	it('should select all fields when selectAllFields is called', () => {
 		component.fields.bodyText = false;
 		component.fields.bodyHtml = false;
@@ -75,6 +79,7 @@ describe('ExportOptionsDialogComponent', () => {
 	it('should emit onExport with correct options when export is called', () => {
 		component.scope = 'all';
 		component.fields.bodyHtml = false;
+		component.mmsMediaAsFiles = true;
 		
 		let exportedOptions: ExportOptions | null = null;
 		component.onExport.subscribe((options) => {
@@ -85,7 +90,9 @@ describe('ExportOptionsDialogComponent', () => {
 		
 		expect(exportedOptions).not.toBeNull();
 		expect(exportedOptions!.scope).toBe('all');
-		expect(exportedOptions!.fields.bodyHtml).toBe(false);
+		// When media-as-files is enabled, bodyHtml is forced on.
+		expect(exportedOptions!.mmsMediaAsFiles).toBe(true);
+		expect(exportedOptions!.fields.bodyHtml).toBe(true);
 		expect(exportedOptions!.fields.bodyText).toBe(true);
 	});
 });

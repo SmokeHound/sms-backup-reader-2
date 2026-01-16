@@ -20,6 +20,22 @@
 				</label>
 			</div>
 
+			<!-- Media Export -->
+			<div class="export-section">
+				<h5>Media</h5>
+				<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="field-mmsMediaAsFiles">
+					<input
+						type="checkbox"
+						id="field-mmsMediaAsFiles"
+						class="mdl-checkbox__input"
+						[(ngModel)]="mmsMediaAsFiles">
+					<span class="mdl-checkbox__label">Export MMS media as separate files (creates a .zip)</span>
+				</label>
+				<div class="export-hint" *ngIf="mmsMediaAsFiles">
+					The ZIP will include <strong>messages.csv</strong> plus files under <strong>media/...</strong>. Any inline <strong>data:</strong> images in <strong>Body (HTML)</strong> are rewritten to point at those files.
+				</div>
+			</div>
+
 			<!-- Field Selection -->
 			<div class="export-section">
 				<h5>Fields to Export</h5>
@@ -77,7 +93,7 @@
 					
 					<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="field-bodyHtml">
 						<input type="checkbox" id="field-bodyHtml" class="mdl-checkbox__input" 
-							[(ngModel)]="fields.bodyHtml">
+							[(ngModel)]="fields.bodyHtml" [disabled]="mmsMediaAsFiles">
 						<span class="mdl-checkbox__label">Body (HTML)</span>
 					</label>
 				</div>

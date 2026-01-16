@@ -89,15 +89,60 @@ export class MessageListComponent implements OnInit {
         }
 
         const conversationId = this.selectedContact.address;
-        const rows = this.messages.map((m) => this.messageToRow(m, conversationId));
         const columns = this.getSelectedColumns(options.fields);
-
         const namePart = this.selectedContact.name || this.selectedContact.address || 'conversation';
+
+        if (options.mmsMediaAsFiles) {
+            const mediaFiles: Array<{ path: string; content: Uint8Array }> = [];
+            const rows = this.messages.map((m, messageIndex) => {
+                const extracted = this.csvExportService.extractInlineBase64MediaFromHtml(m.body, {
+                    conversationId,
+                    messageIndex,
+                    timestampMs: Number(m.timestamp)
+                });
+                extracted.files.forEach((f) => mediaFiles.push({ path: f.path, content: f.bytes }));
+                return this.messageToRow(m, conversationId, extracted.html);
+            });
+
+            const csv = this.csvExportService.buildCsv(rows, columns);
+            this.csvExportService.downloadZip(`sms-conversation-${namePart}`, [
+                { path: 'messages.csv', content: csv },
+                ...mediaFiles
+            ]);
+            return;
+        }
+
+        const rows = this.messages.map((m) => this.messageToRow(m, conversationId));
         this.csvExportService.downloadCsv(`sms-conversation-${namePart}`, rows, columns);
     }
 
     private exportAllMessages(options: ExportOptions): void {
         if (!this.messageMap?.size) {
+            return;
+        }
+
+        const columns = this.getSelectedColumns(options.fields);
+
+        if (options.mmsMediaAsFiles) {
+            const mediaFiles: Array<{ path: string; content: Uint8Array }> = [];
+            const rows: Array<Record<string, any>> = [];
+            this.messageMap.forEach((messages, conversationId) => {
+                messages.forEach((m, messageIndex) => {
+                    const extracted = this.csvExportService.extractInlineBase64MediaFromHtml(m.body, {
+                        conversationId,
+                        messageIndex,
+                        timestampMs: Number(m.timestamp)
+                    });
+                    extracted.files.forEach((f) => mediaFiles.push({ path: f.path, content: f.bytes }));
+                    rows.push(this.messageToRow(m, conversationId, extracted.html));
+                });
+            });
+
+            const csv = this.csvExportService.buildCsv(rows, columns);
+            this.csvExportService.downloadZip('sms-all-messages', [
+                { path: 'messages.csv', content: csv },
+                ...mediaFiles
+            ]);
             return;
         }
 
@@ -107,15 +152,14 @@ export class MessageListComponent implements OnInit {
                 rows.push(this.messageToRow(m, conversationId));
             });
         });
-
-        const columns = this.getSelectedColumns(options.fields);
         this.csvExportService.downloadCsv('sms-all-messages', rows, columns);
     }
 
-    private messageToRow(m: Message, conversationId: string): Record<string, any> {
+    private messageToRow(m: Message, conversationId: string, bodyHtmlOverride?: string): Record<string, any> {
         const timestampMs = Number(m.timestamp);
         const dateIso = (m.date ?? new Date(timestampMs)).toISOString();
         const direction = m.type === 2 || m.type === 4 ? 'sent' : m.type === 1 || m.type === 3 ? 'received' : '';
+        const bodyHtml = bodyHtmlOverride ?? m.body;
         
         return {
             conversationId,
@@ -124,8 +168,8 @@ export class MessageListComponent implements OnInit {
             type: m.type,
             timestampMs,
             dateIso,
-            bodyText: this.csvExportService.htmlToText(m.body),
-            bodyHtml: m.body
+            bodyText: this.csvExportService.htmlToText(bodyHtml),
+            bodyHtml
         };
     }
 

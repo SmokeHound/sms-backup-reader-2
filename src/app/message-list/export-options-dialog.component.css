@@ -47,6 +47,14 @@
 	color: #424242;
 }
 
+.export-hint {
+	margin: 8px 0 0 0;
+	padding-left: 28px;
+	font-size: 12px;
+	line-height: 1.4;
+	color: #616161;
+}
+
 .mdl-radio {
 	display: block;
 	margin-bottom: 8px;

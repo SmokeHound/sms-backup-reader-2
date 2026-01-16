@@ -30,6 +30,7 @@ Very large XML backups (especially with MMS media) may be too large for the brow
 * VCF support (thanks to JLTRY)
 * Export messages and contacts to CSV
 * Export MMS media embedded in message HTML (via CSV export including `bodyHtml`)
+* Export MMS media as separate files (ZIP export)
 
 ## Issues
 
@@ -37,7 +38,6 @@ If you encounter issues, please add them to the issues section.
 
 ## Roadmap (no timeline defined)
 
-* Export MMS media as separate files (instead of inline/base64 HTML)
 * More?
 
 ## Development

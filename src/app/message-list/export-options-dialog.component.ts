@@ -2,6 +2,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 export interface ExportOptions {
 	scope: 'conversation' | 'all';
+	// When enabled, export creates a .zip with CSV + extracted media files.
+	mmsMediaAsFiles: boolean;
 	fields: {
 		conversationId: boolean;
 		contactName: boolean;
@@ -28,6 +30,9 @@ export class ExportOptionsDialogComponent {
 	// Export scope
 	scope: 'conversation' | 'all' = 'conversation';
 
+	// Media export
+	mmsMediaAsFiles = false;
+
 	// Field selections - all enabled by default
 	fields = {
 		conversationId: true,
@@ -45,8 +50,14 @@ export class ExportOptionsDialogComponent {
 	}
 
 	export(): void {
+		if (this.mmsMediaAsFiles) {
+			// To make the exported media usable, we need HTML with file references.
+			this.fields.bodyHtml = true;
+		}
+
 		this.onExport.emit({
 			scope: this.scope,
+			mmsMediaAsFiles: this.mmsMediaAsFiles,
 			fields: { ...this.fields }
 		});
 	}

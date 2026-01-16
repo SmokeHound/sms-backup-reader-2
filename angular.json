@@ -22,7 +22,8 @@
             "allowedCommonJsDependencies": [
               "awesome-phonenumber",
               "material-design-lite",
-              "vcf"
+              "vcf",
+              "jszip"
             ],
             "assets": [
               "src/favicon.ico",
