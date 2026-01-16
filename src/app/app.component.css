@@ -1,6 +1,9 @@
 /* App-level styles */
 .mdl-layout__header {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: none;
+    border-bottom: 1px solid var(--border);
 }
 
 .mdl-layout-title {

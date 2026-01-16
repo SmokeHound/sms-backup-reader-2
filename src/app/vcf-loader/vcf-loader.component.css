@@ -14,12 +14,6 @@ input[type="file"] {
     gap: 8px;
 }
 
-.file-upload-button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: all 0.2s ease;
-}
-
 .load-status {
     margin-top: 8px;
     padding: 8px 10px;
