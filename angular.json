@@ -96,6 +96,9 @@
             "production": {
               "buildTarget": "sms-back-reader-2:build:production"
             },
+            "tauri": {
+              "buildTarget": "sms-back-reader-2:build:tauri"
+            },
             "development": {
               "buildTarget": "sms-back-reader-2:build:development"
             }
