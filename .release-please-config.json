@@ -3,7 +3,7 @@
   "release-type": "node",
   "packages": {
     ".": {
-      "package-name": "sms-back-reader-2",
+      "package-name": "sms-backup-viewer",
       "extra-files": [
         "src-tauri/tauri.conf.json",
         "src-tauri/Cargo.toml"

@@ -6,7 +6,7 @@
     "analytics": false
   },
   "projects": {
-    "sms-back-reader-2": {
+    "sms-backup-viewer": {
       "projectType": "application",
       "root": "",
       "sourceRoot": "src",
@@ -15,7 +15,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "outputPath": "dist/sms-back-reader-2",
+            "outputPath": "dist/sms-backup-viewer",
             "browser": "src/main.ts",
             "index": "src/index.html",
             "tsConfig": "tsconfig.app.json",
@@ -94,13 +94,13 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "sms-back-reader-2:build:production"
+              "buildTarget": "sms-backup-viewer:build:production"
             },
             "tauri": {
-              "buildTarget": "sms-back-reader-2:build:tauri"
+              "buildTarget": "sms-backup-viewer:build:tauri"
             },
             "development": {
-              "buildTarget": "sms-back-reader-2:build:development"
+              "buildTarget": "sms-backup-viewer:build:development"
             }
           },
           "defaultConfiguration": "development"
