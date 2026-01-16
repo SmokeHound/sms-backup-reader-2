@@ -16,14 +16,6 @@
             </nav>
         </div>
     </header>
-    <div class="mdl-layout__drawer">
-        <span class="mdl-layout-title">Menu</span>
-        <nav class="mdl-navigation">
-            <vcf-loader (onLoaded)="onVcfLoaded($event)" (statusChanged)="onVcfStatusChanged($event)"></vcf-loader>
-            <sms-loader (onLoaded)="onSmsLoaded($event)" (statusChanged)="onSmsStatusChanged($event)"></sms-loader>
-            <a class="mdl-navigation__link" routerLink="/settings" routerLinkActive="active">Settings</a>
-        </nav>
-    </div>
     <main class="mdl-layout__content">
         <div class="page-content">
             <router-outlet></router-outlet>
