@@ -1,25 +1,27 @@
-<label
-    for="file-upload"
-    class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent file-upload-button"
-    [attr.title]="sampleText">
-    <i class="material-icons" style="margin-right: 8px;">file_upload</i>
-    Select SMS Backup
-</label>
-<input id="file-upload" type="file" name="xml" (change)="fileChange($event)" accept=".xml,.XML" multiple />
+<div class="loader-inline">
+    <label
+        for="file-upload"
+        class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent file-upload-button"
+        [attr.title]="sampleText">
+        <i class="material-icons" style="margin-right: 8px;">file_upload</i>
+        Select SMS Backup
+    </label>
+    <input id="file-upload" type="file" name="xml" (change)="fileChange($event)" accept=".xml,.XML" multiple />
 
-<div class="load-status" [ngClass]="status" aria-live="polite">
-    <i class="material-icons status-icon" *ngIf="status === 'idle'">info_outline</i>
-    <i class="material-icons status-icon" *ngIf="status === 'busy'">hourglass_top</i>
-    <i class="material-icons status-icon" *ngIf="status === 'ok'">check_circle</i>
-    <i class="material-icons status-icon" *ngIf="status === 'error'">error_outline</i>
-    <span class="status-text">{{ sampleText }}</span>
+    <div class="load-status" [ngClass]="status" aria-live="polite">
+        <i class="material-icons status-icon" *ngIf="status === 'idle'">info_outline</i>
+        <i class="material-icons status-icon" *ngIf="status === 'busy'">hourglass_top</i>
+        <i class="material-icons status-icon" *ngIf="status === 'ok'">check_circle</i>
+        <i class="material-icons status-icon" *ngIf="status === 'error'">error_outline</i>
+        <span class="status-text">{{ sampleText }}</span>
+    </div>
 </div>
 
 <div class="progress" *ngIf="status === 'busy' && totalBytes > 0">
     <div class="progress-fill" [style.width.%]="progressPercent"></div>
 </div>
 
-<div *ngIf="isTauri" style="margin-top: 12px;">
+<div class="tauri-tools" *ngIf="isTauri" style="margin-top: 12px;">
     <div style="margin-bottom: 6px; font-size: 12px; opacity: 0.8;">
         Tauri mode: paste a full file path to parse multi-GB XML backups.
     </div>

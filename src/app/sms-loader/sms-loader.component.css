@@ -4,6 +4,16 @@
     justify-content: center;
 }
 
+input[type="file"] {
+    display: none;
+}
+
+.loader-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
 .file-upload-button:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
