@@ -6,6 +6,7 @@ import { SmsStoreService } from '../sms-store.service';
 import { Message } from '../message';
 import { Contact } from '../contact';
 import { SmsDbService } from '../sms-db.service';
+import { VcfStoreService } from '../vcf-store.service';
 
 @Component({
     selector: 'app-settings',
@@ -24,7 +25,8 @@ export class SettingsComponent implements OnInit {
     constructor(
         private smsStoreService: SmsStoreService,
         private csvExportService: CsvExportService,
-		private smsDbService: SmsDbService
+		private smsDbService: SmsDbService,
+		private vcfStoreService: VcfStoreService
     ) { }
 
     ngOnInit() {
@@ -63,6 +65,8 @@ export class SettingsComponent implements OnInit {
             // Also clear any in-memory state.
             await this.smsStoreService.clearAllMessages();
             this.smsStoreService.broadcastMessagesLoaded(false);
+			await this.vcfStoreService.clearAllContacts();
+			this.vcfStoreService.broadcastMessagesLoaded(false);
             await this.refreshDbStats();
         } finally {
             this.clearingDb = false;
