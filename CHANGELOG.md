@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.8.0...sms-backup-viewer-v0.9.0) (2026-01-17)
+
+
+### Features
+
+* implement loading older messages functionality with pagination support ([b264cfc](https://github.com/SmokeHound/sms-backup-viewer/commit/b264cfca4ade0f00e73c373e789a7213e8dfd3ed))
+
 ## [0.8.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.7.1...sms-backup-viewer-v0.8.0) (2026-01-17)
 
 
