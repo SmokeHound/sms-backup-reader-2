@@ -45,28 +45,34 @@ export class SmsLoaderComponent implements OnInit {
     }
 
     private detectTauri(): boolean {
-        // Tauri v2 injects a global __TAURI__ object for IPC.
+        // Robust detection for installed desktop builds.
+        // In production, Tauri uses a custom protocol (e.g. tauri://localhost).
+        const protocol = (window?.location?.protocol ?? '').toLowerCase();
+        if (protocol === 'tauri:' || protocol === 'asset:') {
+            return true;
+        }
+        // Fallback: some environments still inject a global __TAURI__ object.
         return typeof (window as any)?.__TAURI__ !== 'undefined';
     }
 
-    private tauriInvoke<T>(command: string, args?: Record<string, any>): Promise<T> {
-        const tauri = (window as any)?.__TAURI__;
-        const invoke = tauri?.core?.invoke;
-        if (typeof invoke !== 'function') {
+    private async tauriInvoke<T>(command: string, args?: Record<string, any>): Promise<T> {
+        try {
+            const { invoke } = await import('@tauri-apps/api/core');
+            return invoke<T>(command, args ?? {});
+        } catch {
             return Promise.reject(new Error('Tauri invoke not available.'));
         }
-        return invoke(command, args ?? {});
     }
 
     private async tauriListen<T>(eventName: string, handler: (payload: T) => void): Promise<void> {
-        const tauri = (window as any)?.__TAURI__;
-        const listen = tauri?.event?.listen;
-        if (typeof listen !== 'function') {
+        try {
+            const { listen } = await import('@tauri-apps/api/event');
+            const unlisten = await listen<T>(eventName, (event) => handler((event as any)?.payload));
+            if (typeof unlisten === 'function') {
+                this.unlistenFns.push(unlisten);
+            }
+        } catch {
             throw new Error('Tauri event.listen not available.');
-        }
-        const unlisten = await listen(eventName, (event: any) => handler(event?.payload));
-        if (typeof unlisten === 'function') {
-            this.unlistenFns.push(unlisten);
         }
     }
 
