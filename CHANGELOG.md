@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.10.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.9.0...sms-backup-viewer-v0.10.0) (2026-01-17)
+
+
+### Features
+
+* enhance message list component with auto-loading of older messages and scroll handling ([cd2594f](https://github.com/SmokeHound/sms-backup-viewer/commit/cd2594fc563a15f2911022475782ff9e2e43d57f))
+* update version to 0.10.0 and enhance settings with advanced import/export options ([686beaa](https://github.com/SmokeHound/sms-backup-viewer/commit/686beaace4a9a3b7d0db915c551ceeadfad65045))
+
 ## [0.9.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.8.0...sms-backup-viewer-v0.9.0) (2026-01-17)
 
 
