@@ -122,6 +122,32 @@ export class SmsLoaderComponent implements OnInit {
         }
     }
 
+    async browseAndLoadFromTauriPath(): Promise<void> {
+        if (!this.isTauri) {
+            this.sampleText = 'Not running under Tauri.';
+            this.status = 'error';
+            this.emitStatus();
+            return;
+        }
+        try {
+            const { open } = await import('@tauri-apps/plugin-dialog');
+            const selected = await open({
+                multiple: false,
+                directory: false,
+                title: 'Select SMS Backup XML',
+                filters: [{ name: 'XML files', extensions: ['xml'] }]
+            });
+            if (typeof selected === 'string' && selected.trim()) {
+                this.tauriPath = selected;
+                await this.loadFromTauriPath();
+            }
+        } catch (e) {
+            this.sampleText = `Failed to open file picker: ${(e as any)?.message ?? String(e)}`;
+            this.status = 'error';
+            this.emitStatus();
+        }
+    }
+
     async loadFromTauriPath(): Promise<void> {
         if (!this.isTauri) {
             this.sampleText = 'Not running under Tauri.';

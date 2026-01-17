@@ -6,6 +6,15 @@
         <i class="material-icons">file_upload</i>
         <span class="file-upload-label">Select SMS Backup</span>
     </label>
+    <button
+        *ngIf="isTauri"
+        class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect file-upload-button"
+        type="button"
+        (click)="browseAndLoadFromTauriPath()"
+        title="Load a large backup using the desktop streaming parser">
+        <i class="material-icons">folder_open</i>
+        <span class="file-upload-label">Load from path</span>
+    </button>
     <input id="file-upload" type="file" name="xml" (change)="fileChange($event)" accept=".xml,.XML" multiple />
 </div>
 
