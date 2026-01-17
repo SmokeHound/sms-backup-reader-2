@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.7.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.6.0...sms-backup-viewer-v0.7.0) (2026-01-17)
+
+
+### Features
+
+* add help text for clearing stored SMS messages and integrate VcfStoreService for contact management ([43ae0cc](https://github.com/SmokeHound/sms-backup-viewer/commit/43ae0cc5f4b2cdf2c21120645263ba32d8d25dcd))
+
+
+### Bug Fixes
+
+* align text in mdl-layout-title for improved readability ([bdf6bf9](https://github.com/SmokeHound/sms-backup-viewer/commit/bdf6bf99283f74ec23dff4aa6ebc2a8f7267345a))
+* improve error messages for large file uploads in SmsLoaderComponent ([d3d2447](https://github.com/SmokeHound/sms-backup-viewer/commit/d3d244773095e80a079370a65844b053c50c6dcb))
+
 ## [0.6.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.5.0...sms-backup-viewer-v0.6.0) (2026-01-17)
 
 
