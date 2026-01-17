@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.7.1](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.7.0...sms-backup-viewer-v0.7.1) (2026-01-17)
+
+
+### Bug Fixes
+
+* add foldline and camelcase as allowed CommonJS dependencies in angular.json ([384b012](https://github.com/SmokeHound/sms-backup-viewer/commit/384b012537636a7012b9e654598b0d96dd351096))
+* add Tauri API integration and improve detection logic in SmsLoaderComponent ([6c6cf8a](https://github.com/SmokeHound/sms-backup-viewer/commit/6c6cf8aedf68a318bd9b63401c61e62cc34d56dd))
+* add Tauri development configuration and update start script ([17071e7](https://github.com/SmokeHound/sms-backup-viewer/commit/17071e7d033c1976f7b509dca517323db48084e6))
+* adjust min-height for settings container to ensure proper layout ([c449a77](https://github.com/SmokeHound/sms-backup-viewer/commit/c449a77bb19eac431d0f4fd397166b97f684a32d))
+* defer loading vCard library until contacts are loaded in VcfStoreService ([a3a1818](https://github.com/SmokeHound/sms-backup-viewer/commit/a3a1818938ee466443a732b46755302f15f8e78f))
+* optimize ngFor performance with trackBy for contacts and messages ([30c6a89](https://github.com/SmokeHound/sms-backup-viewer/commit/30c6a89ade03c6da7842d22fabb53ac7043d54e7))
+* remove obsolete app package and add sms-backup-viewer package with dependencies ([ced2a47](https://github.com/SmokeHound/sms-backup-viewer/commit/ced2a4760bdcf4dcb5324df8903b1d574adceb2d))
+* update build configuration for Tauri integration and adjust index file settings ([b0db603](https://github.com/SmokeHound/sms-backup-viewer/commit/b0db603ee7b25c57a8bc7d9d20ea745f3ccc73e0))
+* update package name, version, and description in Cargo.toml ([fc42259](https://github.com/SmokeHound/sms-backup-viewer/commit/fc42259d6d8af952f70b785b67deceeec9733638))
+
 ## [0.7.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.6.0...sms-backup-viewer-v0.7.0) (2026-01-17)
 
 
