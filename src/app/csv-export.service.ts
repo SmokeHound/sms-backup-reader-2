@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { CsvCell, rowsToCsv } from './csv';
-import JSZip from 'jszip';
 
 @Injectable({
 	providedIn: 'root'
@@ -138,6 +137,7 @@ export class CsvExportService {
 		files: Array<{ path: string; content: string | Uint8Array }>
 	): Promise<void> {
 		const filename = this.sanitizeFilename(filenameBase || 'export') + '.zip';
+		const JSZip = (await import('jszip')).default;
 		const zip = new JSZip();
 
 		for (const f of files) {

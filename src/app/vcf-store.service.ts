@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Contact } from './contact';
-import * as vCard from 'vcf';
 import awesomePhone from 'awesome-phonenumber';
 
 @Injectable()
@@ -74,33 +73,35 @@ export class VcfStoreService {
 	}
 	
     loadAllContacts(contacts: string): Promise<void> {
-		this.contacts = contacts;
+        this.contacts = contacts;
         this.contactMap = new Map();
         return new Promise((resolve, reject) => {
-			/*console.log(contacts);*/
-			var arcontacts = vCard.parse(contacts);			
-            var content = '';
-            for (let contact of arcontacts) {
-				var tel;
-				var tels;
-				var i;
-				tels = contact.get('tel');
-				if (tels)
-				{
-					if (tels.length)
-					{
-						for (i = 0; i < tels.length; i++) {
-							this.addContacttoMap(tels[i], contact.get('fn'));	
-						}
-					}
-					else
-					{
-						this.addContacttoMap(tels, contact.get('fn'))
-					}
-				}	
-			}			
-			this.contactsLoaded = true;
-            resolve();
+            // Defer pulling in the vcf parsing library until a VCF is actually loaded.
+            import('vcf')
+                .then((vcfMod: any) => {
+                    const parseFn = vcfMod?.parse ?? vcfMod?.default?.parse;
+                    if (typeof parseFn !== 'function') {
+                        throw new Error('VCF parser not available');
+                    }
+                    return parseFn(contacts);
+                })
+                .then((arcontacts: any[]) => {
+                    for (let contact of arcontacts) {
+                        let tels = contact.get('tel');
+                        if (tels) {
+                            if (tels.length) {
+                                for (let i = 0; i < tels.length; i++) {
+                                    this.addContacttoMap(tels[i], contact.get('fn'));
+                                }
+                            } else {
+                                this.addContacttoMap(tels, contact.get('fn'));
+                            }
+                        }
+                    }
+                    this.contactsLoaded = true;
+                    resolve();
+                })
+                .catch((err) => reject(err));
         });
     }
 
