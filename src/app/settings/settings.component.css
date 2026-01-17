@@ -1,9 +1,17 @@
+.\:host,
+:host {
+    display: block;
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
 .settings-container {
     display: flex;
     justify-content: center;
     align-items: flex-start;
     padding: 40px 20px;
-    min-height: 100vh;
+    min-height: 100%;
 	background: var(--bg);
 }
 
