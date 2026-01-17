@@ -94,6 +94,28 @@ export class SmsLoaderComponent implements OnInit {
         return `Parsing... (${this.parsedCount.toLocaleString()} msgs)`;
     }
 
+    async browseForTauriPath(): Promise<void> {
+        if (!this.isTauri) {
+            return;
+        }
+        try {
+            const { open } = await import('@tauri-apps/plugin-dialog');
+            const selected = await open({
+                multiple: false,
+                directory: false,
+                title: 'Select SMS Backup XML',
+                filters: [{ name: 'XML files', extensions: ['xml'] }]
+            });
+            if (typeof selected === 'string' && selected.trim()) {
+                this.tauriPath = selected;
+            }
+        } catch (e) {
+            this.sampleText = `Failed to open file picker: ${(e as any)?.message ?? String(e)}`;
+            this.status = 'error';
+            this.emitStatus();
+        }
+    }
+
     async loadFromTauriPath(): Promise<void> {
         if (!this.isTauri) {
             this.sampleText = 'Not running under Tauri.';
@@ -249,7 +271,11 @@ export class SmsLoaderComponent implements OnInit {
             const MAX_BYTES = 250 * 1024 * 1024; // 250 MB
             const tooLarge = selected.find((f) => f.size > MAX_BYTES);
             if (tooLarge) {
-                this.sampleText = `File too large (${this.formatBytes(tooLarge.size)}). Export a smaller XML (no media) or split it.`;
+                if (this.isTauri) {
+                    this.sampleText = `File too large for browser upload (${this.formatBytes(tooLarge.size)}). Use "Load from path (Tauri)" for multi-GB backups.`;
+                } else {
+                    this.sampleText = `File too large (${this.formatBytes(tooLarge.size)}). Export a smaller XML (no media) or split it.`;
+                }
 				this.status = 'error';
 				this.emitStatus();
                 this.onLoaded.emit(false);

@@ -19,6 +19,8 @@ If you build the app (`npm run build`) and then open the generated `dist/.../ind
 
 Very large XML backups (especially with MMS media) may be too large for the browser to load/parse as a single file.
 
+If you have a multi-GB backup (e.g. 2+ GB), use the desktop build (Tauri) and load the file by path. Browsers generally cannot handle parsing a multi-GB XML file as a single in-memory string.
+
 - Prefer exporting **SMS only** / **no media** when possible.
 - If you need to split your export, you can select **multiple** `.xml` files at once in the SMS loader — they will be merged into a single combined message list.
 

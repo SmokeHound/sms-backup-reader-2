@@ -69,6 +69,8 @@ This app loads backups in the browser and currently parses XML by reading the en
 - Recommended workaround: export **SMS only** / **no media**, or split the export.
 - The SMS loader supports selecting **multiple** `.xml` files at once; it will merge them into a single message list.
 
+If you need to load a single multi-GB XML file, use the desktop build (Tauri): the SMS loader includes a Tauri mode that parses by file path using a streaming XML parser.
+
 ## Exporting MMS media as separate files
 
 When exporting from the message list, you can enable **Export MMS media as separate files (creates a .zip)**.
