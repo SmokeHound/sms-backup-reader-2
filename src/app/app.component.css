@@ -62,6 +62,7 @@
 
 .mdl-layout-title {
     cursor: pointer;
+    text-align: left;
     transition: opacity 0.2s ease;
 }
 
