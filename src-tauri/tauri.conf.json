@@ -7,7 +7,7 @@
     "frontendDist": "../dist/sms-backup-viewer/browser",
     "devUrl": "http://localhost:4200",
     "beforeDevCommand": "npm run start:tauri",
-    "beforeBuildCommand": "npm run build -- --configuration tauri"
+    "beforeBuildCommand": "npm run build:tauri"
   },
   "app": {
     "windows": [

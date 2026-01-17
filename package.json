@@ -8,6 +8,7 @@
     "start:tauri": "ng serve --configuration tauri",
     "start:prod": "ng serve --configuration production",
     "build": "ng build",
+    "build:tauri": "ng build --configuration tauri",
     "watch": "ng build --watch --configuration development",
     "preview:dist": "npx http-server dist/sms-backup-viewer/browser -p 8080 -c-1",
     "tauri": "tauri",

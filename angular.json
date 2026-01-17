@@ -67,7 +67,10 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "index": "src/index.tauri.html",
+              "index": {
+                "input": "src/index.tauri.html",
+                "output": "index.html"
+              },
               "outputHashing": "all",
               "budgets": [
                 {
