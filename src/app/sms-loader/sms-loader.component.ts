@@ -272,9 +272,9 @@ export class SmsLoaderComponent implements OnInit {
             const tooLarge = selected.find((f) => f.size > MAX_BYTES);
             if (tooLarge) {
                 if (this.isTauri) {
-                    this.sampleText = `File too large for browser upload (${this.formatBytes(tooLarge.size)}). Use "Load from path (Tauri)" for multi-GB backups.`;
+                    this.sampleText = `File too large for browser upload (${this.formatBytes(tooLarge.size)}). Use "Load from path (Tauri)" for large backups.`;
                 } else {
-                    this.sampleText = `File too large (${this.formatBytes(tooLarge.size)}). Export a smaller XML (no media) or split it.`;
+                    this.sampleText = `File too large for in-browser import (${this.formatBytes(tooLarge.size)}). For large backups, use the desktop app (Tauri) and "Load from path". If you must use the browser, export without media to reduce the file size.`;
                 }
 				this.status = 'error';
 				this.emitStatus();
