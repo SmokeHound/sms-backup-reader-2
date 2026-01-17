@@ -17,12 +17,52 @@ export class SmsStoreService {
     messagesLoaded: boolean;
     private useIndexedDb: boolean;
     private ingestChain: Promise<void>;
+	private indexedDbEnabled: boolean;
 
     constructor(private smsDbService: SmsDbService) { 
         this.messagesLoaded = false;
         this.countryCode = 'US';
         this.useIndexedDb = false;
         this.ingestChain = Promise.resolve();
+        this.indexedDbEnabled = this.readIndexedDbEnabled();
+    }
+
+    private readIndexedDbEnabled(): boolean {
+        try {
+            const raw = window?.localStorage?.getItem('smsBackupViewer.indexedDbEnabled');
+            if (raw === null || raw === undefined) {
+                return true;
+            }
+            return raw === 'true';
+        } catch {
+            return true;
+        }
+    }
+
+    setIndexedDbEnabled(enabled: boolean): void {
+        this.indexedDbEnabled = !!enabled;
+        try {
+            window?.localStorage?.setItem('smsBackupViewer.indexedDbEnabled', String(this.indexedDbEnabled));
+        } catch {
+            // ignore
+        }
+    }
+
+    getIndexedDbEnabled(): boolean {
+        return this.indexedDbEnabled;
+    }
+
+    async restoreFromIndexedDbIfEnabled(): Promise<boolean> {
+        if (!this.indexedDbEnabled) {
+            return false;
+        }
+        const hasAny = await this.smsDbService.hasAnyData();
+        if (!hasAny) {
+            return false;
+        }
+        this.useIndexedDb = true;
+        this.messagesLoaded = true;
+        return true;
     }
 
     beginIngest(options?: { persistToIndexedDb?: boolean; clearIndexedDb?: boolean }): void {

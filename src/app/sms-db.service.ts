@@ -41,6 +41,14 @@ class SmsBackupViewerDb extends Dexie {
 export class SmsDbService {
   private db = new SmsBackupViewerDb();
 
+  async getStats(): Promise<{ threadCount: number; messageCount: number }> {
+    const [threadCount, messageCount] = await Promise.all([
+      this.db.threads.count(),
+      this.db.messages.count()
+    ]);
+    return { threadCount, messageCount };
+  }
+
   async clearAll(): Promise<void> {
     await this.db.transaction('rw', this.db.messages, this.db.threads, async () => {
       await this.db.messages.clear();

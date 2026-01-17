@@ -12,6 +12,35 @@
             </div>
 
             <hr />
+            <h3 class="setting-label">Storage (IndexedDB)</h3>
+            <p class="setting-help">Persist imported messages locally so reloads are instant. Recommended for large imports.</p>
+            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" style="display: inline-flex; align-items: center; gap: 10px;">
+                <input
+                    type="checkbox"
+                    class="mdl-switch__input"
+                    [(ngModel)]="indexedDbEnabled"
+                    (change)="onIndexedDbEnabledChanged()" />
+                <span class="mdl-switch__label">Enable IndexedDB persistence</span>
+            </label>
+            <div class="setting-help" style="margin-top: 10px;">
+                Stored conversations: {{ dbThreadCount.toLocaleString() }}<br />
+                Stored messages: {{ dbMessageCount.toLocaleString() }}
+            </div>
+            <div class="button-row" style="margin-top: 12px;">
+                <button
+                    class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+                    (click)="refreshDbStats()">
+                    Refresh storage stats
+                </button>
+                <button
+                    class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+                    (click)="clearIndexedDb()"
+                    [disabled]="clearingDb">
+                    Clear stored data
+                </button>
+            </div>
+
+            <hr />
             <h3 class="setting-label">Export</h3>
             <p class="setting-help">Download the currently loaded data as CSV.</p>
             <div class="button-row">

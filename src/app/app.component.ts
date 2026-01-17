@@ -59,6 +59,14 @@ export class AppComponent implements OnInit  {
 			this.smsStoreService.changeCountry(this.country);
 			this.vcfStoreService.changeCountry(this.country);
 		}
+
+		// If there's persisted data (IndexedDB mode), restore it on startup.
+		this.smsStoreService.restoreFromIndexedDbIfEnabled().then((restored) => {
+			if (restored) {
+				this.smsloaded = true;
+				this.smsStoreService.broadcastMessagesLoaded(true);
+			}
+		});
 	}
 
 	onSmsStatusChanged(update: LoaderStatusUpdate): void {

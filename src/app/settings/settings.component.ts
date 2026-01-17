@@ -5,6 +5,7 @@ import { CsvExportService } from '../csv-export.service';
 import { SmsStoreService } from '../sms-store.service';
 import { Message } from '../message';
 import { Contact } from '../contact';
+import { SmsDbService } from '../sms-db.service';
 
 @Component({
     selector: 'app-settings',
@@ -15,19 +16,57 @@ import { Contact } from '../contact';
 export class SettingsComponent implements OnInit {
     messagesLoaded: boolean = false;
     private loadingSubscription: Subscription;
+    indexedDbEnabled: boolean = true;
+    dbThreadCount: number = 0;
+    dbMessageCount: number = 0;
+    clearingDb: boolean = false;
 
     constructor(
         private smsStoreService: SmsStoreService,
-        private csvExportService: CsvExportService
+        private csvExportService: CsvExportService,
+		private smsDbService: SmsDbService
     ) { }
 
     ngOnInit() {
         this.loadingSubscription = this.smsStoreService.messagesLoaded$
             .subscribe((loaded) => (this.messagesLoaded = loaded));
+		this.indexedDbEnabled = this.smsStoreService.getIndexedDbEnabled();
+		this.refreshDbStats();
     }
 
     ngOnDestroy() {
         this.loadingSubscription?.unsubscribe();
+    }
+
+    async refreshDbStats(): Promise<void> {
+        try {
+            const stats = await this.smsDbService.getStats();
+            this.dbThreadCount = stats.threadCount;
+            this.dbMessageCount = stats.messageCount;
+        } catch {
+            this.dbThreadCount = 0;
+            this.dbMessageCount = 0;
+        }
+    }
+
+    onIndexedDbEnabledChanged(): void {
+        this.smsStoreService.setIndexedDbEnabled(this.indexedDbEnabled);
+    }
+
+    async clearIndexedDb(): Promise<void> {
+        if (this.clearingDb) {
+            return;
+        }
+        this.clearingDb = true;
+        try {
+            await this.smsStoreService.clearIndexedDb();
+            // Also clear any in-memory state.
+            await this.smsStoreService.clearAllMessages();
+            this.smsStoreService.broadcastMessagesLoaded(false);
+            await this.refreshDbStats();
+        } finally {
+            this.clearingDb = false;
+        }
     }
 
     async exportAllMessages(): Promise<void> {
