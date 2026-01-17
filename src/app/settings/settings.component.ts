@@ -21,6 +21,8 @@ export class SettingsComponent implements OnInit {
     dbThreadCount: number = 0;
     dbMessageCount: number = 0;
     clearingDb: boolean = false;
+    smsImportMode: 'auto' | 'browser' | 'tauri' = 'auto';
+    isTauriRuntime: boolean = false;
 
     constructor(
         private smsStoreService: SmsStoreService,
@@ -33,7 +35,17 @@ export class SettingsComponent implements OnInit {
         this.loadingSubscription = this.smsStoreService.messagesLoaded$
             .subscribe((loaded) => (this.messagesLoaded = loaded));
 		this.indexedDbEnabled = this.smsStoreService.getIndexedDbEnabled();
+        this.smsImportMode = this.smsStoreService.getSmsImportMode();
+        this.isTauriRuntime = this.detectTauri();
 		this.refreshDbStats();
+    }
+
+    private detectTauri(): boolean {
+        const protocol = (window?.location?.protocol ?? '').toLowerCase();
+        if (protocol === 'tauri:' || protocol === 'asset:') {
+            return true;
+        }
+        return typeof (window as any)?.__TAURI__ !== 'undefined';
     }
 
     ngOnDestroy() {
@@ -53,6 +65,16 @@ export class SettingsComponent implements OnInit {
 
     onIndexedDbEnabledChanged(): void {
         this.smsStoreService.setIndexedDbEnabled(this.indexedDbEnabled);
+    }
+
+    onSmsImportModeChanged(): void {
+        const mode = this.smsImportMode;
+        if (mode === 'tauri' && !this.isTauriRuntime) {
+            this.smsImportMode = 'auto';
+            this.smsStoreService.setSmsImportMode('auto');
+            return;
+        }
+        this.smsStoreService.setSmsImportMode(mode);
     }
 
     async clearIndexedDb(): Promise<void> {

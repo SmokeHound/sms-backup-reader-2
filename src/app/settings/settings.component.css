@@ -48,3 +48,34 @@
     color: #757575;
     margin-bottom: 16px;
 }
+
+.advanced-details {
+    margin-top: 18px;
+    border: 1px solid rgba(0, 0, 0, 0.10);
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.02);
+    overflow: hidden;
+}
+
+.advanced-summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 12px 14px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.advanced-summary::-webkit-details-marker {
+    display: none;
+}
+
+.advanced-summary-hint {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.55);
+}
+
+.advanced-body {
+    padding: 0 14px 14px;
+}

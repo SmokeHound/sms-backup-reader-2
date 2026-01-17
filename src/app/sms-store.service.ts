@@ -18,6 +18,7 @@ export class SmsStoreService {
     private useIndexedDb: boolean;
     private ingestChain: Promise<void>;
 	private indexedDbEnabled: boolean;
+    private smsImportMode: 'auto' | 'browser' | 'tauri' = 'auto';
 
     constructor(private smsDbService: SmsDbService) { 
         this.messagesLoaded = false;
@@ -25,6 +26,20 @@ export class SmsStoreService {
         this.useIndexedDb = false;
         this.ingestChain = Promise.resolve();
         this.indexedDbEnabled = this.readIndexedDbEnabled();
+		this.smsImportMode = this.readSmsImportMode();
+		this._smsImportModeSource.next(this.smsImportMode);
+    }
+
+    private readSmsImportMode(): 'auto' | 'browser' | 'tauri' {
+        try {
+            const raw = window?.localStorage?.getItem('smsBackupViewer.smsImportMode');
+            if (raw === 'browser' || raw === 'tauri' || raw === 'auto') {
+                return raw;
+            }
+            return 'auto';
+        } catch {
+            return 'auto';
+        }
     }
 
     private readIndexedDbEnabled(): boolean {
@@ -50,6 +65,23 @@ export class SmsStoreService {
 
     getIndexedDbEnabled(): boolean {
         return this.indexedDbEnabled;
+    }
+
+    private _smsImportModeSource = new BehaviorSubject<'auto' | 'browser' | 'tauri'>('auto');
+    smsImportMode$ = this._smsImportModeSource.asObservable();
+
+    getSmsImportMode(): 'auto' | 'browser' | 'tauri' {
+        return this.smsImportMode;
+    }
+
+    setSmsImportMode(mode: 'auto' | 'browser' | 'tauri'): void {
+        this.smsImportMode = mode;
+        try {
+            window?.localStorage?.setItem('smsBackupViewer.smsImportMode', String(mode));
+        } catch {
+            // ignore
+        }
+        this._smsImportModeSource.next(this.smsImportMode);
     }
 
     async restoreFromIndexedDbIfEnabled(): Promise<boolean> {

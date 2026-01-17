@@ -1,4 +1,5 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { SmsLoaderService } from '../sms-loader.service';
 import { SmsStoreService } from '../sms-store.service';
 import { Message } from '../message';
@@ -19,6 +20,8 @@ export class SmsLoaderComponent implements OnInit {
 	isTauri: boolean = false;
     tauriPath: string = '';
 	private unlistenFns: Array<() => void> = [];
+    private importModeSub?: Subscription;
+    importMode: 'auto' | 'browser' | 'tauri' = 'auto';
     parsedCount: number = 0;
     totalBytes: number = 0;
     bytesRead: number = 0;
@@ -29,11 +32,16 @@ export class SmsLoaderComponent implements OnInit {
 
     ngOnInit() {
         this.isTauri = this.detectTauri();
+        this.importMode = this.smsStoreService.getSmsImportMode();
+        this.importModeSub = this.smsStoreService.smsImportMode$.subscribe((mode) => {
+            this.importMode = mode;
+        });
 		this.status = 'idle';
 		this.emitStatus();
     }
 
     ngOnDestroy() {
+		this.importModeSub?.unsubscribe();
         this.unlistenFns.forEach((fn) => {
             try {
                 fn();
@@ -290,6 +298,17 @@ export class SmsLoaderComponent implements OnInit {
     }
 
     fileChange(fileEvent: any): void {
+        if (this.isTauri && this.importMode === 'tauri') {
+            this.sampleText = 'Browser upload disabled in Settings. Switch Import mode to Auto or Browser.';
+            this.status = 'error';
+            this.emitStatus();
+            this.onLoaded.emit(false);
+            this.loaded = false;
+            if (fileEvent?.target) {
+                fileEvent.target.value = '';
+            }
+            return;
+        }
         this.sampleText = 'Loading...';
 		this.status = 'busy';
         this.loaded = false;

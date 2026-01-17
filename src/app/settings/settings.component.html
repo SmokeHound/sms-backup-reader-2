@@ -11,53 +11,80 @@
                 <country-select></country-select>
             </div>
 
-            <hr />
-            <h3 class="setting-label">Storage (IndexedDB)</h3>
-            <p class="setting-help">Persist imported messages locally so reloads are instant. Recommended for large imports.</p>
-            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" style="display: inline-flex; align-items: center; gap: 10px;">
-                <input
-                    type="checkbox"
-                    class="mdl-switch__input"
-                    [(ngModel)]="indexedDbEnabled"
-                    (change)="onIndexedDbEnabledChanged()" />
-                <span class="mdl-switch__label">Enable IndexedDB persistence</span>
-            </label>
-            <div class="setting-help" style="margin-top: 10px;">
-                Stored conversations: {{ dbThreadCount.toLocaleString() }}<br />
-                Stored messages: {{ dbMessageCount.toLocaleString() }}
-            </div>
-            <div class="button-row" style="margin-top: 12px;">
-                <button
-                    class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
-                    (click)="refreshDbStats()">
-                    Refresh storage stats
-                </button>
-                <button
-                    class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
-                    (click)="clearIndexedDb()"
-                    [disabled]="clearingDb">
-                    Clear stored data
-                </button>
-            </div>
-            <p class="setting-help" style="margin-top: 8px;">This clears stored SMS messages and also clears any currently loaded contacts.</p>
+            <details class="advanced-details">
+                <summary class="advanced-summary">
+                    <h3 class="setting-label" style="margin: 0;">Advanced</h3>
+                    <span class="advanced-summary-hint">Import, storage, export</span>
+                </summary>
+                <div class="advanced-body">
+                    <hr />
+                    <h3 class="setting-label">Import (SMS)</h3>
+                    <p class="setting-help">Choose how SMS backups are imported. For very large backups, the desktop streaming importer is recommended. This affects the SMS button in the header.</p>
+                    <div style="margin-top: 8px;">
+                        <label class="setting-help" style="display: block; margin-bottom: 6px;">Default import mode</label>
+                        <select
+                            class="mdl-textfield__input"
+                            style="max-width: 360px;"
+                            [(ngModel)]="smsImportMode"
+                            (change)="onSmsImportModeChanged()">
+                            <option value="auto">Auto (show browser + Tauri buttons)</option>
+                            <option value="browser">Browser upload only</option>
+                            <option value="tauri" [disabled]="!isTauriRuntime">Tauri (Load from path) only</option>
+                        </select>
+                        <div class="setting-help" style="margin-top: 8px;" *ngIf="!isTauriRuntime">
+                            Tauri mode is only available in the installed desktop app.
+                        </div>
+                    </div>
 
-            <hr />
-            <h3 class="setting-label">Export</h3>
-            <p class="setting-help">Download the currently loaded data as CSV.</p>
-            <div class="button-row">
-                <button
-                    class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
-                    (click)="exportAllMessages()"
-                    [disabled]="!messagesLoaded">
-                    Export Messages CSV
-                </button>
-                <button
-                    class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
-                    (click)="exportContacts()"
-                    [disabled]="!messagesLoaded">
-                    Export Contacts CSV
-                </button>
-            </div>
+                    <hr />
+                    <h3 class="setting-label">Storage (IndexedDB)</h3>
+                    <p class="setting-help">Persist imported messages locally so reloads are instant. Recommended for large imports.</p>
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" style="display: inline-flex; align-items: center; gap: 10px;">
+                        <input
+                            type="checkbox"
+                            class="mdl-switch__input"
+                            [(ngModel)]="indexedDbEnabled"
+                            (change)="onIndexedDbEnabledChanged()" />
+                        <span class="mdl-switch__label">Enable IndexedDB persistence</span>
+                    </label>
+                    <div class="setting-help" style="margin-top: 10px;">
+                        Stored conversations: {{ dbThreadCount.toLocaleString() }}<br />
+                        Stored messages: {{ dbMessageCount.toLocaleString() }}
+                    </div>
+                    <div class="button-row" style="margin-top: 12px;">
+                        <button
+                            class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+                            (click)="refreshDbStats()">
+                            Refresh storage stats
+                        </button>
+                        <button
+                            class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+                            (click)="clearIndexedDb()"
+                            [disabled]="clearingDb">
+                            Clear stored data
+                        </button>
+                    </div>
+                    <p class="setting-help" style="margin-top: 8px;">This clears stored SMS messages and also clears any currently loaded contacts.</p>
+
+                    <hr />
+                    <h3 class="setting-label">Export</h3>
+                    <p class="setting-help">Download the currently loaded data as CSV.</p>
+                    <div class="button-row">
+                        <button
+                            class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+                            (click)="exportAllMessages()"
+                            [disabled]="!messagesLoaded">
+                            Export Messages CSV
+                        </button>
+                        <button
+                            class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+                            (click)="exportContacts()"
+                            [disabled]="!messagesLoaded">
+                            Export Contacts CSV
+                        </button>
+                    </div>
+                </div>
+            </details>
         </div>
         <div class="mdl-card__actions mdl-card--border">
             <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect" routerLink="/main" routerLinkActive="active">
