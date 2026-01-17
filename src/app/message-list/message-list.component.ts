@@ -25,6 +25,10 @@ export class MessageListComponent implements OnInit {
     selectedContact: Contact;
     
     showExportDialog = false;
+    loadingOlder = false;
+    hasMoreMessages = false;
+    private oldestLoadedDateMs: number | null = null;
+    private readonly pageSize = 500;
 
         constructor(
 		private smsStoreService: SmsStoreService,
@@ -43,12 +47,51 @@ export class MessageListComponent implements OnInit {
         .subscribe(contact => {
             this.selectedContact = contact;
             if (contact) {
-				this.smsStoreService.getMessages(contact.address).then((msgs) => {
-					this.messages = msgs;
-				});
+                this.loadLatestForSelectedContact();
             }
             return;
         });
+    }
+
+    private async loadLatestForSelectedContact(): Promise<void> {
+        this.messages = [];
+        this.oldestLoadedDateMs = null;
+        this.hasMoreMessages = false;
+        this.loadingOlder = false;
+
+        const contact = this.selectedContact;
+        if (!contact?.address) {
+            return;
+        }
+        const msgs = await this.smsStoreService.getLatestMessages(contact.address, this.pageSize);
+        this.messages = msgs;
+        this.oldestLoadedDateMs = msgs?.length ? (msgs[0].date?.getTime?.() ?? Number(msgs[0].timestamp) ?? null) : null;
+        const total = Number(contact.messageCount ?? 0);
+        this.hasMoreMessages = total > (msgs?.length ?? 0);
+    }
+
+    async loadOlderMessages(): Promise<void> {
+        if (this.loadingOlder) {
+            return;
+        }
+        const contact = this.selectedContact;
+        if (!contact?.address || this.oldestLoadedDateMs === null) {
+            return;
+        }
+        this.loadingOlder = true;
+        try {
+            const older = await this.smsStoreService.getOlderMessages(contact.address, this.oldestLoadedDateMs, this.pageSize);
+            if (!older?.length) {
+                this.hasMoreMessages = false;
+                return;
+            }
+            this.messages = [...older, ...(this.messages ?? [])];
+            this.oldestLoadedDateMs = older[0].date?.getTime?.() ?? Number(older[0].timestamp) ?? this.oldestLoadedDateMs;
+            const total = Number(contact.messageCount ?? 0);
+            this.hasMoreMessages = total > (this.messages?.length ?? 0);
+        } finally {
+            this.loadingOlder = false;
+        }
     }
 
     ngOnDestroy() {
@@ -64,9 +107,10 @@ export class MessageListComponent implements OnInit {
     }
 
     showMessages(contactId: string): void {
-		this.smsStoreService.getMessages(contactId).then((msgs) => {
-			this.messages = msgs;
-		});
+        this.smsStoreService.getLatestMessages(contactId, this.pageSize).then((msgs) => {
+            this.messages = msgs;
+            this.oldestLoadedDateMs = msgs?.length ? (msgs[0].date?.getTime?.() ?? Number(msgs[0].timestamp) ?? null) : null;
+        });
     }
 
     openExportDialog(): void {

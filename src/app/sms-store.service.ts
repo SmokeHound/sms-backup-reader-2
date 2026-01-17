@@ -358,6 +358,51 @@ export class SmsStoreService {
             });
         });
     }
+
+    getLatestMessages(contactId: string, limit: number): Promise<Message[]> {
+        if (!this.useIndexedDb) {
+            const all = this.messageMap?.get(contactId) ?? [];
+            const sliced = limit && limit > 0 ? all.slice(Math.max(0, all.length - limit)) : all;
+            return Promise.resolve(sliced);
+        }
+        return this.smsDbService.getLatestMessagesForThread(contactId, limit).then((rows) => {
+            return rows.map((r) => {
+                return {
+                    contactAddress: contactId,
+                    contactName: (r.contactName ?? null) as any,
+                    timestamp: r.timestamp,
+                    type: r.type,
+                    body: r.body,
+                    date: new Date(r.dateMs)
+                } as any;
+            });
+        });
+    }
+
+    getOlderMessages(contactId: string, beforeDateMs: number, limit: number): Promise<Message[]> {
+        if (!this.useIndexedDb) {
+            const all = this.messageMap?.get(contactId) ?? [];
+            if (!all.length) {
+                return Promise.resolve([]);
+            }
+            const cutoff = beforeDateMs ?? all[0]?.date?.getTime?.() ?? Number(all[0]?.timestamp) ?? 0;
+            const older = all.filter((m) => (m.date?.getTime?.() ?? Number(m.timestamp) ?? 0) < cutoff);
+            const sliced = limit && limit > 0 ? older.slice(Math.max(0, older.length - limit)) : older;
+            return Promise.resolve(sliced);
+        }
+        return this.smsDbService.getMessagesBefore(contactId, beforeDateMs, limit).then((rows) => {
+            return rows.map((r) => {
+                return {
+                    contactAddress: contactId,
+                    contactName: (r.contactName ?? null) as any,
+                    timestamp: r.timestamp,
+                    type: r.type,
+                    body: r.body,
+                    date: new Date(r.dateMs)
+                } as any;
+            });
+        });
+    }
 	
 	fillContactNames(contactMap: Map<string, string>): Promise<void> {
 		return new Promise((resolve, reject) => {

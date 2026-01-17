@@ -132,6 +132,33 @@ export class SmsDbService {
     return this.db.messages.where('[threadId+dateMs]').between([threadId, Dexie.minKey], [threadId, Dexie.maxKey]).toArray();
   }
 
+  async getLatestMessagesForThread(threadId: string, limit: number): Promise<DbMessage[]> {
+    if (!limit || limit <= 0) {
+      return [];
+    }
+    const rows = await this.db.messages
+      .where('[threadId+dateMs]')
+      .between([threadId, Dexie.minKey], [threadId, Dexie.maxKey])
+      .reverse()
+      .limit(limit)
+      .toArray();
+    return rows.reverse();
+  }
+
+  async getMessagesBefore(threadId: string, beforeDateMs: number, limit: number): Promise<DbMessage[]> {
+    if (!limit || limit <= 0) {
+      return [];
+    }
+    const upper = Math.max(0, (beforeDateMs ?? 0) - 1);
+    const rows = await this.db.messages
+      .where('[threadId+dateMs]')
+      .between([threadId, Dexie.minKey], [threadId, upper])
+      .reverse()
+      .limit(limit)
+      .toArray();
+    return rows.reverse();
+  }
+
   async updateThreadNames(nameByThreadId: Map<string, string>): Promise<void> {
     const entries = Array.from(nameByThreadId.entries()).filter(([_, name]) => !!name);
     if (!entries.length) {

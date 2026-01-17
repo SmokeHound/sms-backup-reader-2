@@ -1,5 +1,13 @@
 
 <div style="padding: 8px 0;" *ngIf="selectedContact && messages?.length">
+	<div *ngIf="hasMoreMessages" style="margin-bottom: 8px;">
+		<button
+			class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+			(click)="loadOlderMessages()"
+			[disabled]="loadingOlder">
+			{{ loadingOlder ? 'Loading…' : 'Load older messages' }}
+		</button>
+	</div>
 	<button
 		class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
 		(click)="openExportDialog()">
