@@ -42,6 +42,10 @@ export class ContactListComponent implements OnInit {
         this.smsStoreService.broadcastContactClicked(contact);
     }
 
+	trackByContact(_index: number, contact: Contact): string {
+		return contact?.address;
+	}
+
 	isSelected(contact) {
         return(this.selectedContact == contact);
     }

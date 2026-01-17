@@ -198,4 +198,9 @@ export class MessageListComponent implements OnInit {
         return allColumns.filter(col => fields[col as keyof ExportOptions['fields']]);
     }
 
+    trackByMessage(_index: number, message: Message): string {
+        // Some backups can contain duplicate timestamps; include a few fields for stability.
+        return `${Number(message?.timestamp)}:${message?.type}:${message?.body?.length ?? 0}`;
+    }
+
 }

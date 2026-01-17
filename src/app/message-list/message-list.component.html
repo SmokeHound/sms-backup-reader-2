@@ -14,7 +14,7 @@
 </export-options-dialog>
 
 <div class="message-container">
-    <div *ngFor="let message of messages"
+	<div *ngFor="let message of messages; trackBy: trackByMessage"
         [ngClass]="{'message-sent': message.type == 2 || message.type == 4, 'message-received': message.type == 1 || message.type == 3}">
         <div class="message-body" [innerHTML]="message.body"></div>
         <div class="message-meta">
