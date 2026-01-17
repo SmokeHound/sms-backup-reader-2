@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "start:tauri": "ng serve --configuration tauri",
+    "start:tauri": "ng serve --configuration tauriDev",
     "start:prod": "ng serve --configuration production",
     "build": "ng build",
     "build:tauri": "ng build --configuration tauri",
