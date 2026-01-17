@@ -45,7 +45,19 @@ export class SettingsComponent implements OnInit {
         if (protocol === 'tauri:' || protocol === 'asset:') {
             return true;
         }
-        return typeof (window as any)?.__TAURI__ !== 'undefined';
+        const host = (window?.location?.hostname ?? '').toLowerCase();
+        // Tauri v2 commonly uses https://tauri.localhost in production builds.
+        if (host === 'tauri.localhost' || host.endsWith('.tauri.localhost')) {
+            return true;
+        }
+        // In dev (devUrl), protocol/host can look like a normal http://localhost page.
+        // Prefer checking for injected globals.
+        const w = window as any;
+        if (typeof w?.__TAURI__ !== 'undefined' || typeof w?.__TAURI_INTERNALS__ !== 'undefined') {
+            return true;
+        }
+        const ua = (navigator?.userAgent ?? '').toLowerCase();
+        return ua.includes('tauri');
     }
 
     ngOnDestroy() {

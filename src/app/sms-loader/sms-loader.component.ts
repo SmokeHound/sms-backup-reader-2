@@ -53,14 +53,21 @@ export class SmsLoaderComponent implements OnInit {
     }
 
     private detectTauri(): boolean {
-        // Robust detection for installed desktop builds.
-        // In production, Tauri uses a custom protocol (e.g. tauri://localhost).
+        // Robust detection for installed desktop builds and devUrl.
         const protocol = (window?.location?.protocol ?? '').toLowerCase();
         if (protocol === 'tauri:' || protocol === 'asset:') {
             return true;
         }
-        // Fallback: some environments still inject a global __TAURI__ object.
-        return typeof (window as any)?.__TAURI__ !== 'undefined';
+        const host = (window?.location?.hostname ?? '').toLowerCase();
+        if (host === 'tauri.localhost' || host.endsWith('.tauri.localhost')) {
+            return true;
+        }
+        const w = window as any;
+        if (typeof w?.__TAURI__ !== 'undefined' || typeof w?.__TAURI_INTERNALS__ !== 'undefined') {
+            return true;
+        }
+        const ua = (navigator?.userAgent ?? '').toLowerCase();
+        return ua.includes('tauri');
     }
 
     private async tauriInvoke<T>(command: string, args?: Record<string, any>): Promise<T> {
