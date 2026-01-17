@@ -13,6 +13,7 @@ import { SmsStoreService }  from './sms-store.service';
 import { SmsLoaderService }  from './sms-loader.service';
 import { VcfLoaderService }  from './vcf-loader.service';
 import { VcfStoreService }  from './vcf-store.service';
+import { SmsDbService } from './sms-db.service';
 import { CountrySelectComponent } from './country-select/country-select.component';
 import { MessageTypePipe } from './message-type.pipe';
 import { MainComponent } from './main/main.component';
@@ -49,6 +50,7 @@ pathMatch: 'full'
     providers: [
         provideBrowserGlobalErrorListeners(),
         SmsStoreService,
+        SmsDbService,
         SmsLoaderService,
         VcfLoaderService,
         VcfStoreService

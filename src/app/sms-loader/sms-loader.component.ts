@@ -138,7 +138,7 @@ export class SmsLoaderComponent implements OnInit {
         this.loaded = false;
         this.resetProgress();
 		this.emitStatus();
-        this.smsStoreService.beginIngest();
+        this.smsStoreService.beginIngest({ persistToIndexedDb: true, clearIndexedDb: true });
 
         // Clear prior listeners for repeated loads.
         this.unlistenFns.forEach((fn) => {
@@ -216,11 +216,11 @@ export class SmsLoaderComponent implements OnInit {
             this.onLoaded.emit(false);
         });
 
-        await this.tauriListen<ParseDone>('sms_parse_done', (done) => {
+        await this.tauriListen<ParseDone>('sms_parse_done', async (done) => {
             this.bytesRead = done?.bytesRead ?? this.bytesRead;
             this.totalBytes = done?.totalBytes ?? this.totalBytes;
             this.parsedCount = done?.parsedCount ?? this.parsedCount;
-            this.smsStoreService.finishIngest();
+			await this.smsStoreService.finishIngestAsync();
             this.smsStoreService.broadcastMessagesLoaded(true);
             this.sampleText = `Loaded! (${this.parsedCount.toLocaleString()} msgs)`;
             this.status = 'ok';

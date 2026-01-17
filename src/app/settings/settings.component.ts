@@ -31,13 +31,16 @@ export class SettingsComponent implements OnInit {
     }
 
     async exportAllMessages(): Promise<void> {
-        const messageMap = await this.smsStoreService.getAllMessages();
-        const rows = Array.from(messageMap.entries()).flatMap(([conversationId, messages]) =>
-            messages.map((m) => {
+        const contacts = await this.smsStoreService.getAllContacts();
+        const rows: Array<Record<string, any>> = [];
+        for (const c of contacts) {
+            const conversationId = c.address;
+            const messages = await this.smsStoreService.getMessages(conversationId);
+            messages.forEach((m) => {
                 const timestampMs = Number(m.timestamp);
                 const dateIso = (m.date ?? new Date(timestampMs)).toISOString();
                 const direction = m.type === 2 || m.type === 4 ? 'sent' : m.type === 1 || m.type === 3 ? 'received' : '';
-                return {
+                rows.push({
                     conversationId,
                     contactName: m.contactName,
                     direction,
@@ -46,9 +49,9 @@ export class SettingsComponent implements OnInit {
                     dateIso,
                     bodyText: this.csvExportService.htmlToText(m.body),
                     bodyHtml: m.body
-                };
-            })
-        );
+                });
+            });
+        }
 
         this.csvExportService.downloadCsv('sms-backup-messages', rows, [
             'conversationId',

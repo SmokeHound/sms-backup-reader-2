@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 
 import { Message } from './message';
 import { Contact } from './contact';
+import { SmsDbService } from './sms-db.service';
 
 import awesomePhone from 'awesome-phonenumber';
 
@@ -14,23 +15,62 @@ export class SmsStoreService {
     messageMap: Map<string, Message[]>;
     countryCode: string;
     messagesLoaded: boolean;
+    private useIndexedDb: boolean;
+    private ingestChain: Promise<void>;
 
-    constructor() { 
+    constructor(private smsDbService: SmsDbService) { 
         this.messagesLoaded = false;
         this.countryCode = 'US';
+        this.useIndexedDb = false;
+        this.ingestChain = Promise.resolve();
     }
 
-    beginIngest(): void {
+    beginIngest(options?: { persistToIndexedDb?: boolean; clearIndexedDb?: boolean }): void {
+        const persistToIndexedDb = options?.persistToIndexedDb === true;
+        this.useIndexedDb = persistToIndexedDb;
+
+        // Always clear in-memory state.
         this.messages = [];
         this.messageMap = new Map();
         this.contacts = [];
         this.messagesLoaded = false;
+
+		this.ingestChain = Promise.resolve();
+
+        if (persistToIndexedDb && options?.clearIndexedDb !== false) {
+            // Ensure clear happens before the first batch write.
+            this.ingestChain = this.smsDbService.clearAll().then(() => undefined);
+        }
     }
 
     ingestMessagesBatch(messages: Message[]): void {
         if (!messages?.length) {
             return;
         }
+
+        if (this.useIndexedDb) {
+            const batch = messages.map((message) => {
+                const threadId = this.normalizeContactAddress(message.contactAddress);
+                const dateMs = message.date?.getTime?.() ?? Number(message.timestamp) ?? 0;
+                return {
+                    threadId,
+                    message: {
+                        timestamp: message.timestamp,
+                        type: message.type,
+                        contactName: message.contactName ?? null,
+                        body: message.body,
+                        dateMs
+                    }
+                };
+            });
+			this.ingestChain = this.ingestChain
+				.then(() => this.smsDbService.ingestBatch(batch))
+				.catch((e) => {
+					console.error('IndexedDB ingest failed', e);
+				});
+            return;
+        }
+
         if (!this.messages) {
             this.messages = [];
         }
@@ -39,12 +79,7 @@ export class SmsStoreService {
         }
         for (const message of messages) {
             this.messages.push(message);
-            let phone = new awesomePhone(message.contactAddress, this.countryCode);
-            let contactAddress: string = phone.getNumber('international');
-            if (!contactAddress) {
-                contactAddress = message.contactAddress;
-            }
-
+            const contactAddress = this.normalizeContactAddress(message.contactAddress);
             let mapEntry = this.messageMap.get(contactAddress);
             if (!mapEntry) {
                 mapEntry = [];
@@ -54,7 +89,21 @@ export class SmsStoreService {
         }
     }
 
+    private normalizeContactAddress(raw: string): string {
+        let phone = new awesomePhone(raw, this.countryCode);
+        let contactAddress: string = phone.getNumber('international');
+        if (!contactAddress) {
+            contactAddress = raw;
+        }
+        return contactAddress;
+    }
+
     finishIngest(): void {
+        if (this.useIndexedDb) {
+            // Legacy sync API: prefer finishIngestAsync() in DB mode.
+            this.messagesLoaded = true;
+            return;
+        }
         if (!this.messageMap) {
             this.messageMap = new Map();
         }
@@ -76,6 +125,19 @@ export class SmsStoreService {
         this.messagesLoaded = true;
     }
 
+    async finishIngestAsync(): Promise<void> {
+        if (this.useIndexedDb) {
+            await this.ingestChain;
+            this.messagesLoaded = true;
+            return;
+        }
+        this.finishIngest();
+    }
+
+    isUsingIndexedDb(): boolean {
+        return this.useIndexedDb;
+    }
+
     areMessagesLoaded(): Promise<boolean> {
         return Promise.resolve(this.messagesLoaded);
     }
@@ -85,7 +147,14 @@ export class SmsStoreService {
 			if (this.countryCode != countryCode)
 			{
 				this.countryCode = countryCode;
-				if (this.messagesLoaded) {
+                if (this.useIndexedDb && this.messagesLoaded) {
+                    // Re-grouping DB-backed conversations would require re-writing threadIds.
+                    // Keep it simple: country affects formatting; for persisted data, re-import is recommended.
+                    this.broadcastMessagesLoaded(true);
+                    resolve();
+                    return;
+                }
+                if (this.messagesLoaded) {
 					this.loadAllMessages(this.messages).then(() => {
 						this.broadcastMessagesLoaded(true);
 						resolve();
@@ -199,7 +268,8 @@ export class SmsStoreService {
     // Get all messages for all contacts
     getAllMessages(): Promise<Map<string, Message[]>> {
         return new Promise((resolve, reject) => {
-            resolve(this.messageMap);
+			// Not supported in DB mode without loading everything into memory.
+			resolve(this.messageMap);
         });
     }
 
@@ -210,34 +280,68 @@ export class SmsStoreService {
 
     // this.contacts = [...messageMap.keys()]; // need to target ES6 for this to work
     getAllContacts(): Promise<Contact[]> {
-        return new Promise((resolve, reject) => {
-            resolve(this.contacts);
+        if (!this.useIndexedDb) {
+            return new Promise((resolve, reject) => {
+                resolve(this.contacts);
+            });
+        }
+        return this.smsDbService.getThreads().then((threads) => {
+            return threads.map((t) => {
+                return {
+                    name: t.contactName,
+                    address: t.threadId,
+                    messageCount: t.messageCount
+                } as Contact;
+            });
         });
     }
 
     // Get the messages for a specific contact
     getMessages(contactId: string): Promise<Message[]> {
-        let returnMessages: Message[];
-        return new Promise((resolve, reject) => {
-            returnMessages = this.messageMap.get(contactId);
-            resolve(returnMessages);
+        if (!this.useIndexedDb) {
+            let returnMessages: Message[];
+            return new Promise((resolve, reject) => {
+                returnMessages = this.messageMap.get(contactId);
+                resolve(returnMessages);
+            });
+        }
+        return this.smsDbService.getMessagesForThread(contactId).then((rows) => {
+            return rows.map((r) => {
+                return {
+                    contactAddress: contactId,
+                    contactName: (r.contactName ?? null) as any,
+                    timestamp: r.timestamp,
+                    type: r.type,
+                    body: r.body,
+                    date: new Date(r.dateMs)
+                } as any;
+            });
         });
     }
 	
 	fillContactNames(contactMap: Map<string, string>): Promise<void> {
 		return new Promise((resolve, reject) => {
-			this.contacts.forEach(function(contact)
-			{
-				let name: string;
-				name = contactMap.get(contact.address);
-				if (name)
-				{
-					contact.name = name;
-				}
-			});
+            if (this.useIndexedDb) {
+                void this.smsDbService.updateThreadNames(contactMap);
+                resolve();
+                return;
+            }
+            this.contacts.forEach(function(contact)
+            {
+                let name: string;
+                name = contactMap.get(contact.address);
+                if (name)
+                {
+                    contact.name = name;
+                }
+            });
 			resolve();
 		});
 	}
+
+    async clearIndexedDb(): Promise<void> {
+        await this.smsDbService.clearAll();
+    }
 }
 
 
