@@ -23,7 +23,9 @@
               "awesome-phonenumber",
               "material-design-lite",
               "vcf",
-              "jszip"
+              "jszip",
+              "foldline",
+              "camelcase"
             ],
             "assets": [
               "src/favicon.ico",
