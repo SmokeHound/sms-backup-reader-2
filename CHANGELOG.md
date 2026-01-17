@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.7.1...sms-backup-viewer-v0.8.0) (2026-01-17)
+
+
+### Features
+
+* add button to load SMS backup from Tauri path with file picker integration ([6b60a54](https://github.com/SmokeHound/sms-backup-viewer/commit/6b60a540221fbc48c3419f5ecdcc049df8598207))
+
 ## [0.7.1](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.7.0...sms-backup-viewer-v0.7.1) (2026-01-17)
 
 
