@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.6.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.5.0...sms-backup-viewer-v0.6.0) (2026-01-17)
+
+
+### Features
+
+* add IndexedDB support for message persistence and enhance settings UI ([28e4394](https://github.com/SmokeHound/sms-backup-viewer/commit/28e439447ec4589a142b34a45e4c107e075dd117))
+* integrate Dexie for IndexedDB support and refactor message handling ([d1f7855](https://github.com/SmokeHound/sms-backup-viewer/commit/d1f78553c2c3dd1b616d5ae1c4899a2f9b189c3e))
+
+
+### Bug Fixes
+
+* update handling of large XML files and improve user guidance for Tauri mode ([4b73f94](https://github.com/SmokeHound/sms-backup-viewer/commit/4b73f94935a99dbeafa132135c2fd4625ef1d3b8))
+
 ## [0.5.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.4.0...sms-backup-viewer-v0.5.0) (2026-01-16)
 
 
