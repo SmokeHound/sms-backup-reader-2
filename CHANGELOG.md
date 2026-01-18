@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.10.0...sms-backup-viewer-v0.11.0) (2026-01-17)
+
+
+### Features
+
+* update version to 0.10.0 and enhance Tauri detection logic ([365083b](https://github.com/SmokeHound/sms-backup-viewer/commit/365083be54cd4c9c10286085c0c819965ece525d))
+
 ## [0.10.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.9.0...sms-backup-viewer-v0.10.0) (2026-01-17)
 
 
