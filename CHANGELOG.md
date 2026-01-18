@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.11.0...sms-backup-viewer-v0.12.0) (2026-01-18)
+
+
+### Features
+
+* refine Tauri import mode handling and enhance UI for file path actions ([ebe20eb](https://github.com/SmokeHound/sms-backup-viewer/commit/ebe20eb167192c890865ddc78f0031518a73acb1))
+
 ## [0.11.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.10.0...sms-backup-viewer-v0.11.0) (2026-01-17)
 
 
