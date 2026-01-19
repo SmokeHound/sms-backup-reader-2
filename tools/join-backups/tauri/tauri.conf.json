@@ -1,0 +1,17 @@
+{
+  "build": {
+    "beforeDevCommand": "npx http-server ../gui -p 8081 -c-1",
+    "devPath": "http://localhost:8081",
+    "distDir": "../gui"
+  },
+  "package": {
+    "productName": "Join Backups",
+    "version": "0.1.0"
+  },
+  "tauri": {
+    "bundle": {
+      "active": true,
+      "identifier": "dev.joinbackups"
+    }
+  }
+}

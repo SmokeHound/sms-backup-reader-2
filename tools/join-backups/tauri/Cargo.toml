@@ -1,0 +1,8 @@
+[package]
+name = "join_backups_tauri"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# Match main project tauri version family
+tauri = { version = "^2.9.0", features = ["api-all"] }
