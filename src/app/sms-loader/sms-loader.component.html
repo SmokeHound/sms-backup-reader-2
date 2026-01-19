@@ -9,7 +9,7 @@
     </label>
     <button
 		*ngIf="isTauri && importMode === 'tauri'"
-        class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect file-upload-button"
+		class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent file-upload-button file-upload-button--teal"
         type="button"
         (click)="browseAndLoadFromTauriPath()"
         title="Load a large backup using the desktop streaming parser">
@@ -24,27 +24,4 @@
 		(change)="fileChange($event)"
 		accept=".xml,.XML"
 		multiple />
-</div>
-
-<div class="tauri-tools" *ngIf="isTauri && importMode === 'tauri'" style="margin-top: 12px;">
-    <div class="tauri-path-row">
-        <input
-            type="text"
-            [(ngModel)]="tauriPath"
-            placeholder="C:\\path\\to\\sms-backup.xml" />
-		<div class="tauri-path-actions">
-			<button
-				class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
-				type="button"
-				(click)="browseForTauriPath()">
-				Browse…
-			</button>
-			<button
-				class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
-				type="button"
-				(click)="loadFromTauriPath()">
-				Load
-			</button>
-		</div>
-    </div>
 </div>

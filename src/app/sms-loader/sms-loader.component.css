@@ -4,6 +4,19 @@
     justify-content: center;
 }
 
+.file-upload-button--teal {
+    background-color: #009688 !important;
+    color: #fff !important;
+}
+
+.file-upload-button--teal:hover {
+    background-color: #00897b !important;
+}
+
+.file-upload-button--teal:active {
+    background-color: #00796b !important;
+}
+
 .file-upload-button .material-icons {
     margin-right: 8px;
 }

@@ -2,6 +2,12 @@
     <div class="settings-card mdl-card mdl-shadow--2dp">
         <div class="mdl-card__title">
             <h2 class="mdl-card__title-text">Settings</h2>
+			<a
+				class="settings-close mdl-button mdl-js-button mdl-button--icon"
+				routerLink="/main"
+				aria-label="Close settings">
+				<i class="material-icons" aria-hidden="true">close</i>
+			</a>
         </div>
         <div class="mdl-card__supporting-text">
             <div class="country-select-wrapper">
@@ -13,7 +19,7 @@
             <details class="advanced-details">
                 <summary class="advanced-summary">
                     <h3 class="setting-label" style="margin: 0;">Advanced</h3>
-                    <span class="advanced-summary-hint">Import, storage, export</span>
+                    <span class="advanced-summary-chevron material-icons" aria-hidden="true">expand_more</span>
                 </summary>
                 <div class="advanced-body">
                     <hr />

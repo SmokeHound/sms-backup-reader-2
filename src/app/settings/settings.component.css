@@ -24,6 +24,25 @@
 .mdl-card__title {
 	background: linear-gradient(135deg, rgba(59, 130, 246, 1) 0%, var(--primary) 100%);
     color: white;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    min-height: 56px;
+    padding: 12px 16px;
+}
+
+.mdl-card__title-text {
+    margin: 0;
+    line-height: 1.2;
+}
+
+.settings-close {
+    color: rgba(255, 255, 255, 0.95);
+    align-self: flex-start;
+}
+
+.settings-close:hover {
+    background: rgba(255, 255, 255, 0.16);
 }
 
 .settings-description {
@@ -36,16 +55,21 @@
     margin-top: 0;
 }
 
+.country-select-wrapper .setting-label {
+	margin-bottom: 0;
+}
+
 .setting-label {
     font-size: 16px;
     font-weight: 700;
     color: #333;
-    margin-bottom: 8px;
+    margin: 0 0 2px;
 }
 
 .setting-help {
     font-size: 13px;
     color: #757575;
+	margin-top: 0;
     margin-bottom: 16px;
 }
 
@@ -71,9 +95,16 @@
     display: none;
 }
 
-.advanced-summary-hint {
-    font-size: 12px;
+.advanced-summary-chevron {
+    font-size: 20px;
+    line-height: 1;
     color: rgba(0, 0, 0, 0.55);
+    transform: rotate(0deg);
+    transition: transform 120ms ease;
+}
+
+.advanced-details[open] .advanced-summary-chevron {
+    transform: rotate(180deg);
 }
 
 .advanced-body {
