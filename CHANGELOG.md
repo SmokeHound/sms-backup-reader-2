@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.15.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.14.0...sms-backup-viewer-v0.15.0) (2026-01-19)
+
+
+### Features
+
+* add Angular CDK for virtual scrolling and implement lazy loading in message list ([89dc367](https://github.com/SmokeHound/sms-backup-viewer/commit/89dc36762f7165e32e0dac4f8e3905a9402c065a))
+
 ## [0.14.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.13.0...sms-backup-viewer-v0.14.0) (2026-01-19)
 
 
