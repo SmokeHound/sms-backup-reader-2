@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.13.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.12.0...sms-backup-viewer-v0.13.0) (2026-01-19)
+
+
+### Features
+
+* adjust margin and font weight in settings component for improved layout ([20f62e6](https://github.com/SmokeHound/sms-backup-viewer/commit/20f62e6c0ce9f8c499175776d98f2e7e75b09810))
+* increase window width to improve user interface in SMS Backup Viewer ([4b7934d](https://github.com/SmokeHound/sms-backup-viewer/commit/4b7934d1d2b39bc3bfd3dd883160471074bc04cf))
+* remove unnecessary descriptions from settings and sms loader components ([44befb4](https://github.com/SmokeHound/sms-backup-viewer/commit/44befb41713895c159b3cd693606769c08218b2c))
+* update sms-backup-viewer version to 0.12.0 in Cargo.lock ([99adbc1](https://github.com/SmokeHound/sms-backup-viewer/commit/99adbc12212ed8670ba15ffd5924e169e8581345))
+* update version to 0.12.0 and enhance footer layout with version display ([1bdd654](https://github.com/SmokeHound/sms-backup-viewer/commit/1bdd654fe2dd9c9cb96bcb8a26fdfb6ad6dbbf92))
+
 ## [0.12.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.11.0...sms-backup-viewer-v0.12.0) (2026-01-18)
 
 
