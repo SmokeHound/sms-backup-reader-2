@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.15.0...sms-backup-viewer-v0.16.0) (2026-01-19)
+
+
+### Features
+
+* implement adaptive virtual scroll item size and optimize message fetching performance ([169f298](https://github.com/SmokeHound/sms-backup-viewer/commit/169f29804c276ffa832dab63261389fb27e63608))
+
 ## [0.15.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.14.0...sms-backup-viewer-v0.15.0) (2026-01-19)
 
 
