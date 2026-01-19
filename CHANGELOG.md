@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.17.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.16.0...sms-backup-viewer-v0.17.0) (2026-01-19)
+
+
+### Features
+
+* add toast notifications for user feedback and implement Tauri-native file saving ([3c3a39f](https://github.com/SmokeHound/sms-backup-viewer/commit/3c3a39f6f43437b17041473240c9d9e4e059e856))
+
 ## [0.16.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.15.0...sms-backup-viewer-v0.16.0) (2026-01-19)
 
 
