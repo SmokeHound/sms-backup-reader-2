@@ -1,0 +1,6 @@
+.join-card { padding: 18px; border: 1px solid #e6e6e6; border-radius: 10px; max-width: 800px; }
+.controls { display:flex; gap: 8px; align-items:center; margin-bottom: 12px; }
+.controls .primary { background: #2563eb; color:white; border:none; padding: 8px 12px; border-radius:8px }
+.preview { display:flex; gap:12px; margin-bottom:12px; color:#333 }
+.file-list ul { margin:0; padding-left: 16px }
+.status { margin-top:12px; color:#555 }

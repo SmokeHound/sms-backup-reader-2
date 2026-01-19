@@ -1,0 +1,26 @@
+<div class="join-card">
+  <h2>Join Backups</h2>
+  <div class="controls">
+    <input type="file" id="fileInput" (change)="addFilesBrowser($event.target.files)" multiple accept=".xml" />
+    <button (click)="addFilesNative()">Add files (native)</button>
+    <button (click)="clearAll()">Clear</button>
+    <button class="primary" (click)="mergeAndSave()">Merge & Save</button>
+  </div>
+
+  <div class="preview">
+    <div><strong>Files:</strong> {{ preview.files }}</div>
+    <div><strong>Messages (est):</strong> {{ preview.messages }}</div>
+    <div><strong>Contacts (est):</strong> {{ preview.contacts }}</div>
+  </div>
+
+  <div class="file-list">
+    <ul>
+      <li *ngFor="let f of selectedFiles; let i = index">
+        {{i+1}}. {{ f.name }} ({{ f.size }} bytes)
+        <button (click)="removeFile(i)" style="margin-left:8px">Remove</button>
+      </li>
+    </ul>
+  </div>
+
+  <div class="status">{{ status }}</div>
+</div>

@@ -21,11 +21,11 @@ import { MessageTypePipe } from './message-type.pipe';
 import { MainComponent } from './main/main.component';
 import { SettingsComponent } from './settings/settings.component';
 import { VcfLoaderComponent } from './vcf-loader/vcf-loader.component';
-import {ContactSearchPipe} from './components/pipes/contact-search-pipe';
-import { ToastComponent } from './toast.component';
+import {ContactSearchPipe} from './components/pipes/contact-search-pipe';import { JoinBackupsComponent } from './join-backups/join-backups.component';import { ToastComponent } from './toast.component';
 const appRoutes: Routes = [
 { path: 'main', component: MainComponent },
 { path: 'settings', component: SettingsComponent },
+{ path: 'tools/join-backups', component: JoinBackupsComponent },
 { path: '',
 redirectTo: '/main',
 pathMatch: 'full'
@@ -43,7 +43,7 @@ pathMatch: 'full'
     MainComponent,
     SettingsComponent,
     VcfLoaderComponent,
-    ContactSearchPipe
+    ContactSearchPipe,
     ],
     imports: [
     BrowserModule,
@@ -51,7 +51,8 @@ pathMatch: 'full'
     RouterModule.forRoot(appRoutes),
     ScrollingModule,
     LazyInnerHtmlDirective,
-    // standalone toast component
+    // include standalone components
+    JoinBackupsComponent,
     ToastComponent
     ],
     providers: [
