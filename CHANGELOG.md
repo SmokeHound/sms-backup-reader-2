@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.13.0...sms-backup-viewer-v0.14.0) (2026-01-19)
+
+
+### Features
+
+* update file upload button styles for Tauri integration ([1212d88](https://github.com/SmokeHound/sms-backup-viewer/commit/1212d8831213f4fce2a71e9e93f6dde6e47382cd))
+
 ## [0.13.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.12.0...sms-backup-viewer-v0.13.0) (2026-01-19)
 
 
