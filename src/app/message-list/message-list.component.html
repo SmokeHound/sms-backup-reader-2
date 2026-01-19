@@ -21,13 +21,13 @@
 	(onExport)="handleExport($event)">
 </export-options-dialog>
 
-<div class="message-container">
-	<div *ngFor="let message of messages; trackBy: trackByMessage"
-        [ngClass]="{'message-sent': message.type == 2 || message.type == 4, 'message-received': message.type == 1 || message.type == 3}">
-        <div class="message-body" [innerHTML]="message.body"></div>
-        <div class="message-meta">
-            <span class="message-type">{{message.type | messageType}}</span>
-            <span class="message-date">{{message.date}}</span>
-        </div>
-    </div>
-</div>
+<cdk-virtual-scroll-viewport itemSize="120" class="message-viewport">
+	<div *cdkVirtualFor="let message of messages; trackBy: trackByMessage" class="message-row"
+		[ngClass]="{'message-sent': message.type == 2 || message.type == 4, 'message-received': message.type == 1 || message.type == 3}">
+		<div class="message-body" [lazyInnerHtml]="message.body"></div>
+		<div class="message-meta">
+			<span class="message-type">{{message.type | messageType}}</span>
+			<span class="message-date">{{message.date}}</span>
+		</div>
+	</div>
+</cdk-virtual-scroll-viewport>

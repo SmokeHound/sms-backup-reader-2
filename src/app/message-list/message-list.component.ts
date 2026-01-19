@@ -66,7 +66,9 @@ export class MessageListComponent implements OnInit, AfterViewInit {
     }
 
     private initScrollContainer(): void {
-        this.scrollContainerEl = this.elementRef?.nativeElement?.closest('.messages') as HTMLElement | null;
+        // Target the virtual scroll viewport if present, otherwise fall back to the messages container
+        const host = this.elementRef?.nativeElement as HTMLElement | null;
+        this.scrollContainerEl = host?.querySelector('.message-viewport') as HTMLElement | null || host?.closest('.messages') as HTMLElement | null;
         if (!this.scrollContainerEl) {
             return;
         }

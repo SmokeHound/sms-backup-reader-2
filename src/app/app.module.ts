@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 
 import { AppComponent } from './app.component';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 import { SmsLoaderComponent } from './sms-loader/sms-loader.component';
 import { ContactListComponent } from './contact-list/contact-list.component';
 import { MessageListComponent } from './message-list/message-list.component';
@@ -15,6 +16,7 @@ import { VcfLoaderService }  from './vcf-loader.service';
 import { VcfStoreService }  from './vcf-store.service';
 import { SmsDbService } from './sms-db.service';
 import { CountrySelectComponent } from './country-select/country-select.component';
+import { LazyInnerHtmlDirective } from './directives/lazy-inner-html.directive';
 import { MessageTypePipe } from './message-type.pipe';
 import { MainComponent } from './main/main.component';
 import { SettingsComponent } from './settings/settings.component';
@@ -40,12 +42,14 @@ pathMatch: 'full'
     MainComponent,
     SettingsComponent,
     VcfLoaderComponent,
-    ContactSearchPipe,
+    ContactSearchPipe
     ],
     imports: [
     BrowserModule,
     FormsModule,
-    RouterModule.forRoot(appRoutes)
+    RouterModule.forRoot(appRoutes),
+    ScrollingModule,
+    LazyInnerHtmlDirective
     ],
     providers: [
         provideBrowserGlobalErrorListeners(),
