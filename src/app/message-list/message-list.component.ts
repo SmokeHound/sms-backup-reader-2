@@ -1,4 +1,5 @@
-import { AfterViewInit, Component, ElementRef, NgZone, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { Subscription } from 'rxjs';
 
 import { Message } from '../message';
@@ -35,6 +36,11 @@ export class MessageListComponent implements OnInit, AfterViewInit {
     private scrollRafPending = false;
     private scrollContainerEl: HTMLElement | null = null;
     private detachScrollListener: (() => void) | null = null;
+
+    // Adaptive virtual scroll item size (measured at runtime)
+    viewportItemSize = 120;
+
+    @ViewChild(CdkVirtualScrollViewport, { static: false }) private viewport?: CdkVirtualScrollViewport;
 
         constructor(
 		private smsStoreService: SmsStoreService,
@@ -118,7 +124,11 @@ export class MessageListComponent implements OnInit, AfterViewInit {
         }
 
         // Fetch the latest messages (page-limited).
+        const dbStart = performance.now();
         const msgs = await this.smsStoreService.getLatestMessages(contact.address, this.pageSize);
+        const dbMs = performance.now() - dbStart;
+        console.debug('[perf] getLatestMessages db time (ms):', dbMs);
+
         if (!msgs?.length) {
             this.messages = [];
             this.oldestLoadedDateMs = null;
@@ -130,32 +140,68 @@ export class MessageListComponent implements OnInit, AfterViewInit {
         // then fill in the rest asynchronously so the UI isn't blocked rendering a large batch at once.
         const IMMEDIATE_COUNT = Math.min(50, msgs.length);
         const newestSlice = msgs.slice(-IMMEDIATE_COUNT);
+
+        const renderStart = performance.now();
         this.messages = newestSlice;
         this.oldestLoadedDateMs = newestSlice?.length ? (newestSlice[0].date?.getTime?.() ?? Number(newestSlice[0].timestamp) ?? null) : null;
         const total = Number(contact.messageCount ?? 0);
         this.hasMoreMessages = total > (newestSlice?.length ?? 0);
 
-        // Scroll to bottom to show latest content early.
-        const el = this.scrollContainerEl;
-        if (el) {
-            requestAnimationFrame(() => {
-                el.scrollTop = el.scrollHeight;
-            });
-        }
+        // Measure first rendered row height and update viewport item size so CDK uses realistic sizing
+        requestAnimationFrame(() => {
+            const firstRow = this.elementRef.nativeElement.querySelector('.message-row') as HTMLElement | null;
+            if (firstRow) {
+                const measured = Math.max(48, Math.round(firstRow.offsetHeight));
+                if (measured !== this.viewportItemSize) {
+                    this.viewportItemSize = measured;
+                    if (this.viewport) {
+                        // Tell CDK to recalc
+                        this.viewport.checkViewportSize();
+                    }
+                    console.debug('[perf] measured firstRow height -> itemSize:', measured);
+                }
+            }
+
+            const renderMs = performance.now() - renderStart;
+            console.debug('[perf] initial render (ms):', renderMs);
+
+            // Scroll to bottom to show latest content early.
+            const el = this.scrollContainerEl;
+            if (el) {
+                requestAnimationFrame(() => {
+                    el.scrollTop = el.scrollHeight;
+                });
+            }
+        });
 
         // Fill remaining messages in a microtask so the browser can paint first.
         if (msgs.length > IMMEDIATE_COUNT) {
             setTimeout(() => {
+                const renderAllStart = performance.now();
                 this.messages = msgs;
                 this.oldestLoadedDateMs = msgs?.length ? (msgs[0].date?.getTime?.() ?? Number(msgs[0].timestamp) ?? null) : null;
                 this.hasMoreMessages = total > (msgs?.length ?? 0);
 
-                // Re-scroll to bottom after the full set renders.
-                if (el) {
-                    requestAnimationFrame(() => {
+                // Re-measure and re-scroll after full set renders.
+                const el = this.scrollContainerEl;
+                requestAnimationFrame(() => {
+                    const firstRow = this.elementRef.nativeElement.querySelector('.message-row') as HTMLElement | null;
+                    if (firstRow) {
+                        const measured = Math.max(48, Math.round(firstRow.offsetHeight));
+                        if (measured !== this.viewportItemSize) {
+                            this.viewportItemSize = measured;
+                            if (this.viewport) {
+                                this.viewport.checkViewportSize();
+                            }
+                            console.debug('[perf] re-measured firstRow height -> itemSize:', measured);
+                        }
+                    }
+
+                    if (el) {
                         el.scrollTop = el.scrollHeight;
-                    });
-                }
+                    }
+                    console.debug('[perf] full render (ms):', performance.now() - renderAllStart);
+                });
             }, 80);
         }
     }

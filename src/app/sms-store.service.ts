@@ -392,13 +392,15 @@ export class SmsStoreService {
     }
 
     getLatestMessages(contactId: string, limit: number): Promise<Message[]> {
+        const dbStart = performance.now();
         if (!this.useIndexedDb) {
             const all = this.messageMap?.get(contactId) ?? [];
             const sliced = limit && limit > 0 ? all.slice(Math.max(0, all.length - limit)) : all;
+            console.debug('[perf] getLatestMessages (in-memory) time (ms):', performance.now() - dbStart);
             return Promise.resolve(sliced);
         }
         return this.smsDbService.getLatestMessagesForThread(contactId, limit).then((rows) => {
-            return rows.map((r) => {
+            const mapped = rows.map((r) => {
                 return {
                     contactAddress: contactId,
                     contactName: (r.contactName ?? null) as any,
@@ -408,6 +410,8 @@ export class SmsStoreService {
                     date: new Date(r.dateMs)
                 } as any;
             });
+            console.debug('[perf] getLatestMessages (db) time (ms):', performance.now() - dbStart);
+            return mapped;
         });
     }
 

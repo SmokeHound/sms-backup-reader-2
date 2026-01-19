@@ -21,7 +21,7 @@
 	(onExport)="handleExport($event)">
 </export-options-dialog>
 
-<cdk-virtual-scroll-viewport itemSize="120" class="message-viewport">
+<cdk-virtual-scroll-viewport [itemSize]="viewportItemSize" class="message-viewport">
 	<div *cdkVirtualFor="let message of messages; trackBy: trackByMessage" class="message-row"
 		[ngClass]="{'message-sent': message.type == 2 || message.type == 4, 'message-received': message.type == 1 || message.type == 3}">
 		<div class="message-body" [lazyInnerHtml]="message.body"></div>
