@@ -120,7 +120,8 @@ country-select {
 .page-content {
 	overflow: hidden;
 	width: 100%;
-	height: 100%;
+	flex: 1 1 auto;
+	min-height: 0;
 	position: relative;
 	padding: var(--gap);
 	box-sizing: border-box;

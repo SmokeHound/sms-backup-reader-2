@@ -28,7 +28,7 @@ export class MessageListComponent implements OnInit, AfterViewInit {
     loadingOlder = false;
     hasMoreMessages = false;
     private oldestLoadedDateMs: number | null = null;
-    private readonly pageSize = 500;
+    private readonly pageSize = 200;
     private readonly autoLoadThresholdPx = 220;
     private readonly autoLoadMinIntervalMs = 750;
     private lastAutoLoadAtMs = 0;
@@ -114,18 +114,47 @@ export class MessageListComponent implements OnInit, AfterViewInit {
         if (!contact?.address) {
             return;
         }
-        const msgs = await this.smsStoreService.getLatestMessages(contact.address, this.pageSize);
-        this.messages = msgs;
-        this.oldestLoadedDateMs = msgs?.length ? (msgs[0].date?.getTime?.() ?? Number(msgs[0].timestamp) ?? null) : null;
-        const total = Number(contact.messageCount ?? 0);
-        this.hasMoreMessages = total > (msgs?.length ?? 0);
 
-        // Show newest messages immediately.
+        // Fetch the latest messages (page-limited).
+        const msgs = await this.smsStoreService.getLatestMessages(contact.address, this.pageSize);
+        if (!msgs?.length) {
+            this.messages = [];
+            this.oldestLoadedDateMs = null;
+            this.hasMoreMessages = false;
+            return;
+        }
+
+        // Quick-first render: show the newest N messages immediately to improve perceived load time,
+        // then fill in the rest asynchronously so the UI isn't blocked rendering a large batch at once.
+        const IMMEDIATE_COUNT = Math.min(50, msgs.length);
+        const newestSlice = msgs.slice(-IMMEDIATE_COUNT);
+        this.messages = newestSlice;
+        this.oldestLoadedDateMs = newestSlice?.length ? (newestSlice[0].date?.getTime?.() ?? Number(newestSlice[0].timestamp) ?? null) : null;
+        const total = Number(contact.messageCount ?? 0);
+        this.hasMoreMessages = total > (newestSlice?.length ?? 0);
+
+        // Scroll to bottom to show latest content early.
         const el = this.scrollContainerEl;
         if (el) {
             requestAnimationFrame(() => {
                 el.scrollTop = el.scrollHeight;
             });
+        }
+
+        // Fill remaining messages in a microtask so the browser can paint first.
+        if (msgs.length > IMMEDIATE_COUNT) {
+            setTimeout(() => {
+                this.messages = msgs;
+                this.oldestLoadedDateMs = msgs?.length ? (msgs[0].date?.getTime?.() ?? Number(msgs[0].timestamp) ?? null) : null;
+                this.hasMoreMessages = total > (msgs?.length ?? 0);
+
+                // Re-scroll to bottom after the full set renders.
+                if (el) {
+                    requestAnimationFrame(() => {
+                        el.scrollTop = el.scrollHeight;
+                    });
+                }
+            }, 80);
         }
     }
 

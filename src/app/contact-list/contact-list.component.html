@@ -9,7 +9,6 @@
         <li class="mdl-list__item mdl-list__item--two-line contact-item" [ngClass]="{'selected-contact': contact==selectedContact}"
 			 *ngFor="let contact of contacts | contactSearchPipe: numfilter; trackBy: trackByContact" (click)="showMessages(contact)"  [ngClass]="{'active-row': contact == selectedContact}">
             <span class="mdl-list__item-primary-content" >
-                <i class="material-icons mdl-list__item-avatar">person</i>
                 <span>
                     <span class="contact-title">{{contact.name || contact.address}}</span>
                     <span *ngIf="contact.name" class="contact-subtitle"><br/>{{contact.address}}</span>

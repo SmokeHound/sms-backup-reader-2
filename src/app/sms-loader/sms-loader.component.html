@@ -9,12 +9,12 @@
     </label>
     <button
 		*ngIf="isTauri && importMode === 'tauri'"
-		class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent file-upload-button file-upload-button--teal"
+		class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent file-upload-button file-upload-button--tauri"
         type="button"
         (click)="browseAndLoadFromTauriPath()"
         title="Load a large backup using the desktop streaming parser">
         <i class="material-icons">folder_open</i>
-        <span class="file-upload-label">Load from path</span>
+		<span class="file-upload-label">Select SMS Backup</span>
     </button>
 	<input
 		*ngIf="!isTauri || importMode !== 'tauri'"

@@ -1,4 +1,17 @@
 /* App-level styles */
+.mdl-layout {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.mdl-layout__content {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
 .mdl-layout__header {
     background: var(--surface);
     color: var(--text);
@@ -31,6 +44,13 @@
 
 .header-settings .material-icons {
     margin-right: 8px;
+}
+
+/* Header Settings button should be neutral (black), not accent-blue */
+.mdl-layout__header .header-settings,
+.mdl-layout__header .header-settings .material-icons,
+.mdl-layout__header .header-settings .settings-label {
+	color: var(--text) !important;
 }
 
 @media (max-width: 640px) {

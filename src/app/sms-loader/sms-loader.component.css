@@ -4,17 +4,19 @@
     justify-content: center;
 }
 
-.file-upload-button--teal {
-    background-color: #009688 !important;
+
+.mdl-button--raised.mdl-button--accent.file-upload-button--tauri {
+    background: linear-gradient(180deg, #34d399 0%, #16a34a 100%) !important;
     color: #fff !important;
+    border-color: rgba(22, 163, 74, 0.55);
 }
 
-.file-upload-button--teal:hover {
-    background-color: #00897b !important;
+.mdl-button--raised.mdl-button--accent.file-upload-button--tauri:hover {
+    background: linear-gradient(180deg, #6ee7b7 0%, #16a34a 100%) !important;
 }
 
-.file-upload-button--teal:active {
-    background-color: #00796b !important;
+.mdl-button--raised.mdl-button--accent.file-upload-button--tauri:active {
+    background: linear-gradient(180deg, #22c55e 0%, #15803d 100%) !important;
 }
 
 .file-upload-button .material-icons {
