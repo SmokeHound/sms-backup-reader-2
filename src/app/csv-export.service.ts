@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
 import { CsvCell, rowsToCsv } from './csv';
+import { ToastService } from './toast.service';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class CsvExportService {
+	constructor(private toastService: ToastService) {}
+
 	private sanitizeFilename(name: string): string {
 		// Keep it Windows-friendly and avoid weird path characters.
 		return name.replace(/[\\/:*?"<>|]+/g, '_').trim();
@@ -110,16 +113,45 @@ export class CsvExportService {
 		return text.trim();
 	}
 
-	downloadCsv(
+	async downloadCsv(
 		filenameBase: string,
 		rows: Array<Record<string, CsvCell>>,
 		columns: string[]
-	): void {
+	): Promise<void> {
 		const filename = this.sanitizeFilename(filenameBase || 'export') + '.csv';
 
 		// Add BOM for better Excel UTF-8 handling.
 		const csv = '\ufeff' + rowsToCsv(rows, columns);
 		const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+
+		// Try Tauri-native save first when available.
+		if (this.isTauriRuntime()) {
+			try {
+				const savedPath = await this.tryTauriSaveBlob(filename, blob);
+				if (savedPath) {
+					// Show toast with action to open the folder
+					const dir = (savedPath || '').replace(/[/\\][^/\\]+$/, '');
+					this.toastService.showWithAction(
+						`Saved to: ${savedPath}`,
+						'Open folder',
+						async () => {
+							try {
+								const { open } = await import('@tauri-apps/api/shell');
+								await open(dir);
+							} catch (e) {
+								console.warn('Failed to open folder', e);
+							}
+						},
+						7000
+					);
+					return;
+				}
+			} catch (e) {
+				console.warn('Tauri save failed, falling back to browser download', e);
+			}
+		}
+
+		// Fallback: browser download
 		const url = URL.createObjectURL(blob);
 
 		const link = document.createElement('a');
@@ -146,6 +178,34 @@ export class CsvExportService {
 		}
 
 		const blob = await zip.generateAsync({ type: 'blob' });
+
+		// Try Tauri-native save first when available.
+		if (this.isTauriRuntime()) {
+			try {
+				const savedPath = await this.tryTauriSaveBlob(filename, blob);
+				if (savedPath) {
+					const dir = (savedPath || '').replace(/[/\\][^/\\]+$/, '');
+					this.toastService.showWithAction(
+						`Saved to: ${savedPath}`,
+						'Open folder',
+						async () => {
+							try {
+								const { open } = await import('@tauri-apps/api/shell');
+								await open(dir);
+							} catch (e) {
+								console.warn('Failed to open folder', e);
+							}
+						},
+						7000
+					);
+					return;
+				}
+			} catch (e) {
+				console.warn('Tauri save failed, falling back to browser download', e);
+			}
+		}
+
+		// Fallback: browser download
 		const url = URL.createObjectURL(blob);
 
 		const link = document.createElement('a');
@@ -156,6 +216,37 @@ export class CsvExportService {
 		link.click();
 		link.remove();
 		URL.revokeObjectURL(url);
+	}
+
+	private isTauriRuntime(): boolean {
+		try {
+			const protocol = (window?.location?.protocol ?? '').toLowerCase();
+			if (protocol === 'tauri:' || protocol === 'asset:') return true;
+			const host = (window?.location?.hostname ?? '').toLowerCase();
+			if (host === 'tauri.localhost' || host.endsWith('.tauri.localhost')) return true;
+			const w = window as any;
+			if (typeof w?.__TAURI__ !== 'undefined' || typeof w?.__TAURI_INTERNALS__ !== 'undefined') return true;
+			return (navigator?.userAgent ?? '').toLowerCase().includes('tauri');
+		} catch {
+			return false;
+		}
+	}
+
+	private async tryTauriSaveBlob(filename: string, blob: Blob): Promise<string | null> {
+		try {
+			const { save } = await import('@tauri-apps/api/dialog');
+			const path = await save({ defaultPath: filename });
+			if (!path) return null;
+
+			const arrayBuffer = await blob.arrayBuffer();
+			const uint8 = new Uint8Array(arrayBuffer);
+			const { writeBinaryFile } = await import('@tauri-apps/api/fs');
+			await writeBinaryFile({ path, contents: uint8 });
+			return path;
+		} catch (e) {
+			console.error('Tauri save error', e);
+			return null;
+		}
 	}
 
 	buildCsv(rows: Array<Record<string, CsvCell>>, columns: string[]): string {

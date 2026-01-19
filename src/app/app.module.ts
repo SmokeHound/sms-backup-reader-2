@@ -22,6 +22,7 @@ import { MainComponent } from './main/main.component';
 import { SettingsComponent } from './settings/settings.component';
 import { VcfLoaderComponent } from './vcf-loader/vcf-loader.component';
 import {ContactSearchPipe} from './components/pipes/contact-search-pipe';
+import { ToastComponent } from './toast.component';
 const appRoutes: Routes = [
 { path: 'main', component: MainComponent },
 { path: 'settings', component: SettingsComponent },
@@ -49,7 +50,9 @@ pathMatch: 'full'
     FormsModule,
     RouterModule.forRoot(appRoutes),
     ScrollingModule,
-    LazyInnerHtmlDirective
+    LazyInnerHtmlDirective,
+    // standalone toast component
+    ToastComponent
     ],
     providers: [
         provideBrowserGlobalErrorListeners(),
