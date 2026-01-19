@@ -6,7 +6,8 @@
       "package-name": "sms-backup-viewer",
       "extra-files": [
         "src-tauri/tauri.conf.json",
-        "src-tauri/Cargo.toml"
+        "src-tauri/Cargo.toml",
+        "src/app/version.ts"      
       ]
     }
   }

@@ -105,11 +105,25 @@
     padding: 6px 16px;
     min-height: 0;
     line-height: 1.2;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
 }
 .mdl-mini-footer__logo {
     margin: 0;
     font-size: 14px;
     line-height: 1.1;
+}
+
+.mdl-mini-footer__left-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mdl-mini-footer__right-section {
+    display: flex;
+    align-items: center;
 }
 
 /* Compact loader controls when placed in the header nav/drawer */
@@ -203,10 +217,18 @@
 
 .mdl-mini-footer__link-list {
     margin: 0;
+    display: flex;
+    gap: 10px;
 }
 
 .mdl-mini-footer__link-list li {
     line-height: 1.2;
+}
+
+.footer-version {
+    font-size: 12px;
+    opacity: 0.85;
+    white-space: nowrap;
 }
 
 .mdl-mini-footer a {

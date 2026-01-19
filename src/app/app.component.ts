@@ -8,6 +8,7 @@ import { SmsLoaderService } from './sms-loader.service';
 import { VcfLoaderService } from './vcf-loader.service';
 import { VcfStoreService } from './vcf-store.service';
 import { LoaderStatusUpdate } from './loader-status';
+import { APP_VERSION } from './version';
 
 @Component({
     selector: 'app-root',
@@ -18,6 +19,7 @@ import { LoaderStatusUpdate } from './loader-status';
 
 export class AppComponent implements OnInit  {
 	title = 'SMS Backup Viewer';
+	appVersion = APP_VERSION;
     smsloaded: boolean = false;
 	vcfloaded: boolean = false;
 	country: string = "AU";
