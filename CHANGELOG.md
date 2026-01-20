@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.19.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.18.0...sms-backup-viewer-v0.19.0) (2026-01-20)
+
+
+### Features
+
+* enhance file handling with error management and detail toggling in join backups ([3e64f82](https://github.com/SmokeHound/sms-backup-viewer/commit/3e64f8228f25fd51236a0a263a46be89d691f610))
+* update smsImportMode default to 'tauri' and enhance option descriptions for clarity ([b8eb451](https://github.com/SmokeHound/sms-backup-viewer/commit/b8eb45153b07a86b759cc25ef751f909120986a9))
+
 ## [0.18.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.17.0...sms-backup-viewer-v0.18.0) (2026-01-20)
 
 
