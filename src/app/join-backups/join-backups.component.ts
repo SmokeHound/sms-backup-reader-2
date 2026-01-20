@@ -7,7 +7,7 @@ import { CsvExportService } from '../csv-export.service';
   styleUrls: ['./join-backups.component.css']
 })
 export class JoinBackupsComponent {
-  selectedFiles: Array<{ name: string; size: number; text?: string; path?: string }> = [];
+  selectedFiles: Array<{ name: string; size: number; text?: string; path?: string; fileRef?: File; readError?: string; reading?: boolean; expanded?: boolean; details?: { messages: number; contacts: number; sample?: string; parseError?: string } }> = [];
   status = '';
   preview = { files: 0, messages: 0, contacts: 0 };
 
@@ -18,11 +18,26 @@ export class JoinBackupsComponent {
     this.status = 'Reading files...';
     const arr = Array.from(files);
     for (const f of arr) {
+      let text: string | undefined = undefined;
+      let readError: string | undefined = undefined;
       try {
-        const text = await f.text();
-        this.selectedFiles.push({ name: f.name, size: f.size, text });
+        if (typeof (f as any).text === 'function') {
+          text = await (f as any).text();
+        } else {
+          // Fallback for environments where File.text() isn't available
+          text = await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(String(reader.result ?? ''));
+            reader.onerror = () => reject(reader.error);
+            reader.readAsText(f);
+          });
+        }
       } catch (e) {
-        console.warn(e);
+        console.warn('Failed to read file content, adding placeholder', e);
+        readError = String((e as any)?.message ?? 'Read failed');
+      } finally {
+        // Always add the file entry so the user can see it and act on it.
+        this.selectedFiles.push({ name: f.name, size: f.size, text, fileRef: f, readError, expanded: false, details: undefined });
       }
     }
     this.updatePreview();
@@ -38,13 +53,16 @@ export class JoinBackupsComponent {
       const pArr = Array.isArray(paths) ? paths : [paths];
       const { readText } = await import('@tauri-apps/api/fs');
       for (const p of pArr) {
+        let text: string | undefined = undefined;
+        let readError: string | undefined = undefined;
         try {
-          const text = await readText(p);
-          const name = p.split(/[\\/]/).pop();
-          this.selectedFiles.push({ name: name || p, size: text.length, text, path: p });
+          text = await readText(p);
         } catch (e) {
           console.warn('read error', e);
+          readError = String((e as any)?.message ?? 'Read failed');
         }
+        const name = p.split(/[\\/]/).pop();
+        this.selectedFiles.push({ name: name || p, size: text ? text.length : 0, text, path: p, readError, expanded: false, details: undefined });
       }
       this.updatePreview();
     } catch (e) {
@@ -56,6 +74,86 @@ export class JoinBackupsComponent {
   removeFile(index: number) {
     this.selectedFiles.splice(index, 1);
     this.updatePreview();
+  }
+
+  async retryRead(index: number) {
+    const f = this.selectedFiles[index];
+    if (!f) return;
+    f.readError = undefined;
+    f.reading = true;
+    try {
+      // Browser file reference
+      if (f.fileRef) {
+        let text: string | undefined = undefined;
+        if (typeof (f.fileRef as any).text === 'function') {
+          text = await (f.fileRef as any).text();
+        } else {
+          text = await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(String(reader.result ?? ''));
+            reader.onerror = () => reject(reader.error);
+            reader.readAsText(f.fileRef as File);
+          });
+        }
+        f.text = text;
+        f.size = text ? text.length : f.size;
+      } else if (f.path) {
+        // Native path, use Tauri fs
+        const { readText } = await import('@tauri-apps/api/fs');
+        const text = await readText(f.path);
+        f.text = text;
+        f.size = text ? text.length : f.size;
+      }
+      this.updatePreview();
+    } catch (e) {
+      f.readError = String((e as any)?.message ?? 'Read failed');
+    } finally {
+      f.reading = false;
+    }
+  }
+
+  toggleDetails(index: number) {
+    const f = this.selectedFiles[index];
+    if (!f) return;
+    f.expanded = !f.expanded;
+    if (f.expanded && !f.details && f.text) {
+      this.computeDetails(f);
+    }
+  }
+
+  private computeDetails(f: any) {
+    if (!f.text) {
+      f.details = undefined;
+      return;
+    }
+    try {
+      const parserCtor = (window as any)['fastXmlParser']?.XMLParser;
+      let messages = 0;
+      const contacts = new Set<string>();
+      if (parserCtor) {
+        const p = new parserCtor({ ignoreAttributes: false, attributeNamePrefix: '@_' });
+        const parsed = p.parse(f.text);
+        const root = parsed && parsed[Object.keys(parsed)[0]];
+        const sms = root && root.sms ? (Array.isArray(root.sms) ? root.sms : [root.sms]) : [];
+        messages = sms.length;
+        for (const m of sms) {
+          const addr = m['@_address'] || m.address || '';
+          if (addr) contacts.add(addr);
+        }
+      } else {
+        const smsMatches = f.text.match(/<sms\b/gi) || [];
+        messages = smsMatches.length;
+        const addrMatches = f.text.match(/address=(?:'|")([^'"]+)(?:'|")/gi) || [];
+        for (const m of addrMatches) {
+          const addr = m.replace(/address=("|')|("|')/g, '');
+          if (addr) contacts.add(addr);
+        }
+      }
+      const sample = f.text.length > 500 ? f.text.slice(0, 500) + '...' : f.text;
+      f.details = { messages, contacts: contacts.size, sample };
+    } catch (e) {
+      f.details = { messages: 0, contacts: 0, sample: '', parseError: String((e as any)?.message ?? 'Parse failed') };
+    }
   }
 
   updatePreview() {

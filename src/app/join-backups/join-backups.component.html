@@ -16,8 +16,34 @@
   <div class="file-list">
     <ul>
       <li *ngFor="let f of selectedFiles; let i = index">
-        {{i+1}}. {{ f.name }} ({{ f.size }} bytes)
-        <button (click)="removeFile(i)" style="margin-left:8px">Remove</button>
+        <div class="file-line">
+          <span class="file-title">{{i+1}}. {{ f.name }} ({{ f.size }} bytes)</span>
+
+          <span *ngIf="f.readError || f.text === undefined" class="file-bad">
+            <span *ngIf="f.reading">Reading...</span>
+            <span *ngIf="!f.reading">Unreadable</span>
+            <button class="retry-btn" (click)="retryRead(i)" [disabled]="f.reading">Retry</button>
+            <span class="file-bad-msg" *ngIf="f.readError">{{ f.readError }}</span>
+          </span>
+
+          <div class="file-actions">
+            <button class="details-btn" (click)="toggleDetails(i)" style="margin-left:8px">{{ f.expanded ? 'Hide' : 'Details' }}</button>
+            <button (click)="removeFile(i)" style="margin-left:8px">Remove</button>
+          </div>
+        </div>
+
+        <div class="file-details" *ngIf="f.expanded">
+          <div><strong>Path:</strong> {{ f.path || '—' }}</div>
+          <div><strong>Size:</strong> {{ f.size }} bytes</div>
+          <div *ngIf="f.details">
+            <div><strong>Messages:</strong> {{ f.details.messages }}</div>
+            <div><strong>Contacts:</strong> {{ f.details.contacts }}</div>
+            <pre class="file-sample" *ngIf="f.details.sample">{{ f.details.sample }}</pre>
+            <div class="parse-error" *ngIf="f.details.parseError">Parse error: {{ f.details.parseError }}</div>
+          </div>
+          <div *ngIf="!f.details && f.text">Parsing...</div>
+          <div *ngIf="!f.text">No content to show</div>
+        </div>
       </li>
     </ul>
   </div>
