@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.20.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.19.0...sms-backup-viewer-v0.20.0) (2026-01-20)
+
+
+### Features
+
+* automate version management with update-version script and update version file ([48cca5e](https://github.com/SmokeHound/sms-backup-viewer/commit/48cca5e99b97051042901e11df5e27f53eec4794))
+
 ## [0.19.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.18.0...sms-backup-viewer-v0.19.0) (2026-01-20)
 
 
