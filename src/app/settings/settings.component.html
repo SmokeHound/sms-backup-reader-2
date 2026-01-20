@@ -33,8 +33,8 @@
                             [(ngModel)]="smsImportMode"
                             (change)="onSmsImportModeChanged()">
                             <option value="auto">Auto (show browser + Tauri buttons)</option>
-                            <option value="browser">Browser upload only</option>
-                            <option value="tauri" [disabled]="!isTauriRuntime">Tauri (Load from path) only</option>
+                            <option value="browser">Browser upload only (Small < 2.5GB files)</option>
+                            <option value="tauri" [disabled]="!isTauriRuntime">Tauri upload only (Large > 2.5GB files)</option>
                         </select>
                         <div class="setting-help" style="margin-top: 8px;" *ngIf="!isTauriRuntime">
                             Tauri mode is only available in the installed desktop app.

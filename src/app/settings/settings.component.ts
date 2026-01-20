@@ -21,7 +21,7 @@ export class SettingsComponent implements OnInit {
     dbThreadCount: number = 0;
     dbMessageCount: number = 0;
     clearingDb: boolean = false;
-    smsImportMode: 'auto' | 'browser' | 'tauri' = 'auto';
+    smsImportMode: 'auto' | 'browser' | 'tauri' = 'tauri';
     isTauriRuntime: boolean = false;
 
     constructor(
@@ -37,6 +37,14 @@ export class SettingsComponent implements OnInit {
 		this.indexedDbEnabled = this.smsStoreService.getIndexedDbEnabled();
         this.smsImportMode = this.smsStoreService.getSmsImportMode();
         this.isTauriRuntime = this.detectTauri();
+
+        // If the store defaulted to 'tauri' but we're not running in a Tauri runtime,
+        // fall back to 'auto' so the UI doesn't select a disabled option.
+        if (this.smsImportMode === 'tauri' && !this.isTauriRuntime) {
+            this.smsImportMode = 'auto';
+            this.smsStoreService.setSmsImportMode('auto');
+        }
+
 		this.refreshDbStats();
     }
 

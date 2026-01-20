@@ -18,7 +18,7 @@ export class SmsStoreService {
     private useIndexedDb: boolean;
     private ingestChain: Promise<void>;
 	private indexedDbEnabled: boolean;
-    private smsImportMode: 'auto' | 'browser' | 'tauri' = 'auto';
+    private smsImportMode: 'auto' | 'browser' | 'tauri' = 'tauri';
 
     constructor(private smsDbService: SmsDbService) { 
         this.messagesLoaded = false;
@@ -36,9 +36,9 @@ export class SmsStoreService {
             if (raw === 'browser' || raw === 'tauri' || raw === 'auto') {
                 return raw;
             }
-            return 'auto';
+            return 'tauri';
         } catch {
-            return 'auto';
+            return 'tauri';
         }
     }
 
@@ -67,7 +67,7 @@ export class SmsStoreService {
         return this.indexedDbEnabled;
     }
 
-    private _smsImportModeSource = new BehaviorSubject<'auto' | 'browser' | 'tauri'>('auto');
+    private _smsImportModeSource = new BehaviorSubject<'auto' | 'browser' | 'tauri'>('tauri');
     smsImportMode$ = this._smsImportModeSource.asObservable();
 
     getSmsImportMode(): 'auto' | 'browser' | 'tauri' {
