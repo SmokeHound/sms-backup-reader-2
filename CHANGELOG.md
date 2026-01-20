@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.18.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.17.0...sms-backup-viewer-v0.18.0) (2026-01-20)
+
+
+### Features
+
+* Add new input source classes and value parsers for XML processing ([74b5f53](https://github.com/SmokeHound/sms-backup-viewer/commit/74b5f538657dbc937c36a9a135c35eea8ff0769a))
+* add XMLParser, node2json, and XmlNode classes for XML parsing functionality ([31eb1cb](https://github.com/SmokeHound/sms-backup-viewer/commit/31eb1cbb880f08a30b953a8cff7000545a0356ef))
+
 ## [0.17.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.16.0...sms-backup-viewer-v0.17.0) (2026-01-19)
 
 
