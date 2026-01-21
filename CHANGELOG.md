@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.22.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.21.0...sms-backup-viewer-v0.22.0) (2026-01-21)
+
+
+### Features
+
+* implement Tauri runtime detection for native file picker support ([af1151f](https://github.com/SmokeHound/sms-backup-viewer/commit/af1151f48c79818d69e9bbe1a8784aae3b85d5ea))
+
 ## [0.21.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.20.0...sms-backup-viewer-v0.21.0) (2026-01-21)
 
 
