@@ -66,18 +66,16 @@ export class JoinBackupsComponent {
 
     // Tauri open dialog
     try {
-      const dialogPath = '@tauri-apps/api/' + 'dialog';
-      const { open } = await import(/* @vite-ignore */ dialogPath) as any;
+      const { open } = await import('@tauri-apps/plugin-dialog') as any;
       const paths = await open({ multiple: true, filters: [{ name: 'XML', extensions: ['xml'] }] });
       if (!paths) return;
       const pArr = Array.isArray(paths) ? paths : [paths];
-      const fsPath = '@tauri-apps/api/' + 'fs';
-      const { readText } = await import(/* @vite-ignore */ fsPath) as any;
+      const { readTextFile } = await import('@tauri-apps/plugin-fs') as any;
       for (const p of pArr) {
         let text: string | undefined = undefined;
         let readError: string | undefined = undefined;
         try {
-          text = await readText(p);
+          text = await readTextFile(p);
         } catch (e) {
           console.warn('read error', e);
           readError = String((e as any)?.message ?? 'Read failed');
@@ -88,7 +86,7 @@ export class JoinBackupsComponent {
       this.updatePreview();
     } catch (e) {
       console.warn('native pick error', e);
-      this.status = 'Native file picker not available';
+      this.status = `Native file picker not available: ${String((e as any)?.message ?? e)}`;
     }
   }
 
@@ -124,10 +122,9 @@ export class JoinBackupsComponent {
           f.readError = 'Native runtime not available';
           return;
         }
-        // Native path, use Tauri fs
-        const fsPath = '@tauri-apps/api/' + 'fs';
-        const { readText } = await import(/* @vite-ignore */ fsPath) as any;
-        const text = await readText(f.path);
+        // Native path, use Tauri fs plugin
+        const { readTextFile } = await import('@tauri-apps/plugin-fs') as any;
+        const text = await readTextFile(f.path);
         f.text = text;
         f.size = text ? text.length : f.size;
       }
@@ -246,13 +243,11 @@ export class JoinBackupsComponent {
 
       // Save using Tauri dialog + fs if available, else fallback to download
       try {
-        const dialogPath = '@tauri-apps/api/' + 'dialog';
-        const { save } = await import(/* @vite-ignore */ dialogPath) as any;
+        const { save } = await import('@tauri-apps/plugin-dialog') as any;
         const path = await save({ defaultPath: 'merged.xml' });
         if (path) {
-          const fsPath = '@tauri-apps/api/' + 'fs';
-          const { writeTextFile } = await import(/* @vite-ignore */ fsPath) as any;
-          await writeTextFile({ path, contents: xml });
+          const { writeTextFile } = await import('@tauri-apps/plugin-fs') as any;
+          await writeTextFile(path, xml);
           // show toast
           try { const { ToastService } = await import('../toast.service'); } catch (e) {}
           this.status = `Saved to ${path}`;

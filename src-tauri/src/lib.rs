@@ -4,9 +4,12 @@ use tauri::Emitter;
 pub fn run() {
   tauri::Builder::default()
     .setup(|app| {
-      app
-        .handle()
+      let handle = app.handle();
+      handle
         .plugin(tauri_plugin_dialog::init())
+        .map_err(|e| e.to_string())?;
+      handle
+        .plugin(tauri_plugin_fs::init())
         .map_err(|e| e.to_string())?;
       if cfg!(debug_assertions) {
         app.handle().plugin(

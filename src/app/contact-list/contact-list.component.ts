@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { Message } from '../message';
@@ -21,7 +21,7 @@ export class ContactListComponent implements OnInit {
     numfilter: string
 
 
-    constructor(private smsStoreService: SmsStoreService) { }
+    constructor(private smsStoreService: SmsStoreService, private ngZone: NgZone) { }
 
     ngOnInit() {
         this.numfilter = '';
@@ -34,7 +34,12 @@ export class ContactListComponent implements OnInit {
     }
 
     getAllContacts() {
-        this.smsStoreService.getAllContacts().then((contacts) => this.contacts = contacts);
+        this.smsStoreService.getAllContacts().then((contacts) => {
+            // Dexie/IndexedDB promises can resolve outside Angular's zone.
+            this.ngZone.run(() => {
+                this.contacts = contacts;
+            });
+        });
     }
 
     showMessages(contact) {
