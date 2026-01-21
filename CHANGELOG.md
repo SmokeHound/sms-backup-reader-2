@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.23.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.22.1...sms-backup-viewer-v0.23.0) (2026-01-21)
+
+
+### Features
+
+* enhance SmsStoreService to use NgZone for immediate change detection in event broadcasting ([60968be](https://github.com/SmokeHound/sms-backup-viewer/commit/60968beb7a29d6af8182d31789035fd61d375c38))
+
+
+### Bug Fixes
+
+* enhance contact list component to ensure proper Angular zone handling for IndexedDB promises ([4be9406](https://github.com/SmokeHound/sms-backup-viewer/commit/4be9406bbd8c2ba9dd1a54eb073b5d3c596faf97))
+* update Tauri imports to avoid Vite resolution issues and ensure proper runtime behavior ([60968be](https://github.com/SmokeHound/sms-backup-viewer/commit/60968beb7a29d6af8182d31789035fd61d375c38))
+
 ## [0.22.1](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.22.0...sms-backup-viewer-v0.22.1) (2026-01-21)
 
 
