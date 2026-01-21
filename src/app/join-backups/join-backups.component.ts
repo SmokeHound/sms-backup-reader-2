@@ -44,7 +44,26 @@ export class JoinBackupsComponent {
     this.status = '';
   }
 
+  private detectTauriRuntime(): boolean {
+    try {
+      const protocol = (window?.location?.protocol ?? '').toLowerCase();
+      if (protocol === 'tauri:' || protocol === 'asset:') return true;
+      const host = (window?.location?.hostname ?? '').toLowerCase();
+      if (host === 'tauri.localhost' || host.endsWith('.tauri.localhost')) return true;
+      const w = window as any;
+      if (typeof w?.__TAURI__ !== 'undefined' || typeof w?.__TAURI_INTERNALS__ !== 'undefined') return true;
+      return (navigator?.userAgent ?? '').toLowerCase().includes('tauri');
+    } catch {
+      return false;
+    }
+  }
+
   async addFilesNative() {
+    if (!this.detectTauriRuntime()) {
+      this.status = 'Native file picker not available';
+      return;
+    }
+
     // Tauri open dialog
     try {
       const dialogPath = '@tauri-apps/api/' + 'dialog';
@@ -100,6 +119,11 @@ export class JoinBackupsComponent {
         f.text = text;
         f.size = text ? text.length : f.size;
       } else if (f.path) {
+        // Native path — ensure Tauri runtime available first
+        if (!this.detectTauriRuntime()) {
+          f.readError = 'Native runtime not available';
+          return;
+        }
         // Native path, use Tauri fs
         const fsPath = '@tauri-apps/api/' + 'fs';
         const { readText } = await import(/* @vite-ignore */ fsPath) as any;
