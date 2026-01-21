@@ -135,12 +135,8 @@ export class CsvExportService {
 						`Saved to: ${savedPath}`,
 						'Open folder',
 						async () => {
-							try {
-								const { open } = await import('@tauri-apps/api/shell');
-								await open(dir);
-							} catch (e) {
-								console.warn('Failed to open folder', e);
-							}
+							// Attempt to open the folder using Tauri shell if available.
+							await this.openFolder(dir);
 						},
 						7000
 					);
@@ -189,12 +185,8 @@ export class CsvExportService {
 						`Saved to: ${savedPath}`,
 						'Open folder',
 						async () => {
-							try {
-								const { open } = await import('@tauri-apps/api/shell');
-								await open(dir);
-							} catch (e) {
-								console.warn('Failed to open folder', e);
-							}
+							// Attempt to open the folder using Tauri shell if available.
+							await this.openFolder(dir);
 						},
 						7000
 					);
@@ -216,6 +208,18 @@ export class CsvExportService {
 		link.click();
 		link.remove();
 		URL.revokeObjectURL(url);
+	}
+
+	private async openFolder(dir: string): Promise<void> {
+		try {
+			// Assemble import path at runtime so Vite does not try to resolve it for browser builds.
+			const shellPath = '@tauri-apps/api/' + 'shell';
+			const { open } = await import(/* @vite-ignore */ shellPath) as any;
+			await open(dir);
+		} catch (e) {
+			// non-fatal; caller will handle user-visible messages.
+			console.warn('Failed to open folder', e);
+		}
 	}
 
 	private isTauriRuntime(): boolean {
