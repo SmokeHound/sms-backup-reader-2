@@ -10,6 +10,10 @@
             <nav class="mdl-navigation header-tools">
                 <sms-loader (onLoaded)="onSmsLoaded($event)" (statusChanged)="onSmsStatusChanged($event)"></sms-loader>
 				<vcf-loader (onLoaded)="onVcfLoaded($event)" (statusChanged)="onVcfStatusChanged($event)"></vcf-loader>
+                <button class="mdl-button mdl-js-button help-btn" title="Help (Ctrl/Cmd+I)" (click)="openAbout()">
+                    <i class="material-icons">help_outline</i>
+                    <span class="settings-label">Help</span>
+                </button>
                 <button class="mdl-button mdl-js-button mdl-button--accent header-settings" style="float:right;" routerLink="/settings" routerLinkActive="active">
                     <i class="material-icons">settings</i>
                     <span class="settings-label">Settings</span>

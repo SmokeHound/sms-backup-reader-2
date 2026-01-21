@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 
 import { SmsLoaderComponent } from './sms-loader/sms-loader.component';
 import { VcfLoaderComponent } from './vcf-loader/vcf-loader.component';
@@ -34,6 +34,16 @@ export class AppComponent implements OnInit  {
 	showAbout: boolean = false;
 	openAbout() { this.showAbout = true; }
 	closeAbout() { this.showAbout = false; }
+
+	@HostListener('window:keydown', ['$event'])
+	handleKeyDown(event: KeyboardEvent) {
+		const isMac = (navigator.platform || '').toLowerCase().includes('mac');
+		const mod = isMac ? event.metaKey : event.ctrlKey;
+		if (mod && (event.key === 'i' || event.key === 'I')) {
+			event.preventDefault();
+			this.openAbout();
+		}
+	}
     smsloaded: boolean = false;
 	vcfloaded: boolean = false;
 	country: string = "AU";
