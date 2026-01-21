@@ -51,7 +51,9 @@
         </div>
 		<div class="mdl-mini-footer__right-section">
 			<div class="footer-version" [title]="appVersionTooltip">v{{ appVersion }}</div>
-			<button class="about-btn mdl-button mdl-js-button" title="About" (click)="openAbout()">About</button>
+			<button class="about-btn about-btn--icon mdl-button mdl-js-button" title="About" aria-label="About" (click)="openAbout()">
+				<i class="material-icons" aria-hidden="true">info</i>
+			</button>
 		</div>
 
 		<app-about-dialog *ngIf="showAbout" (close)="closeAbout()" [version]="appVersion" [buildTime]="appBuildTime" [commit]="appGitCommit"></app-about-dialog>

@@ -124,28 +124,30 @@
 .mdl-mini-footer {
     background-color: #424242;
     color: rgba(255, 255, 255, 0.87);
-    padding: 6px 16px;
-    min-height: 0;
-    line-height: 1.2;
+    /* Reduce vertical padding only; keep font sizes unchanged */
+    padding: 1px 8px;
+    min-height: 20px;
+    line-height: 1.05;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 }
 .mdl-mini-footer__logo {
     margin: 0;
-    font-size: 14px;
-    line-height: 1.1;
+    font-size: 14px; /* restored to original size */
+    line-height: 1.05;
 }
 
 .mdl-mini-footer__left-section {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 6px;
 }
 
 .mdl-mini-footer__right-section {
     display: flex;
     align-items: center;
+    gap: 6px;
 }
 
 /* Compact loader controls when placed in the header nav/drawer */
@@ -231,8 +233,8 @@
 }
 
 .mdl-mini-footer .mdl-logo {
-    font-size: 13px;
-    line-height: 1.2;
+    font-size: 12px;
+    line-height: 1.1;
     padding: 0;
     margin: 0;
 }
@@ -240,20 +242,28 @@
 .mdl-mini-footer__link-list {
     margin: 0;
     display: flex;
-    gap: 10px;
+    gap: 8px;
+    align-items: center;
 }
 
 .mdl-mini-footer__link-list li {
-    line-height: 1.2;
+    line-height: 1.1;
+    font-size: 12px;
 }
 
 .footer-version {
-    font-size: 12px;
-    opacity: 0.85;
+    font-size: 12px; /* restored to original readable size */
+    opacity: 0.8;
     white-space: nowrap;
 }
-.about-btn { margin-left: 10px; background: transparent; color: rgba(255,255,255,0.9); border: 1px solid rgba(255,255,255,0.06); padding: 4px 8px; border-radius: 6px; font-size: 12px }
+/* Slimmer about button */
+.about-btn { margin-left: 8px; background: transparent; color: rgba(255,255,255,0.9); border: 1px solid rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; font-size: 11px; line-height: 1; }
 .about-btn:hover { background: rgba(255,255,255,0.04) }
+
+/* Icon-only variant: visually an icon (no button chrome) */
+.about-btn--icon { padding: 4px; width: auto; height: auto; display: inline-flex; align-items: center; justify-content: center; border: none; background: transparent; min-width: 0; margin-left: 8px; cursor: pointer; }
+.about-btn--icon .material-icons { font-size: 16px; line-height: 1; color: rgba(255,255,255,0.9); }
+.about-btn--icon:hover { background: transparent; opacity: 0.95; }
 
 .mdl-mini-footer a {
     color: rgba(255, 255, 255, 0.87);
