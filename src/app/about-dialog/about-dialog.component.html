@@ -1,0 +1,15 @@
+<div class="about-overlay" (click)="onClose()">
+  <div class="about-modal" (click)="$event.stopPropagation()">
+    <h3>About SMS Backup Viewer</h3>
+    <div class="about-body">
+      <div><strong>Version:</strong> v{{ version }}</div>
+      <div><strong>Build time:</strong> {{ buildTime }}</div>
+      <div *ngIf="commit"><strong>Commit:</strong> {{ commit }}</div>
+      <p style="margin-top: 12px;">A small tool for inspecting and merging SMS backup XML files.</p>
+    </div>
+    <div class="about-actions">
+      <button class="mdl-button mdl-js-button" (click)="copyInfo()">Copy</button>
+      <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" (click)="onClose()">Close</button>
+    </div>
+  </div>
+</div>

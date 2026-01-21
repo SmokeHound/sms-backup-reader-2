@@ -22,6 +22,7 @@ import { MainComponent } from './main/main.component';
 import { SettingsComponent } from './settings/settings.component';
 import { VcfLoaderComponent } from './vcf-loader/vcf-loader.component';
 import {ContactSearchPipe} from './components/pipes/contact-search-pipe';import { JoinBackupsComponent } from './join-backups/join-backups.component';import { ToastComponent } from './toast.component';
+import { AboutDialogComponent } from './about-dialog/about-dialog.component';
 const appRoutes: Routes = [
 { path: 'main', component: MainComponent },
 { path: 'settings', component: SettingsComponent },
@@ -53,7 +54,9 @@ pathMatch: 'full'
     LazyInnerHtmlDirective,
     // include standalone components
     JoinBackupsComponent,
-    ToastComponent
+    ToastComponent,
+    // About dialog (standalone)
+    AboutDialogComponent
     ],
     providers: [
         provideBrowserGlobalErrorListeners(),

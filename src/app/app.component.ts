@@ -8,7 +8,7 @@ import { SmsLoaderService } from './sms-loader.service';
 import { VcfLoaderService } from './vcf-loader.service';
 import { VcfStoreService } from './vcf-store.service';
 import { LoaderStatusUpdate } from './loader-status';
-import { APP_VERSION } from './version';
+import { APP_VERSION, APP_BUILD_TIME, APP_GIT_COMMIT } from './version';
 
 @Component({
     selector: 'app-root',
@@ -20,6 +20,20 @@ import { APP_VERSION } from './version';
 export class AppComponent implements OnInit  {
 	title = 'SMS Backup Viewer';
 	appVersion = APP_VERSION;
+	appBuildTime = APP_BUILD_TIME;
+	appGitCommit = (typeof APP_GIT_COMMIT !== 'undefined') ? APP_GIT_COMMIT : '';
+	get appVersionTooltip(): string {
+		let t = `v${this.appVersion} — built ${this.appBuildTime}`;
+		if (this.appGitCommit) {
+			t += ` — ${this.appGitCommit}`;
+		}
+		return t;
+	}
+
+	// About dialog control
+	showAbout: boolean = false;
+	openAbout() { this.showAbout = true; }
+	closeAbout() { this.showAbout = false; }
     smsloaded: boolean = false;
 	vcfloaded: boolean = false;
 	country: string = "AU";

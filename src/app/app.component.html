@@ -50,8 +50,11 @@
             </ul>
         </div>
 		<div class="mdl-mini-footer__right-section">
-			<div class="footer-version">v{{ appVersion }}</div>
+			<div class="footer-version" [title]="appVersionTooltip">v{{ appVersion }}</div>
+			<button class="about-btn mdl-button mdl-js-button" title="About" (click)="openAbout()">About</button>
 		</div>
+
+		<app-about-dialog *ngIf="showAbout" (close)="closeAbout()" [version]="appVersion" [buildTime]="appBuildTime" [commit]="appGitCommit"></app-about-dialog>
     </footer>
     <app-toast></app-toast>
 </div>

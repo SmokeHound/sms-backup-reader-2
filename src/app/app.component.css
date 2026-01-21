@@ -252,6 +252,8 @@
     opacity: 0.85;
     white-space: nowrap;
 }
+.about-btn { margin-left: 10px; background: transparent; color: rgba(255,255,255,0.9); border: 1px solid rgba(255,255,255,0.06); padding: 4px 8px; border-radius: 6px; font-size: 12px }
+.about-btn:hover { background: rgba(255,255,255,0.04) }
 
 .mdl-mini-footer a {
     color: rgba(255, 255, 255, 0.87);
