@@ -72,9 +72,8 @@ export class SmsLoaderComponent implements OnInit {
 
     private async tauriInvoke<T>(command: string, args?: Record<string, any>): Promise<T> {
         try {
-            // Import core at runtime to avoid Vite resolving it for browser builds.
-            const corePath = '@tauri-apps/api/' + 'core';
-            const core = await import(/* @vite-ignore */ corePath) as any;
+            // Import core at runtime; this stays behind an isTauri guard.
+            const core = await import('@tauri-apps/api/core') as any;
             const invoke = core.invoke as <U>(cmd: string, args?: Record<string, any>) => Promise<U>;
             return invoke<T>(command, args ?? {});
         } catch {
@@ -84,9 +83,8 @@ export class SmsLoaderComponent implements OnInit {
 
     private async tauriListen<T>(eventName: string, handler: (payload: T) => void): Promise<void> {
         try {
-            // Import event at runtime to avoid Vite resolving it for browser builds.
-            const eventPath = '@tauri-apps/api/' + 'event';
-            const ev = await import(/* @vite-ignore */ eventPath) as any;
+            // Import event at runtime; this stays behind an isTauri guard.
+            const ev = await import('@tauri-apps/api/event') as any;
             const listen = ev.listen as <U>(name: string, cb: (event: any) => void) => Promise<() => void>;
             const unlisten = await listen<T>(eventName, (event) => handler((event as any)?.payload));
             if (typeof unlisten === 'function') {
@@ -126,9 +124,7 @@ export class SmsLoaderComponent implements OnInit {
             return;
         }
         try {
-            // Use runtime-assembled import to avoid Vite trying to resolve this in browser builds.
-            const pluginPath = '@tauri-apps/' + 'plugin-dialog';
-            const { open } = await import(/* @vite-ignore */ pluginPath) as any;
+            const { open } = await import('@tauri-apps/plugin-dialog') as any;
             const selected = await open({
                 multiple: false,
                 directory: false,
@@ -153,8 +149,7 @@ export class SmsLoaderComponent implements OnInit {
             return;
         }
         try {
-            const pluginPath = '@tauri-apps/' + 'plugin-dialog';
-            const { open } = await import(/* @vite-ignore */ pluginPath) as any;
+            const { open } = await import('@tauri-apps/plugin-dialog') as any;
             const selected = await open({
                 multiple: false,
                 directory: false,

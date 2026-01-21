@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 import { Message } from './message';
@@ -20,7 +20,7 @@ export class SmsStoreService {
 	private indexedDbEnabled: boolean;
     private smsImportMode: 'auto' | 'browser' | 'tauri' = 'tauri';
 
-    constructor(private smsDbService: SmsDbService) { 
+    constructor(private smsDbService: SmsDbService, private ngZone: NgZone) { 
         this.messagesLoaded = false;
         this.countryCode = 'US';
         this.useIndexedDb = false;
@@ -253,7 +253,11 @@ export class SmsStoreService {
     messagesLoaded$ = this._messagesLoadedSource.asObservable();
     // Service command
     broadcastMessagesLoaded(messagesLoaded: boolean) {
-        this._messagesLoadedSource.next(messagesLoaded);
+        // Some producers (notably Tauri event callbacks) can run outside Angular's zone.
+        // Emitting inside NgZone ensures subscribers trigger change detection immediately.
+        this.ngZone.run(() => {
+            this._messagesLoadedSource.next(messagesLoaded);
+        });
     }
 
     // Observable source
@@ -262,7 +266,9 @@ export class SmsStoreService {
     contactClicked$ = this._contactClickedSource.asObservable();
     // Service command
     broadcastContactClicked(contactClicked: Contact) {
-        this._contactClickedSource.next(contactClicked);
+		this.ngZone.run(() => {
+			this._contactClickedSource.next(contactClicked);
+		});
     }
 
 
