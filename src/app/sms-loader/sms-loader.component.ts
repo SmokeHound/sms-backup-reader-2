@@ -126,7 +126,9 @@ export class SmsLoaderComponent implements OnInit {
             return;
         }
         try {
-            const { open } = await import('@tauri-apps/plugin-dialog');
+            // Use runtime-assembled import to avoid Vite trying to resolve this in browser builds.
+            const pluginPath = '@tauri-apps/' + 'plugin-dialog';
+            const { open } = await import(/* @vite-ignore */ pluginPath) as any;
             const selected = await open({
                 multiple: false,
                 directory: false,
