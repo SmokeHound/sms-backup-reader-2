@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.21.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.20.0...sms-backup-viewer-v0.21.0) (2026-01-21)
+
+
+### Features
+
+* add About dialog component with version and build info display ([8a3d4c7](https://github.com/SmokeHound/sms-backup-viewer/commit/8a3d4c7efd90e31f124cceda203f0a0393c18ebb))
+* add Help button with keyboard shortcut to open About dialog ([46fd281](https://github.com/SmokeHound/sms-backup-viewer/commit/46fd2818d45f3c1b9535bd3e5be4f41fb18532cb))
+
 ## [0.20.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.19.0...sms-backup-viewer-v0.20.0) (2026-01-20)
 
 
