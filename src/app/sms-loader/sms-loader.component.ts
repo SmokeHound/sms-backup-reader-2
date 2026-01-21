@@ -72,7 +72,10 @@ export class SmsLoaderComponent implements OnInit {
 
     private async tauriInvoke<T>(command: string, args?: Record<string, any>): Promise<T> {
         try {
-            const { invoke } = await import('@tauri-apps/api/core');
+            // Import core at runtime to avoid Vite resolving it for browser builds.
+            const corePath = '@tauri-apps/api/' + 'core';
+            const core = await import(/* @vite-ignore */ corePath) as any;
+            const invoke = core.invoke as <U>(cmd: string, args?: Record<string, any>) => Promise<U>;
             return invoke<T>(command, args ?? {});
         } catch {
             return Promise.reject(new Error('Tauri invoke not available.'));
@@ -81,7 +84,10 @@ export class SmsLoaderComponent implements OnInit {
 
     private async tauriListen<T>(eventName: string, handler: (payload: T) => void): Promise<void> {
         try {
-            const { listen } = await import('@tauri-apps/api/event');
+            // Import event at runtime to avoid Vite resolving it for browser builds.
+            const eventPath = '@tauri-apps/api/' + 'event';
+            const ev = await import(/* @vite-ignore */ eventPath) as any;
+            const listen = ev.listen as <U>(name: string, cb: (event: any) => void) => Promise<() => void>;
             const unlisten = await listen<T>(eventName, (event) => handler((event as any)?.payload));
             if (typeof unlisten === 'function') {
                 this.unlistenFns.push(unlisten);
@@ -145,7 +151,8 @@ export class SmsLoaderComponent implements OnInit {
             return;
         }
         try {
-            const { open } = await import('@tauri-apps/plugin-dialog');
+            const pluginPath = '@tauri-apps/' + 'plugin-dialog';
+            const { open } = await import(/* @vite-ignore */ pluginPath) as any;
             const selected = await open({
                 multiple: false,
                 directory: false,

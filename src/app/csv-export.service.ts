@@ -238,19 +238,23 @@ export class CsvExportService {
 
 	private async tryTauriSaveBlob(filename: string, blob: Blob): Promise<string | null> {
 		try {
-			const { save } = await import('@tauri-apps/api/dialog');
+			// Import dialog at runtime so Vite doesn't attempt to resolve it for browser builds.
+			const dialogPath = '@tauri-apps/api/' + 'dialog';
+			const { save } = await import(/* @vite-ignore */ dialogPath) as any;
 			const path = await save({ defaultPath: filename });
 			if (!path) return null;
 
 			const arrayBuffer = await blob.arrayBuffer();
 			const uint8 = new Uint8Array(arrayBuffer);
-			const { writeBinaryFile } = await import('@tauri-apps/api/fs');
+			// Import fs at runtime similarly.
+			const fsPath = '@tauri-apps/api/' + 'fs';
+			const { writeBinaryFile } = await import(/* @vite-ignore */ fsPath) as any;
 			await writeBinaryFile({ path, contents: uint8 });
 			return path;
 		} catch (e) {
 			console.error('Tauri save error', e);
 			return null;
-		}
+		} 
 	}
 
 	buildCsv(rows: Array<Record<string, CsvCell>>, columns: string[]): string {

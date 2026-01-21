@@ -47,11 +47,13 @@ export class JoinBackupsComponent {
   async addFilesNative() {
     // Tauri open dialog
     try {
-      const { open } = await import('@tauri-apps/api/dialog');
+      const dialogPath = '@tauri-apps/api/' + 'dialog';
+      const { open } = await import(/* @vite-ignore */ dialogPath) as any;
       const paths = await open({ multiple: true, filters: [{ name: 'XML', extensions: ['xml'] }] });
       if (!paths) return;
       const pArr = Array.isArray(paths) ? paths : [paths];
-      const { readText } = await import('@tauri-apps/api/fs');
+      const fsPath = '@tauri-apps/api/' + 'fs';
+      const { readText } = await import(/* @vite-ignore */ fsPath) as any;
       for (const p of pArr) {
         let text: string | undefined = undefined;
         let readError: string | undefined = undefined;
@@ -99,7 +101,8 @@ export class JoinBackupsComponent {
         f.size = text ? text.length : f.size;
       } else if (f.path) {
         // Native path, use Tauri fs
-        const { readText } = await import('@tauri-apps/api/fs');
+        const fsPath = '@tauri-apps/api/' + 'fs';
+        const { readText } = await import(/* @vite-ignore */ fsPath) as any;
         const text = await readText(f.path);
         f.text = text;
         f.size = text ? text.length : f.size;
@@ -219,10 +222,12 @@ export class JoinBackupsComponent {
 
       // Save using Tauri dialog + fs if available, else fallback to download
       try {
-        const { save } = await import('@tauri-apps/api/dialog');
+        const dialogPath = '@tauri-apps/api/' + 'dialog';
+        const { save } = await import(/* @vite-ignore */ dialogPath) as any;
         const path = await save({ defaultPath: 'merged.xml' });
         if (path) {
-          const { writeTextFile } = await import('@tauri-apps/api/fs');
+          const fsPath = '@tauri-apps/api/' + 'fs';
+          const { writeTextFile } = await import(/* @vite-ignore */ fsPath) as any;
           await writeTextFile({ path, contents: xml });
           // show toast
           try { const { ToastService } = await import('../toast.service'); } catch (e) {}
