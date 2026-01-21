@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.22.1](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.22.0...sms-backup-viewer-v0.22.1) (2026-01-21)
+
+
+### Bug Fixes
+
+* update Tauri plugin import to use runtime-assembled path for better compatibility with Vite builds ([3069582](https://github.com/SmokeHound/sms-backup-viewer/commit/30695828676007f258a61f98017ce4286266054d))
+
 ## [0.22.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.21.0...sms-backup-viewer-v0.22.0) (2026-01-21)
 
 
