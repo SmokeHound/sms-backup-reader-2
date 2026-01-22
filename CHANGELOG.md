@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.23.2](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.23.1...sms-backup-viewer-v0.23.2) (2026-01-22)
+
+
+### Bug Fixes
+
+* update file display and version information ([854f496](https://github.com/SmokeHound/sms-backup-viewer/commit/854f496d87acf850203cbffe1baa880d8c93d10c))
+
 ## [0.23.1](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.23.0...sms-backup-viewer-v0.23.1) (2026-01-22)
 
 
