@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.24.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.23.2...sms-backup-viewer-v0.24.0) (2026-01-22)
+
+
+### Features
+
+* enhance join backups UI with back button and improved layout ([3ad2739](https://github.com/SmokeHound/sms-backup-viewer/commit/3ad2739f70a280db6d90bb9a00e9bde806371c8b))
+
+
+### Bug Fixes
+
+* update version information to 0.23.2 and adjust build time ([3ad2739](https://github.com/SmokeHound/sms-backup-viewer/commit/3ad2739f70a280db6d90bb9a00e9bde806371c8b))
+
 ## [0.23.2](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.23.1...sms-backup-viewer-v0.23.2) (2026-01-22)
 
 

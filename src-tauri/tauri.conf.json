@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "SMS Backup Viewer",
-  "version": "0.23.2",
+  "version": "0.24.0",
   "identifier": "io.github.smokehound.sms-backup-viewer",
   "build": {
     "frontendDist": "../dist/sms-backup-viewer/browser",
@@ -16,7 +16,7 @@
         "width": 1100,
         "height": 700,
         "resizable": true,
-		"maximized": true,
+        "maximized": true,
         "fullscreen": false
       }
     ],
