@@ -142,10 +142,14 @@ export class MessageListComponent implements OnInit, AfterViewInit {
         const newestSlice = msgs.slice(-IMMEDIATE_COUNT);
 
         const renderStart = performance.now();
-        this.messages = newestSlice;
-        this.oldestLoadedDateMs = newestSlice?.length ? (newestSlice[0].date?.getTime?.() ?? Number(newestSlice[0].timestamp) ?? null) : null;
         const total = Number(contact.messageCount ?? 0);
-        this.hasMoreMessages = total > (newestSlice?.length ?? 0);
+        
+        // Dexie promises can resolve outside Angular zone; wrap assignment to trigger change detection.
+        this.ngZone.run(() => {
+            this.messages = newestSlice;
+            this.oldestLoadedDateMs = newestSlice?.length ? (newestSlice[0].date?.getTime?.() ?? Number(newestSlice[0].timestamp) ?? null) : null;
+            this.hasMoreMessages = total > (newestSlice?.length ?? 0);
+        });
 
         // Measure first rendered row height and update viewport item size so CDK uses realistic sizing
         requestAnimationFrame(() => {
@@ -178,9 +182,11 @@ export class MessageListComponent implements OnInit, AfterViewInit {
         if (msgs.length > IMMEDIATE_COUNT) {
             setTimeout(() => {
                 const renderAllStart = performance.now();
-                this.messages = msgs;
-                this.oldestLoadedDateMs = msgs?.length ? (msgs[0].date?.getTime?.() ?? Number(msgs[0].timestamp) ?? null) : null;
-                this.hasMoreMessages = total > (msgs?.length ?? 0);
+                this.ngZone.run(() => {
+                    this.messages = msgs;
+                    this.oldestLoadedDateMs = msgs?.length ? (msgs[0].date?.getTime?.() ?? Number(msgs[0].timestamp) ?? null) : null;
+                    this.hasMoreMessages = total > (msgs?.length ?? 0);
+                });
 
                 // Re-measure and re-scroll after full set renders.
                 const el = this.scrollContainerEl;
@@ -222,13 +228,17 @@ export class MessageListComponent implements OnInit, AfterViewInit {
         try {
             const older = await this.smsStoreService.getOlderMessages(contact.address, this.oldestLoadedDateMs, this.pageSize);
             if (!older?.length) {
-                this.hasMoreMessages = false;
+                this.ngZone.run(() => {
+                    this.hasMoreMessages = false;
+                });
                 return;
             }
-            this.messages = [...older, ...(this.messages ?? [])];
-            this.oldestLoadedDateMs = older[0].date?.getTime?.() ?? Number(older[0].timestamp) ?? this.oldestLoadedDateMs;
-            const total = Number(contact.messageCount ?? 0);
-            this.hasMoreMessages = total > (this.messages?.length ?? 0);
+            this.ngZone.run(() => {
+                this.messages = [...older, ...(this.messages ?? [])];
+                this.oldestLoadedDateMs = older[0].date?.getTime?.() ?? Number(older[0].timestamp) ?? this.oldestLoadedDateMs;
+                const total = Number(contact.messageCount ?? 0);
+                this.hasMoreMessages = total > (this.messages?.length ?? 0);
+            });
 
 			// Preserve viewport position when prepending.
 			if (el) {
@@ -252,14 +262,18 @@ export class MessageListComponent implements OnInit, AfterViewInit {
     getAllMessages(): void {
         this.messages = new Array<Message>();
 		this.smsStoreService.getAllMessages().then(messageMap => {
-			this.messageMap = messageMap;
+			this.ngZone.run(() => {
+				this.messageMap = messageMap;
+			});
 		});
     }
 
     showMessages(contactId: string): void {
         this.smsStoreService.getLatestMessages(contactId, this.pageSize).then((msgs) => {
-            this.messages = msgs;
-            this.oldestLoadedDateMs = msgs?.length ? (msgs[0].date?.getTime?.() ?? Number(msgs[0].timestamp) ?? null) : null;
+            this.ngZone.run(() => {
+                this.messages = msgs;
+                this.oldestLoadedDateMs = msgs?.length ? (msgs[0].date?.getTime?.() ?? Number(msgs[0].timestamp) ?? null) : null;
+            });
 			const el = this.scrollContainerEl;
 			if (el) {
 				requestAnimationFrame(() => {

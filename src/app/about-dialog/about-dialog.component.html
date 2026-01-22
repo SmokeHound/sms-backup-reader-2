@@ -3,7 +3,7 @@
     <h3>About SMS Backup Viewer</h3>
     <div class="about-body">
       <div><strong>Version:</strong> v{{ version }}</div>
-      <div><strong>Build time:</strong> {{ buildTime }}</div>
+      <div><strong>Build time:</strong> {{ buildTimeLocal || buildTime }}</div>
       <div *ngIf="commit"><strong>Commit:</strong> {{ commit }}</div>
       <p style="margin-top: 12px;">A small tool for inspecting and merging SMS backup XML files.</p>
     </div>
