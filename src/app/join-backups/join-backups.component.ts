@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
+import { Router } from '@angular/router';
 import { CsvExportService } from '../csv-export.service';
 
 @Component({
@@ -11,7 +12,15 @@ export class JoinBackupsComponent {
   status = '';
   preview = { files: 0, messages: 0, contacts: 0 };
 
-  constructor(private csvExport: CsvExportService) {}
+  constructor(
+  private csvExport: CsvExportService,
+  private ngZone: NgZone,
+  private router: Router
+  ) {}
+
+  goBackToMain(): void {
+    void this.router.navigateByUrl('/main');
+  }
 
   async addFilesBrowser(files: FileList | null) {
     if (!files) return;
@@ -60,7 +69,9 @@ export class JoinBackupsComponent {
 
   async addFilesNative() {
     if (!this.detectTauriRuntime()) {
-      this.status = 'Native file picker not available';
+      this.ngZone.run(() => {
+        this.status = 'Native file picker is only available in the desktop app (Tauri).';
+      });
       return;
     }
 
@@ -71,6 +82,8 @@ export class JoinBackupsComponent {
       if (!paths) return;
       const pArr = Array.isArray(paths) ? paths : [paths];
       const { readTextFile } = await import('@tauri-apps/plugin-fs') as any;
+
+      const newEntries: Array<{ name: string; size: number; text?: string; path?: string; readError?: string; expanded?: boolean; details?: any }> = [];
       for (const p of pArr) {
         let text: string | undefined = undefined;
         let readError: string | undefined = undefined;
@@ -81,18 +94,27 @@ export class JoinBackupsComponent {
           readError = String((e as any)?.message ?? 'Read failed');
         }
         const name = p.split(/[\\/]/).pop();
-        this.selectedFiles.push({ name: name || p, size: text ? text.length : 0, text, path: p, readError, expanded: false, details: undefined });
+		newEntries.push({ name: name || p, size: text ? text.length : 0, text, path: p, readError, expanded: false, details: undefined });
       }
-      this.updatePreview();
+
+      this.ngZone.run(() => {
+        this.selectedFiles.push(...newEntries);
+        this.updatePreview();
+        this.status = '';
+      });
     } catch (e) {
       console.warn('native pick error', e);
-      this.status = `Native file picker not available: ${String((e as any)?.message ?? e)}`;
+		this.ngZone.run(() => {
+			this.status = `Native file picker not available: ${String((e as any)?.message ?? e)}`;
+		});
     }
   }
 
   removeFile(index: number) {
-    this.selectedFiles.splice(index, 1);
-    this.updatePreview();
+	this.ngZone.run(() => {
+		this.selectedFiles.splice(index, 1);
+		this.updatePreview();
+	});
   }
 
   async retryRead(index: number) {
@@ -139,10 +161,12 @@ export class JoinBackupsComponent {
   toggleDetails(index: number) {
     const f = this.selectedFiles[index];
     if (!f) return;
-    f.expanded = !f.expanded;
-    if (f.expanded && !f.details && f.text) {
-      this.computeDetails(f);
-    }
+	this.ngZone.run(() => {
+		f.expanded = !f.expanded;
+		if (f.expanded && !f.details && f.text) {
+			this.computeDetails(f);
+		}
+	});
   }
 
   private computeDetails(f: any) {
@@ -275,7 +299,10 @@ export class JoinBackupsComponent {
   }
 
   clearAll() {
+  this.ngZone.run(() => {
     this.selectedFiles = [];
     this.updatePreview();
+    this.status = '';
+  });
   }
 }

@@ -1,5 +1,9 @@
 <div class="join-card">
-  <h2>Join Backups</h2>
+  <div class="join-header">
+	<button class="back-btn" (click)="goBackToMain()">Back</button>
+	<h2>Join Backups</h2>
+	<div class="join-header-spacer"></div>
+  </div>
   <div class="controls">
     <input type="file" id="fileInput" (change)="addFilesBrowser($event.target.files)" multiple accept=".xml" />
     <button (click)="addFilesNative()">Add files (native)</button>

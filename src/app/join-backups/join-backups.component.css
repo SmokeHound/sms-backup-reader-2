@@ -1,4 +1,8 @@
 .join-card { padding: 18px; border: 1px solid #e6e6e6; border-radius: 10px; max-width: 800px; }
+.join-header { display:flex; align-items:center; gap: 10px; margin-bottom: 8px; }
+.join-header h2 { margin: 0; }
+.join-header-spacer { flex: 1 1 auto; }
+.back-btn { background: transparent; border: 1px solid #cbd5e1; padding: 6px 10px; border-radius: 8px; cursor: pointer; }
 .controls { display:flex; gap: 8px; align-items:center; margin-bottom: 12px; }
 .controls .primary { background: #2563eb; color:white; border:none; padding: 8px 12px; border-radius:8px }
 .preview { display:flex; gap:12px; margin-bottom:12px; color:#333 }

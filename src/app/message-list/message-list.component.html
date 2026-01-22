@@ -1,33 +1,34 @@
-
-<div style="padding: 8px 0;" *ngIf="selectedContact && messages?.length">
-	<div *ngIf="hasMoreMessages" style="margin-bottom: 8px;">
+<div class="message-container">
+	<div style="padding: 8px 0;" *ngIf="selectedContact && messages?.length">
+		<div *ngIf="hasMoreMessages" style="margin-bottom: 8px;">
+			<button
+				class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+				(click)="loadOlderMessages()"
+				[disabled]="loadingOlder">
+				{{ loadingOlder ? 'Loading…' : 'Load older messages' }}
+			</button>
+		</div>
 		<button
 			class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
-			(click)="loadOlderMessages()"
-			[disabled]="loadingOlder">
-			{{ loadingOlder ? 'Loading…' : 'Load older messages' }}
+			(click)="openExportDialog()">
+			Export Conversation CSV
 		</button>
 	</div>
-	<button
-		class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
-		(click)="openExportDialog()">
-		Export Conversation CSV
-	</button>
-</div>
 
-<export-options-dialog
-	[isOpen]="showExportDialog"
-	(onCancel)="closeExportDialog()"
-	(onExport)="handleExport($event)">
-</export-options-dialog>
+	<export-options-dialog
+		[isOpen]="showExportDialog"
+		(onCancel)="closeExportDialog()"
+		(onExport)="handleExport($event)">
+	</export-options-dialog>
 
-<cdk-virtual-scroll-viewport [itemSize]="viewportItemSize" class="message-viewport">
-	<div *cdkVirtualFor="let message of messages; trackBy: trackByMessage" class="message-row"
-		[ngClass]="{'message-sent': message.type == 2 || message.type == 4, 'message-received': message.type == 1 || message.type == 3}">
-		<div class="message-body" [lazyInnerHtml]="message.body"></div>
-		<div class="message-meta">
-			<span class="message-type">{{message.type | messageType}}</span>
-			<span class="message-date">{{message.date}}</span>
+	<cdk-virtual-scroll-viewport [itemSize]="viewportItemSize" class="message-viewport">
+		<div *cdkVirtualFor="let message of messages; trackBy: trackByMessage" class="message-row"
+			[ngClass]="{'message-sent': message.type == 2 || message.type == 4, 'message-received': message.type == 1 || message.type == 3}">
+			<div class="message-body" [lazyInnerHtml]="message.body"></div>
+			<div class="message-meta">
+				<span class="message-type">{{message.type | messageType}}</span>
+				<span class="message-date">{{message.date}}</span>
+			</div>
 		</div>
-	</div>
-</cdk-virtual-scroll-viewport>
+	</cdk-virtual-scroll-viewport>
+</div>
