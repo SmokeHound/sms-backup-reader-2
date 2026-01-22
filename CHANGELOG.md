@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.23.1](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.23.0...sms-backup-viewer-v0.23.1) (2026-01-22)
+
+
+### Bug Fixes
+
+* enhance build time display and update version information ([13cdd6b](https://github.com/SmokeHound/sms-backup-viewer/commit/13cdd6bd91316b9d54981dac8c13067f03ff19c0))
+* update build time and git commit in version file ([810ee58](https://github.com/SmokeHound/sms-backup-viewer/commit/810ee58a24a031b4bc7e21abbcf98f4b9d9d5029))
+
 ## [0.23.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.22.1...sms-backup-viewer-v0.23.0) (2026-01-21)
 
 
