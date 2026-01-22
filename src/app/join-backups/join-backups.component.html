@@ -14,10 +14,14 @@
   </div>
 
   <div class="file-list">
+    <h3 style="margin: 8px 0;">Added files</h3>
+	<div *ngIf="!selectedFiles.length" style="color:#555; font-size:0.95em; padding: 6px 0;">
+		No files added yet.
+	</div>
     <ul>
       <li *ngFor="let f of selectedFiles; let i = index">
         <div class="file-line">
-          <span class="file-title">{{i+1}}. {{ f.name }} ({{ f.size }} bytes)</span>
+          <span class="file-title">{{i+1}}. {{ f.name }} ({{ f.size | number }} bytes)</span>
 
           <span *ngIf="f.readError || f.text === undefined" class="file-bad">
             <span *ngIf="f.reading">Reading...</span>
