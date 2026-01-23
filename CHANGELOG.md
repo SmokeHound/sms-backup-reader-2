@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.26.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.25.0...sms-backup-viewer-v0.26.0) (2026-01-23)
+
+
+### Features
+
+* enhance settings UI with improved layout and styling for storage stats ([d9902f9](https://github.com/SmokeHound/sms-backup-viewer/commit/d9902f9a9716ef7fafce5cf3d0f30d045ace9ee0))
+
 ## [0.25.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.24.0...sms-backup-viewer-v0.25.0) (2026-01-23)
 
 
