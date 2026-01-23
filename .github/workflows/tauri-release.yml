@@ -2,7 +2,7 @@ name: tauri-release
 
 on:
   release:
-    types: [published]
+    types: [published, created]
 
 permissions:
   contents: write
