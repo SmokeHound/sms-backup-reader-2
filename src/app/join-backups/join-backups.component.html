@@ -1,14 +1,16 @@
 <div class="join-card">
   <div class="join-header">
-	<button class="back-btn" (click)="goBackToMain()">Back</button>
+	<button class="jb-btn" type="button" (click)="goBackToMain()">Back</button>
 	<h2>Join Backups</h2>
 	<div class="join-header-spacer"></div>
   </div>
+  <div class="join-subtitle">Add multiple SMS Backup & Restore XML files, then merge into one.</div>
   <div class="controls">
-    <input type="file" id="fileInput" (change)="addFilesBrowser($event.target.files)" multiple accept=".xml" />
-    <button (click)="addFilesNative()">Add files (native)</button>
-    <button (click)="clearAll()">Clear</button>
-    <button class="primary" (click)="mergeAndSave()">Merge & Save</button>
+	<input type="file" id="fileInput" (change)="onBrowserFileInputChange($event)" multiple accept=".xml" />
+	<label class="jb-btn" for="fileInput">Add files</label>
+	<button class="jb-btn" type="button" (click)="addFilesNative()">Add files (native)</button>
+	<button class="jb-btn" type="button" (click)="clearAll()">Clear</button>
+	<button class="jb-btn jb-btn--primary" type="button" (click)="mergeAndSave()">Merge & Save</button>
   </div>
 
   <div class="preview">
@@ -18,10 +20,8 @@
   </div>
 
   <div class="file-list">
-    <h3 style="margin: 8px 0;">Added files</h3>
-	<div *ngIf="!selectedFiles.length" style="color:#555; font-size:0.95em; padding: 6px 0;">
-		No files added yet.
-	</div>
+	<h3 class="file-list-title">Added files</h3>
+	<div *ngIf="!selectedFiles.length" class="file-list-empty">No files added yet.</div>
     <ul>
       <li *ngFor="let f of selectedFiles; let i = index">
         <div class="file-line">
@@ -30,13 +30,13 @@
           <span *ngIf="f.readError || f.text === undefined" class="file-bad">
             <span *ngIf="f.reading">Reading...</span>
             <span *ngIf="!f.reading">Unreadable</span>
-            <button class="retry-btn" (click)="retryRead(i)" [disabled]="f.reading">Retry</button>
+			<button class="jb-btn jb-btn--sm" type="button" (click)="retryRead(i)" [disabled]="f.reading">Retry</button>
             <span class="file-bad-msg" *ngIf="f.readError">{{ f.readError }}</span>
           </span>
 
           <div class="file-actions">
-            <button class="details-btn" (click)="toggleDetails(i)" style="margin-left:8px">{{ f.expanded ? 'Hide' : 'Details' }}</button>
-            <button (click)="removeFile(i)" style="margin-left:8px">Remove</button>
+      <button class="jb-btn jb-btn--sm" type="button" (click)="toggleDetails(i)">{{ f.expanded ? 'Hide' : 'Details' }}</button>
+      <button class="jb-btn jb-btn--sm" type="button" (click)="removeFile(i)">Remove</button>
           </div>
         </div>
 

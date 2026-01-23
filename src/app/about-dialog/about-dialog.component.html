@@ -1,7 +1,8 @@
 <div class="about-overlay" (click)="onClose()">
   <div class="about-modal" (click)="$event.stopPropagation()">
-    <h3>About SMS Backup Viewer</h3>
+	<h3>About</h3>
     <div class="about-body">
+	  <div style="margin-bottom: 10px; color: #555;">SMS Backup Viewer</div>
       <div><strong>Version:</strong> v{{ version }}</div>
       <div><strong>Build time:</strong> {{ buildTimeLocal || buildTime }}</div>
       <div *ngIf="commit"><strong>Commit:</strong> {{ commit }}</div>

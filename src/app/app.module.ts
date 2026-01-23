@@ -21,12 +21,16 @@ import { MessageTypePipe } from './message-type.pipe';
 import { MainComponent } from './main/main.component';
 import { SettingsComponent } from './settings/settings.component';
 import { VcfLoaderComponent } from './vcf-loader/vcf-loader.component';
-import {ContactSearchPipe} from './components/pipes/contact-search-pipe';import { JoinBackupsComponent } from './join-backups/join-backups.component';import { ToastComponent } from './toast.component';
+import { ContactSearchPipe } from './components/pipes/contact-search-pipe';
+import { JoinBackupsComponent } from './join-backups/join-backups.component';
+import { ToastComponent } from './toast.component';
 import { AboutDialogComponent } from './about-dialog/about-dialog.component';
+import { LogComponent } from './log/log.component';
 const appRoutes: Routes = [
 { path: 'main', component: MainComponent },
 { path: 'settings', component: SettingsComponent },
 { path: 'tools/join-backups', component: JoinBackupsComponent },
+{ path: 'log', component: LogComponent },
 { path: '',
 redirectTo: '/main',
 pathMatch: 'full'
@@ -54,6 +58,7 @@ pathMatch: 'full'
     LazyInnerHtmlDirective,
     // include standalone components
     JoinBackupsComponent,
+    LogComponent,
     ToastComponent,
     // About dialog (standalone)
     AboutDialogComponent

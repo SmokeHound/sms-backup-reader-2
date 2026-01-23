@@ -9,6 +9,7 @@ import { VcfLoaderService } from './vcf-loader.service';
 import { VcfStoreService } from './vcf-store.service';
 import { LoaderStatusUpdate } from './loader-status';
 import { APP_VERSION, APP_BUILD_TIME, APP_GIT_COMMIT } from './version';
+import { LogService } from './log.service';
 
 @Component({
     selector: 'app-root',
@@ -66,7 +67,8 @@ export class AppComponent implements OnInit  {
     constructor(private smsStoreService: SmsStoreService,
 				private smsLoaderService: SmsLoaderService,
 				private vcfLoaderService: VcfLoaderService,
-				private vcfStoreService: VcfStoreService) 
+				private vcfStoreService: VcfStoreService,
+				private logs: LogService) 
 	{
     }
 	private getQueryParameter(key: string): string {
@@ -74,6 +76,12 @@ export class AppComponent implements OnInit  {
 		return parameters.get(key);
 	}
 	ngOnInit() {
+		this.logs.info('App started', {
+			version: this.appVersion,
+			buildTime: this.appBuildTime,
+			commit: this.appGitCommit || undefined
+		});
+
 		// Apply default country on startup.
 		this.smsStoreService.changeCountry(this.country);
 		this.vcfStoreService.changeCountry(this.country);
@@ -84,23 +92,58 @@ export class AppComponent implements OnInit  {
 			this.country = qpCountry;
 			this.smsStoreService.changeCountry(this.country);
 			this.vcfStoreService.changeCountry(this.country);
+			this.logs.info('Country override applied', { country: this.country });
 		}
 
 		// If there's persisted data (IndexedDB mode), restore it on startup.
-		this.smsStoreService.restoreFromIndexedDbIfEnabled().then((restored) => {
-			if (restored) {
-				this.smsloaded = true;
-				this.smsStoreService.broadcastMessagesLoaded(true);
-			}
-		});
+		this.smsStoreService
+			.restoreFromIndexedDbIfEnabled()
+			.then((restored) => {
+				if (restored) {
+					this.logs.info('Restored messages from IndexedDB');
+					this.smsloaded = true;
+					this.smsStoreService.broadcastMessagesLoaded(true);
+				}
+			})
+			.catch((e) => {
+				this.logs.error('Failed to restore from IndexedDB', e);
+			});
 	}
 
 	onSmsStatusChanged(update: LoaderStatusUpdate): void {
-		this.smsStatus = this.mergeStatus(this.smsStatus, update, 'sms');
+		const prev = this.smsStatus;
+		const next = this.mergeStatus(this.smsStatus, update, 'sms');
+		this.smsStatus = next;
+		this.logStatusTransition('SMS', prev, next);
 	}
 
 	onVcfStatusChanged(update: LoaderStatusUpdate): void {
-		this.vcfStatus = this.mergeStatus(this.vcfStatus, update, 'vcf');
+		const prev = this.vcfStatus;
+		const next = this.mergeStatus(this.vcfStatus, update, 'vcf');
+		this.vcfStatus = next;
+		this.logStatusTransition('Contacts', prev, next);
+	}
+
+	private logStatusTransition(label: string, prev: LoaderStatusUpdate, next: LoaderStatusUpdate): void {
+		if (!next) return;
+		const changed = prev?.status !== next.status || prev?.text !== next.text;
+		if (!changed) return;
+
+		const msg = `[${label}] ${next.text || next.status}`;
+		switch (next.status) {
+			case 'error':
+				this.logs.error(msg, next);
+				break;
+			case 'ok':
+				this.logs.info(msg, next);
+				break;
+			case 'busy':
+				this.logs.debug(msg, next);
+				break;
+			default:
+				this.logs.debug(msg, next);
+				break;
+		}
 	}
 
 	private mergeStatus(
@@ -121,6 +164,7 @@ export class AppComponent implements OnInit  {
 	}
     onSmsLoaded(loaded: boolean) {
         if (loaded) {
+			this.logs.info('SMS import completed');
             if (this.smsloaded) {
                 this.smsloaded = false;
                 this.smsStoreService.clearAllMessages().then(() => {
@@ -133,6 +177,9 @@ export class AppComponent implements OnInit  {
     }
 	
 	onVcfLoaded(loaded: boolean) {
+		if (loaded) {
+			this.logs.info('Contacts import completed');
+		}
 		if (this.vcfloaded) {
 			this.vcfloaded = false;
 			this.vcfStoreService.clearAllContacts().then(() => {

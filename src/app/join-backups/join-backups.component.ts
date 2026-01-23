@@ -1,9 +1,13 @@
+import { CommonModule } from '@angular/common';
 import { Component, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { CsvExportService } from '../csv-export.service';
+import { LogService } from '../log.service';
 
 @Component({
   selector: 'app-join-backups',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './join-backups.component.html',
   styleUrls: ['./join-backups.component.css']
 })
@@ -15,42 +19,93 @@ export class JoinBackupsComponent {
   constructor(
   private csvExport: CsvExportService,
   private ngZone: NgZone,
-  private router: Router
+  private router: Router,
+  private logs: LogService
   ) {}
 
   goBackToMain(): void {
     void this.router.navigateByUrl('/main');
   }
 
+  onBrowserFileInputChange(event: Event): void {
+    const input = event?.target as HTMLInputElement | null;
+    const files = input?.files ?? null;
+    void this.addFilesBrowser(files);
+    // allow selecting the same file(s) again
+    if (input) {
+      input.value = '';
+    }
+  }
+
   async addFilesBrowser(files: FileList | null) {
     if (!files) return;
-    this.status = 'Reading files...';
     const arr = Array.from(files);
-    for (const f of arr) {
-      let text: string | undefined = undefined;
-      let readError: string | undefined = undefined;
-      try {
-        if (typeof (f as any).text === 'function') {
-          text = await (f as any).text();
-        } else {
-          // Fallback for environments where File.text() isn't available
-          text = await new Promise<string>((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(String(reader.result ?? ''));
-            reader.onerror = () => reject(reader.error);
-            reader.readAsText(f);
-          });
-        }
-      } catch (e) {
-        console.warn('Failed to read file content, adding placeholder', e);
-        readError = String((e as any)?.message ?? 'Read failed');
-      } finally {
-        // Always add the file entry so the user can see it and act on it.
-        this.selectedFiles.push({ name: f.name, size: f.size, text, fileRef: f, readError, expanded: false, details: undefined });
-      }
-    }
+	this.logs.info('Join Backups: adding files (browser)', { count: arr.length });
+
+  const newEntries = arr.map((f) => ({
+    name: f.name,
+    size: f.size,
+    text: undefined as string | undefined,
+    fileRef: f,
+    readError: undefined as string | undefined,
+    reading: true,
+    expanded: false,
+    details: undefined as any
+  }));
+
+  this.ngZone.run(() => {
+    this.status = 'Reading files...';
+    this.selectedFiles = [...(this.selectedFiles ?? []), ...newEntries];
+    this.updatePreview();
+  });
+
+  for (const entry of newEntries) {
+    await this.readBrowserEntry(entry);
+  }
+
+  this.ngZone.run(() => {
     this.updatePreview();
     this.status = '';
+  });
+  }
+
+  private async readBrowserEntry(entry: any): Promise<void> {
+    const f: File | undefined = entry?.fileRef;
+    if (!f) {
+      entry.readError = 'Missing browser file reference';
+      entry.reading = false;
+      return;
+    }
+
+    try {
+      let text: string;
+      if (typeof (f as any).text === 'function') {
+        text = await (f as any).text();
+      } else {
+        text = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(String(reader.result ?? ''));
+          reader.onerror = () => reject(reader.error);
+          reader.readAsText(f);
+        });
+      }
+
+      this.ngZone.run(() => {
+        entry.text = text;
+        entry.size = text ? text.length : entry.size;
+        entry.readError = undefined;
+      });
+    } catch (e) {
+      const readError = String((e as any)?.message ?? 'Read failed');
+      this.logs.warn('Join Backups: failed to read file (browser)', { name: entry?.name, error: readError });
+      this.ngZone.run(() => {
+        entry.readError = readError;
+      });
+    } finally {
+      this.ngZone.run(() => {
+        entry.reading = false;
+      });
+    }
   }
 
   private detectTauriRuntime(): boolean {
@@ -72,6 +127,7 @@ export class JoinBackupsComponent {
       this.ngZone.run(() => {
         this.status = 'Native file picker is only available in the desktop app (Tauri).';
       });
+		this.logs.warn('Join Backups: native picker requested, but not in Tauri runtime');
       return;
     }
 
@@ -81,40 +137,67 @@ export class JoinBackupsComponent {
       const paths = await open({ multiple: true, filters: [{ name: 'XML', extensions: ['xml'] }] });
       if (!paths) return;
       const pArr = Array.isArray(paths) ? paths : [paths];
-      const { readTextFile } = await import('@tauri-apps/plugin-fs') as any;
+  		this.logs.info('Join Backups: adding files (native)', { count: pArr.length });
+    const newEntries = pArr.map((p) => {
+      const name = String(p).split(/[\\/]/).pop();
+      return {
+        name: name || String(p),
+        size: 0,
+        text: undefined as string | undefined,
+        path: String(p),
+        readError: undefined as string | undefined,
+        reading: true,
+        expanded: false,
+        details: undefined as any
+      };
+    });
 
-      const newEntries: Array<{ name: string; size: number; text?: string; path?: string; readError?: string; expanded?: boolean; details?: any }> = [];
-      for (const p of pArr) {
-        let text: string | undefined = undefined;
-        let readError: string | undefined = undefined;
-        try {
-          text = await readTextFile(p);
-        } catch (e) {
-          console.warn('read error', e);
-          readError = String((e as any)?.message ?? 'Read failed');
-        }
-        const name = p.split(/[\\/]/).pop();
-		newEntries.push({ name: name || p, size: text ? text.length : 0, text, path: p, readError, expanded: false, details: undefined });
+    this.ngZone.run(() => {
+      this.status = 'Reading files...';
+      this.selectedFiles = [...(this.selectedFiles ?? []), ...newEntries];
+      this.updatePreview();
+    });
+
+    const { readTextFile } = await import('@tauri-apps/plugin-fs') as any;
+    for (const entry of newEntries) {
+      try {
+        const text = await readTextFile(entry.path);
+        this.ngZone.run(() => {
+          entry.text = text;
+          entry.size = text ? text.length : 0;
+          entry.readError = undefined;
+        });
+      } catch (e) {
+        const readError = String((e as any)?.message ?? 'Read failed');
+        this.logs.warn('Join Backups: failed to read file (native)', { path: entry.path, error: readError });
+        this.ngZone.run(() => {
+          entry.readError = readError;
+        });
+      } finally {
+        this.ngZone.run(() => {
+          entry.reading = false;
+        });
       }
+    }
 
-      this.ngZone.run(() => {
-        this.selectedFiles.push(...newEntries);
-        this.updatePreview();
-        this.status = '';
-      });
+    this.ngZone.run(() => {
+      this.updatePreview();
+      this.status = '';
+    });
     } catch (e) {
       console.warn('native pick error', e);
 		this.ngZone.run(() => {
 			this.status = `Native file picker not available: ${String((e as any)?.message ?? e)}`;
 		});
+		this.logs.error('Join Backups: native file picker error', e);
     }
   }
 
   removeFile(index: number) {
-	this.ngZone.run(() => {
-		this.selectedFiles.splice(index, 1);
-		this.updatePreview();
-	});
+  this.ngZone.run(() => {
+    this.selectedFiles = (this.selectedFiles ?? []).filter((_, i) => i !== index);
+    this.updatePreview();
+  });
   }
 
   async retryRead(index: number) {
@@ -125,19 +208,7 @@ export class JoinBackupsComponent {
     try {
       // Browser file reference
       if (f.fileRef) {
-        let text: string | undefined = undefined;
-        if (typeof (f.fileRef as any).text === 'function') {
-          text = await (f.fileRef as any).text();
-        } else {
-          text = await new Promise<string>((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(String(reader.result ?? ''));
-            reader.onerror = () => reject(reader.error);
-            reader.readAsText(f.fileRef as File);
-          });
-        }
-        f.text = text;
-        f.size = text ? text.length : f.size;
+			await this.readBrowserEntry(f);
       } else if (f.path) {
         // Native path — ensure Tauri runtime available first
         if (!this.detectTauriRuntime()) {
@@ -234,6 +305,7 @@ export class JoinBackupsComponent {
     }
     this.status = 'Merging...';
     try {
+		this.logs.info('Join Backups: merge started', { files: this.selectedFiles.length });
       const parser = (window as any)['fastXmlParser'].XMLParser;
       const builder = (window as any)['fastXmlParser'].XMLBuilder;
       const p = new parser({ ignoreAttributes: false, attributeNamePrefix: '@_' });
@@ -275,10 +347,12 @@ export class JoinBackupsComponent {
           // show toast
           try { const { ToastService } = await import('../toast.service'); } catch (e) {}
           this.status = `Saved to ${path}`;
+			this.logs.info('Join Backups: merge saved (native)', { path, messages: merged.length });
           return;
         }
       } catch (e) {
         console.warn('native save failed', e);
+		this.logs.warn('Join Backups: native save failed, falling back to browser download', e);
       }
 
       // browser fallback
@@ -292,9 +366,11 @@ export class JoinBackupsComponent {
       link.remove();
       URL.revokeObjectURL(url);
       this.status = 'Downloaded merged.xml';
+		this.logs.info('Join Backups: merge downloaded (browser)', { messages: merged.length });
     } catch (e) {
       console.error(e);
       this.status = 'Merge failed: ' + String((e as any)?.message || e);
+		this.logs.error('Join Backups: merge failed', e);
     }
   }
 

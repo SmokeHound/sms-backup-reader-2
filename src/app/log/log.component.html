@@ -1,0 +1,54 @@
+<div class="log-page">
+	<div class="log-header">
+		<div class="log-title">
+			<h2>Log</h2>
+			<div class="log-subtitle">Recent app events, warnings, and errors</div>
+		</div>
+
+		<div class="log-actions">
+			<button class="jb-btn" type="button" (click)="goMain()">Back</button>
+			<button class="jb-btn" type="button" (click)="copy()">Copy</button>
+			<button class="jb-btn jb-btn--danger" type="button" (click)="clear()">Clear</button>
+		</div>
+	</div>
+
+	<div class="log-filters">
+		<label class="filter">
+			<span>Level</span>
+			<select [(ngModel)]="level" (ngModelChange)="applyFilter()">
+				<option value="all">All</option>
+				<option value="debug">Debug</option>
+				<option value="info">Info</option>
+				<option value="warn">Warn</option>
+				<option value="error">Error</option>
+			</select>
+		</label>
+
+		<label class="filter filter--grow">
+			<span>Search</span>
+			<input
+				type="text"
+				placeholder="message, details..."
+				[(ngModel)]="query"
+				(ngModelChange)="applyFilter()"
+			/>
+		</label>
+		<div class="count">{{ filtered.length }} / {{ entries.length }}</div>
+	</div>
+
+	<div class="log-list" *ngIf="filtered.length; else empty">
+		<div class="log-row" *ngFor="let e of filtered">
+			<div class="when">{{ formatTime(e.at) }}</div>
+			<div class="level" [class]="'level level--' + e.level">{{ e.level }}</div>
+			<div class="msg">{{ e.message }}</div>
+			<pre class="details" *ngIf="e.details as d">{{ d | json }}</pre>
+		</div>
+	</div>
+
+	<ng-template #empty>
+		<div class="log-empty">
+			<div class="log-empty__title">No log entries yet</div>
+			<div class="log-empty__hint">Try importing a backup or joining backups; errors and progress will appear here.</div>
+		</div>
+	</ng-template>
+</div>

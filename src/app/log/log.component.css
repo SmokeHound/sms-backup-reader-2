@@ -1,0 +1,214 @@
+:host {
+	display: block;
+	height: 100%;
+	min-height: 0;
+}
+
+.log-page {
+	max-width: 1100px;
+	margin: 0 auto;
+	padding: 14px 16px;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	height: 100%;
+	min-height: 0;
+}
+
+.log-header {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+.log-title h2 {
+	margin: 0;
+	font-size: 20px;
+	line-height: 1.2;
+	font-weight: 600;
+}
+
+.log-subtitle {
+	margin-top: 4px;
+	color: rgba(0, 0, 0, 0.6);
+	font-size: 13px;
+}
+
+.log-actions {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+}
+
+.log-filters {
+	display: flex;
+	align-items: flex-end;
+	gap: 10px;
+	flex-wrap: wrap;
+	padding: 12px;
+	border: 1px solid rgba(0, 0, 0, 0.12);
+	border-radius: 10px;
+	background: #fff;
+}
+
+.filter {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	min-width: 160px;
+}
+
+.filter--grow {
+	flex: 1;
+	min-width: 220px;
+}
+
+.filter span {
+	font-size: 12px;
+	color: rgba(0, 0, 0, 0.65);
+}
+
+select,
+input[type='text'] {
+	border: 1px solid rgba(0, 0, 0, 0.22);
+	border-radius: 8px;
+	padding: 8px 10px;
+	font-size: 14px;
+	background: #fff;
+}
+
+.count {
+	margin-left: auto;
+	color: rgba(0, 0, 0, 0.6);
+	font-size: 12px;
+	white-space: nowrap;
+}
+
+.log-list {
+	flex: 1;
+	min-height: 0;
+	overflow: auto;
+	border: 1px solid rgba(0, 0, 0, 0.12);
+	border-radius: 10px;
+	background: #fff;
+}
+
+.log-row {
+	display: grid;
+	grid-template-columns: 180px 70px 1fr;
+	gap: 10px;
+	padding: 10px 12px;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.log-row:last-child {
+	border-bottom: none;
+}
+
+.when {
+	color: rgba(0, 0, 0, 0.65);
+	font-size: 12px;
+}
+
+.level {
+	font-weight: 700;
+	font-size: 12px;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+}
+
+.level--debug {
+	color: #546e7a;
+}
+
+.level--info {
+	color: #1565c0;
+}
+
+.level--warn {
+	color: #ef6c00;
+}
+
+.level--error {
+	color: #c62828;
+}
+
+.msg {
+	font-size: 13px;
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.details {
+	grid-column: 1 / -1;
+	margin: 0;
+	padding: 10px;
+	border-radius: 8px;
+	background: rgba(0, 0, 0, 0.04);
+	overflow: auto;
+	max-height: 280px;
+}
+
+.log-empty {
+	padding: 24px;
+	border: 1px dashed rgba(0, 0, 0, 0.2);
+	border-radius: 10px;
+	background: rgba(255, 255, 255, 0.6);
+}
+
+.log-empty__title {
+	font-weight: 600;
+	margin-bottom: 6px;
+}
+
+.log-empty__hint {
+	color: rgba(0, 0, 0, 0.65);
+}
+
+/* Reuse Join Backups button style so it looks consistent */
+.jb-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	padding: 8px 12px;
+	border-radius: 10px;
+	border: 1px solid rgba(0, 0, 0, 0.18);
+	background: #fff;
+	color: #111;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.jb-btn:hover {
+	background: rgba(0, 0, 0, 0.03);
+}
+
+.jb-btn:active {
+	transform: translateY(1px);
+}
+
+.jb-btn--danger {
+	border-color: rgba(198, 40, 40, 0.35);
+	color: #c62828;
+}
+
+@media (max-width: 740px) {
+	.log-row {
+		grid-template-columns: 1fr;
+	}
+
+	.when {
+		order: 1;
+	}
+
+	.level {
+		order: 2;
+	}
+
+	.msg {
+		order: 3;
+	}
+}
