@@ -21,6 +21,20 @@
     min-height: 300px;
 }
 
+/* Keep inner padding symmetric (MDL defaults can vary with nested content) */
+.settings-card .mdl-card__supporting-text {
+    padding-left: 16px;
+    padding-right: 16px;
+    box-sizing: border-box;
+}
+
+.storage-stats {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 18px;
+    row-gap: 6px;
+}
+
 .mdl-card__title {
 	background: linear-gradient(135deg, rgba(59, 130, 246, 1) 0%, var(--primary) 100%);
     color: white;

@@ -52,10 +52,10 @@
                             (change)="onIndexedDbEnabledChanged()" />
                         <span class="mdl-switch__label">Enable IndexedDB persistence</span>
                     </label>
-                    <div class="setting-help" style="margin-top: 10px;">
-                        Stored conversations: {{ dbThreadCount.toLocaleString() }}<br />
-                        Stored messages: {{ dbMessageCount.toLocaleString() }}
-                    </div>
+					<div class="setting-help storage-stats" style="margin-top: 10px;">
+						<span>Stored conversations: {{ dbThreadCount.toLocaleString() }}</span>
+						<span>Stored messages: {{ dbMessageCount.toLocaleString() }}</span>
+					</div>
                     <div class="button-row" style="margin-top: 12px;">
                         <button
                             class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
