@@ -6,8 +6,11 @@
         </div>
     </div>
     <ul class="demo-list-two mdl-list">
-        <li class="mdl-list__item mdl-list__item--two-line contact-item" [ngClass]="{'selected-contact': contact==selectedContact}"
-			 *ngFor="let contact of contacts | contactSearchPipe: numfilter; trackBy: trackByContact" (click)="showMessages(contact)"  [ngClass]="{'active-row': contact == selectedContact}">
+		<li
+			class="mdl-list__item mdl-list__item--two-line contact-item"
+			*ngFor="let contact of contacts | contactSearchPipe: numfilter; trackBy: trackByContact"
+			(click)="showMessages(contact)"
+			[ngClass]="{ 'selected-contact': contact == selectedContact, 'active-row': contact == selectedContact }">
             <span class="mdl-list__item-primary-content" >
                 <span>
                     <span class="contact-title">{{contact.name || contact.address}}</span>

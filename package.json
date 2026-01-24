@@ -17,7 +17,9 @@
     "preview:dist": "npx http-server dist/sms-backup-viewer/browser -p 8080 -c-1",
     "tauri": "tauri",
     "tauri:check": "node scripts/tauri-check.mjs",
+    "pretauri:dev": "node scripts/update-version.mjs",
     "tauri:dev": "tauri dev",
+    "pretauri:build": "node scripts/update-version.mjs",
     "tauri:build": "tauri build",
     "test": "ng test --watch=false",
     "test:watch": "ng test"

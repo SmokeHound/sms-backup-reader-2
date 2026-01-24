@@ -18,10 +18,6 @@
                     <i class="material-icons">merge_type</i>
                     <span class="settings-label">Join Backups</span>
                 </button>
-				<button class="mdl-button mdl-js-button" style="float:right; margin-left:8px;" routerLink="/log" routerLinkActive="active">
-					<i class="material-icons">list</i>
-					<span class="settings-label">Log</span>
-				</button>
             </nav>
         </div>
     </header>
@@ -55,6 +51,9 @@
         </div>
 		<div class="mdl-mini-footer__right-section">
 			<div class="footer-version" [title]="appVersionTooltip">v{{ appVersion }}</div>
+            <button class="about-btn about-btn--icon mdl-button mdl-js-button" title="Log" aria-label="Log" routerLink="/log">
+                <i class="material-icons" aria-hidden="true">list</i>
+            </button>
 			<button class="about-btn about-btn--icon mdl-button mdl-js-button" title="About" aria-label="About" (click)="openAbout()">
 				<i class="material-icons" aria-hidden="true">info</i>
 			</button>

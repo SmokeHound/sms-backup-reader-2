@@ -24,6 +24,7 @@ export class MessageListComponent implements OnInit, AfterViewInit {
     loadingSubscription: Subscription;
     contactClickedSubscription: Subscription;
     selectedContact: Contact;
+	loadError: string | null = null;
     
     showExportDialog = false;
     loadingOlder = false;
@@ -61,7 +62,16 @@ export class MessageListComponent implements OnInit, AfterViewInit {
         .subscribe(contact => {
             this.selectedContact = contact;
             if (contact) {
-                this.loadLatestForSelectedContact();
+                this.loadError = null;
+                void this.loadLatestForSelectedContact().catch((e) => {
+                    console.error('Failed to load messages for selected contact', e);
+                    this.ngZone.run(() => {
+                        this.messages = [];
+                        this.hasMoreMessages = false;
+                        this.oldestLoadedDateMs = null;
+                        this.loadError = String((e as any)?.message ?? e ?? 'Failed to load messages');
+                    });
+                });
             }
             return;
         });
@@ -113,10 +123,13 @@ export class MessageListComponent implements OnInit, AfterViewInit {
     }
 
     private async loadLatestForSelectedContact(): Promise<void> {
-        this.messages = [];
-        this.oldestLoadedDateMs = null;
-        this.hasMoreMessages = false;
-        this.loadingOlder = false;
+                this.ngZone.run(() => {
+			this.messages = [];
+			this.oldestLoadedDateMs = null;
+			this.hasMoreMessages = false;
+			this.loadingOlder = false;
+			this.loadError = null;
+		});
 
         const contact = this.selectedContact;
         if (!contact?.address) {
@@ -150,6 +163,9 @@ export class MessageListComponent implements OnInit, AfterViewInit {
             this.oldestLoadedDateMs = newestSlice?.length ? (newestSlice[0].date?.getTime?.() ?? Number(newestSlice[0].timestamp) ?? null) : null;
             this.hasMoreMessages = total > (newestSlice?.length ?? 0);
         });
+
+		// Ensure CDK viewport recalculates after data change.
+		requestAnimationFrame(() => this.viewport?.checkViewportSize());
 
         // Measure first rendered row height and update viewport item size so CDK uses realistic sizing
         requestAnimationFrame(() => {
@@ -187,6 +203,8 @@ export class MessageListComponent implements OnInit, AfterViewInit {
                     this.oldestLoadedDateMs = msgs?.length ? (msgs[0].date?.getTime?.() ?? Number(msgs[0].timestamp) ?? null) : null;
                     this.hasMoreMessages = total > (msgs?.length ?? 0);
                 });
+
+				requestAnimationFrame(() => this.viewport?.checkViewportSize());
 
                 // Re-measure and re-scroll after full set renders.
                 const el = this.scrollContainerEl;

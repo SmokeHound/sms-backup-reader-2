@@ -1,4 +1,5 @@
 <div class="message-container">
+	<div class="message-error" *ngIf="loadError">{{ loadError }}</div>
 	<div style="padding: 8px 0;" *ngIf="selectedContact && messages?.length">
 		<div *ngIf="hasMoreMessages" style="margin-bottom: 8px;">
 			<button
