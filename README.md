@@ -67,7 +67,7 @@ If you encounter issues, please add them to the issues section.
 
 * Continued performance improvements for very large backups
 * Additional export formats
-* Request any features/improvements you would like to be added in the [issues section](https://github.com/SmokeHound/sms-backup-viewer/issues)
+* Request any features/improvements in the [issues section](https://github.com/SmokeHound/sms-backup-viewer/issues)
 
 ## Development
 
