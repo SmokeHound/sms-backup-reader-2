@@ -23,9 +23,8 @@
 
 /* Keep inner padding symmetric (MDL defaults can vary with nested content) */
 .settings-card .mdl-card__supporting-text {
-    padding-left: 16px;
-    padding-right: 16px;
-    box-sizing: border-box;
+    padding-left: 18px;
+    width: 95%;
 }
 
 .storage-stats {
@@ -42,7 +41,7 @@
     align-items: flex-start;
     justify-content: space-between;
     min-height: 56px;
-    padding: 12px 16px;
+    padding: 12px 12px;
 }
 
 .mdl-card__title-text {
@@ -52,7 +51,6 @@
 
 .settings-close {
     color: rgba(255, 255, 255, 0.95);
-    align-self: flex-start;
 }
 
 .settings-close:hover {
@@ -98,7 +96,7 @@
 .advanced-summary {
     list-style: none;
     cursor: pointer;
-    padding: 12px 14px;
+    padding: 12px 12px;
     display: flex;
     align-items: baseline;
     justify-content: space-between;
