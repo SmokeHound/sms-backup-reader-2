@@ -24,6 +24,14 @@ If you have a multi-GB backup (e.g. 2+ GB), use the desktop build (Tauri) and lo
 - Prefer exporting **SMS only** / **no media** when possible.
 - If you need to split your export, you can select **multiple** `.xml` files at once in the SMS loader — they will be merged into a single combined message list.
 
+### IndexedDB Storage
+
+Once loaded, messages are automatically stored in your browser's IndexedDB for fast access. This means:
+- You don't need to re-parse the XML file each time you open the app
+- Messages load instantly on subsequent visits
+- You can clear stored data from the Settings page if needed
+- Storage is local to your browser — your data never leaves your machine
+
 ## Features
 
 * Load SMS backup files produced by the Android app SMS Backup & Restore by Ritesh
@@ -33,15 +41,33 @@ If you have a multi-GB backup (e.g. 2+ GB), use the desktop build (Tauri) and lo
 * Export messages and contacts to CSV
 * Export MMS media embedded in message HTML (via CSV export including `bodyHtml`)
 * Export MMS media as separate files (ZIP export)
+* **IndexedDB persistence** - Messages are automatically stored in IndexedDB for fast re-access without re-parsing XML
+* **Virtual scrolling** - Efficient rendering of large message lists for improved performance
+* **Toast notifications** - User-friendly feedback for actions and errors
+* **Logging and diagnostics** - Built-in logging system for troubleshooting
+* **Desktop app (Tauri)** - Native desktop application with enhanced file handling capabilities
+* **Join backups tool** - CLI and GUI utilities to merge multiple SMS backup XML files (see `tools/join-backups`)
+
+## Join Backups Tool
+
+If you need to merge multiple SMS backup XML files into a single file, use the join-backups tool located in `tools/join-backups/`.
+
+**Options:**
+- **CLI**: Command-line tool for scripted merging
+- **GUI (web)**: Browser-based interface at `tools/join-backups/gui/index.html`
+- **GUI (desktop)**: Tauri desktop app for the merge tool
+
+See [tools/join-backups/README.md](tools/join-backups/README.md) for detailed usage instructions.
 
 ## Issues
 
 If you encounter issues, please add them to the issues section.
 
-## Roadmap (no timeline defined)
+## Roadmap
 
-* Desktop app.(Work in progress)
-* Request any features/improvements you would like to be added.
+* Continued performance improvements for very large backups
+* Additional export formats
+* Request any features/improvements in the [issues section](https://github.com/SmokeHound/sms-backup-viewer/issues)
 
 ## Development
 
