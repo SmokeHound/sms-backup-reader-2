@@ -19,6 +19,7 @@ export class SmsStoreService {
     private ingestChain: Promise<void>;
 	private indexedDbEnabled: boolean;
     private smsImportMode: 'auto' | 'browser' | 'tauri' = 'tauri';
+    private normalizedAddressCache = new Map<string, string>();
 
     constructor(private smsDbService: SmsDbService, private ngZone: NgZone) { 
         this.messagesLoaded = false;
@@ -100,6 +101,7 @@ export class SmsStoreService {
     beginIngest(options?: { persistToIndexedDb?: boolean; clearIndexedDb?: boolean }): void {
         const persistToIndexedDb = options?.persistToIndexedDb === true;
         this.useIndexedDb = persistToIndexedDb;
+		this.normalizedAddressCache.clear();
 
         // Always clear in-memory state.
         this.messages = [];
@@ -162,11 +164,24 @@ export class SmsStoreService {
     }
 
     private normalizeContactAddress(raw: string): string {
-        let phone = new awesomePhone(raw, this.countryCode);
-        let contactAddress: string = phone.getNumber('international');
-        if (!contactAddress) {
-            contactAddress = raw;
+        const key = raw ?? '';
+        const cached = this.normalizedAddressCache.get(key);
+        if (cached) {
+            return cached;
         }
+
+        let contactAddress = key;
+        try {
+            const phone = new awesomePhone(key, this.countryCode);
+            const formatted: string = phone.getNumber('international');
+            if (formatted) {
+                contactAddress = formatted;
+            }
+        } catch {
+            // ignore; fall back to raw
+        }
+
+        this.normalizedAddressCache.set(key, contactAddress);
         return contactAddress;
     }
 
@@ -219,6 +234,7 @@ export class SmsStoreService {
 			if (this.countryCode != countryCode)
 			{
 				this.countryCode = countryCode;
+				this.normalizedAddressCache.clear();
                 if (this.useIndexedDb && this.messagesLoaded) {
                     // Re-grouping DB-backed conversations would require re-writing threadIds.
                     // Keep it simple: country affects formatting; for persisted data, re-import is recommended.
