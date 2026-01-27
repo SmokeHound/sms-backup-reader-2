@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.29.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.28.0...sms-backup-viewer-v0.29.0) (2026-01-27)
+
+
+### Features
+
+* add date parsing for messages in SMS loader ([7f220fe](https://github.com/SmokeHound/sms-backup-viewer/commit/7f220fe4bedd38e00e2835ce00c5ba6ea148ef67))
+* add date parsing for messages in SMS loader ([899e9a2](https://github.com/SmokeHound/sms-backup-viewer/commit/899e9a291609462d102357b9ad3656bc24c8d3d4))
+* implement async XML parsing and fallback mechanism in JoinBackupsComponent ([70d8c23](https://github.com/SmokeHound/sms-backup-viewer/commit/70d8c2344b56c01ad6038d17f5a26f38eca04b81))
+
+
+### Bug Fixes
+
+* increase batch size and progress interval for SMS parsing to optimize performance ([f48756d](https://github.com/SmokeHound/sms-backup-viewer/commit/f48756d83646d3997de1e199a0496df7a1b33e5b))
+
 ## [0.28.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.27.0...sms-backup-viewer-v0.28.0) (2026-01-27)
 
 
