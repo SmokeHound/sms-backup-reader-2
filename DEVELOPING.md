@@ -1,6 +1,11 @@
 # Developing SMS Backup Viewer
 
-This repo uses Angular (via the locally-installed Angular CLI) and Vitest.
+This repo uses Angular (via the locally-installed Angular CLI), Vitest for testing, and several key libraries for enhanced functionality:
+
+- **Dexie** - IndexedDB wrapper for message persistence
+- **Angular CDK** - Virtual scrolling for large message lists
+- **Tauri** - Desktop application framework (optional)
+- **fast-xml-parser** - XML parsing for backup files
 
 ## Prerequisites
 
@@ -71,6 +76,23 @@ This app loads backups in the browser and currently parses XML by reading the en
 
 If you need to load a single multi-GB XML file, use the desktop build (Tauri): the SMS loader includes a Tauri mode that parses by file path using a streaming XML parser.
 
+### IndexedDB Persistence
+
+Messages are automatically stored in IndexedDB using Dexie after parsing:
+- Provides fast access to messages without re-parsing XML
+- Messages are indexed by conversation for efficient querying
+- Contacts are also stored for quick lookup
+- You can enable/disable IndexedDB persistence in Settings
+- Clear stored data using the "Clear stored SMS messages" button in Settings
+
+### Virtual Scrolling
+
+The message list uses Angular CDK's virtual scrolling for performance:
+- Only renders visible messages in the viewport
+- Dynamically adjusts item sizes based on content
+- Supports loading older messages on scroll
+- Handles large conversations (10,000+ messages) efficiently
+
 ## Exporting MMS media as separate files
 
 When exporting from the message list, you can enable **Export MMS media as separate files (creates a .zip)**.
@@ -78,6 +100,14 @@ When exporting from the message list, you can enable **Export MMS media as separ
 - Output is a ZIP that contains `messages.csv` plus extracted media files under `media/<conversation-id>/...`.
 - `bodyHtml` in the CSV is rewritten so `<img src="data:...">` becomes `<img src="media/...">`.
 - This is useful to avoid huge CSV files when a backup contains inline/base64 MMS images.
+
+## Logging and Diagnostics
+
+The app includes a built-in logging system for troubleshooting:
+- Access logs from the Settings page via the "View Logs" button
+- Logs capture import/export operations, errors, and performance metrics
+- Useful for debugging issues with large files or complex operations
+- Logs are stored locally and never transmitted
 
 ## Desktop app (Tauri)
 
@@ -121,6 +151,38 @@ The build will run the Angular `tauri` configuration (see `angular.json`) and th
 ## Running unit tests
 
 Run `npm test` (or `npm run test:watch`) to execute the unit tests via Vitest.
+
+## Join Backups Tool
+
+The `tools/join-backups` directory contains a standalone utility for merging multiple SMS backup XML files:
+
+**CLI usage:**
+```bash
+cd tools/join-backups
+npm install
+node index.js merged.xml backup1.xml backup2.xml backup3.xml
+```
+
+**Web GUI:**
+```bash
+# Serve the GUI with a static server
+npx http-server tools/join-backups/gui -p 8081
+```
+Then open `http://localhost:8081` in your browser.
+
+**Desktop GUI (Tauri):**
+```bash
+cd tools/join-backups
+npm install
+npm run tauri:dev    # Development mode
+npm run tauri:build  # Create distributable
+```
+
+The merge tool:
+- Combines multiple XML files into a single backup
+- Preserves all message attributes
+- Updates the `count` attribute to reflect the total
+- Works entirely client-side (no server uploads)
 
 ## Further help
 

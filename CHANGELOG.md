@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.27.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.26.0...sms-backup-viewer-v0.27.0) (2026-01-24)
+
+
+### Features
+
+* add error handling and UI updates for message loading; enhance versioning scripts ([3ddd96e](https://github.com/SmokeHound/sms-backup-viewer/commit/3ddd96e45a0b8040c916380b1a8b63a4eba0b0bc))
+
 ## [0.26.0](https://github.com/SmokeHound/sms-backup-viewer/compare/sms-backup-viewer-v0.25.0...sms-backup-viewer-v0.26.0) (2026-01-23)
 
 
