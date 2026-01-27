@@ -165,14 +165,7 @@ export class AppComponent implements OnInit  {
     onSmsLoaded(loaded: boolean) {
         if (loaded) {
 			this.logs.info('SMS import completed');
-            if (this.smsloaded) {
-                this.smsloaded = false;
-                this.smsStoreService.clearAllMessages().then(() => {
-					this.loadMessages(loaded);
-                });
-            } else {
-				this.loadMessages(loaded);
-            }
+			this.loadMessages(loaded);
         }		
     }
 	
@@ -193,26 +186,28 @@ export class AppComponent implements OnInit  {
 	
 	
     private loadMessages(loaded: boolean): void {
-		// If a Tauri streaming load already populated the store, don't re-load from SmsLoaderService.
-		if (this.smsStoreService.messagesLoaded) {
-			this.smsloaded = loaded;
-			if (this.vcfloaded && loaded) {
-				this.vcfStoreService.getAllContacts().then((contactsMap) => {
-					this.smsStoreService.fillContactNames(contactsMap);
-					this.smsStoreService.broadcastMessagesLoaded(this.smsloaded);
-				});
-			}
-			if (loaded) {
-				this.smsStoreService.broadcastMessagesLoaded(this.smsloaded);
-			}
-			return;
-		}
+		this.smsLoaderService
+			.getLoadedMessages()
+			.then((messages) => {
+				// Browser import: SmsLoaderService holds parsed messages.
+				if (messages?.length) {
+					// Ensure we're in in-memory mode; otherwise ContactList will query IndexedDB threads.
+					this.smsStoreService.beginIngest({ persistToIndexedDb: false, clearIndexedDb: false });
+					return this.smsStoreService.loadAllMessages(messages).then(() => {
+						this.smsloaded = loaded;
+						if (this.vcfloaded && loaded) {
+							this.vcfStoreService.getAllContacts().then((contactsMap) => {
+								this.smsStoreService.fillContactNames(contactsMap);
+								this.smsStoreService.broadcastMessagesLoaded(this.smsloaded);
+							});
+						}
+						if (loaded) {
+							this.smsStoreService.broadcastMessagesLoaded(this.smsloaded);
+						}
+					});
+				}
 
-		this.smsLoaderService.getLoadedMessages().then((messages) => {
-			if (!messages?.length) {
-				return;
-			}
-			this.smsStoreService.loadAllMessages(messages).then(() => {
+				// Tauri import (or restored IndexedDB): store is populated directly via SmsStoreService.
 				this.smsloaded = loaded;
 				if (this.vcfloaded && loaded) {
 					this.vcfStoreService.getAllContacts().then((contactsMap) => {
@@ -223,8 +218,10 @@ export class AppComponent implements OnInit  {
 				if (loaded) {
 					this.smsStoreService.broadcastMessagesLoaded(this.smsloaded);
 				}
+			})
+			.catch((e) => {
+				this.logs.error('Failed to read loaded messages buffer', e);
 			});
-		});
     }
 	
 	private loadContacts(loaded: boolean): void {

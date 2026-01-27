@@ -189,6 +189,10 @@ export class SmsLoaderComponent implements OnInit {
         this.loaded = false;
         this.resetProgress();
 		this.emitStatus();
+
+        // Avoid re-using any previously parsed browser-import messages.
+        // Tauri imports stream directly into SmsStoreService (IndexedDB).
+        this.smsLoaderService.messages = [];
         this.smsStoreService.beginIngest({ persistToIndexedDb: true, clearIndexedDb: true });
 
         // Clear prior listeners for repeated loads.
