@@ -16,6 +16,9 @@ export class JoinBackupsComponent {
   status = '';
   preview = { files: 0, messages: 0, contacts: 0 };
 
+	private fastXml: { XMLParser: any; XMLBuilder: any } | null = null;
+	private fastXmlLoad?: Promise<{ XMLParser: any; XMLBuilder: any } | null>;
+
   constructor(
   private csvExport: CsvExportService,
   private ngZone: NgZone,
@@ -234,23 +237,66 @@ export class JoinBackupsComponent {
     if (!f) return;
 	this.ngZone.run(() => {
 		f.expanded = !f.expanded;
-		if (f.expanded && !f.details && f.text) {
-			this.computeDetails(f);
-		}
+    if (f.expanded && !f.details && f.text) {
+      void this.computeDetailsAsync(f);
+    }
 	});
   }
 
-  private computeDetails(f: any) {
-    if (!f.text) {
+  private async ensureFastXmlLoaded(): Promise<{ XMLParser: any; XMLBuilder: any } | null> {
+    if (this.fastXml) {
+      return this.fastXml;
+    }
+    if (this.fastXmlLoad) {
+      return this.fastXmlLoad;
+    }
+    this.fastXmlLoad = (async () => {
+      try {
+        const mod: any = await import('fast-xml-parser');
+        const XMLParser = mod?.XMLParser ?? mod?.default?.XMLParser;
+        const XMLBuilder = mod?.XMLBuilder ?? mod?.default?.XMLBuilder;
+        if (!XMLParser || !XMLBuilder) {
+          return null;
+        }
+        this.fastXml = { XMLParser, XMLBuilder };
+        return this.fastXml;
+      } catch {
+        return null;
+      } finally {
+        // keep the resolved value in this.fastXml; avoid holding a rejected promise
+        this.fastXmlLoad = undefined;
+      }
+    })();
+    return this.fastXmlLoad;
+  }
+
+  private tryGetFastXml(): { XMLParser: any; XMLBuilder: any } | null {
+    return this.fastXml;
+  }
+
+  private fallbackCount(text: string): { messages: number; contacts: number } {
+    const smsMatches = text.match(/<sms\b/gi) || [];
+    const addrMatches = text.match(/address=(?:'|")([^'"]+)(?:'|")/gi) || [];
+    const contacts = new Set<string>();
+    for (const m of addrMatches) {
+      const addr = m.replace(/address=("|')|("|')/g, '');
+      if (addr) contacts.add(addr);
+    }
+    return { messages: smsMatches.length, contacts: contacts.size };
+  }
+
+  private async computeDetailsAsync(f: any): Promise<void> {
+    if (!f?.text) {
       f.details = undefined;
       return;
     }
     try {
-      const parserCtor = (window as any)['fastXmlParser']?.XMLParser;
+      const fastXml = await this.ensureFastXmlLoaded();
       let messages = 0;
       const contacts = new Set<string>();
-      if (parserCtor) {
-        const p = new parserCtor({ ignoreAttributes: false, attributeNamePrefix: '@_' });
+      let fallbackContacts = 0;
+      if (fastXml?.XMLParser) {
+        const p = new fastXml.XMLParser({ ignoreAttributes: false, attributeNamePrefix: '@_' });
         const parsed = p.parse(f.text);
         const root = parsed && parsed[Object.keys(parsed)[0]];
         const sms = root && root.sms ? (Array.isArray(root.sms) ? root.sms : [root.sms]) : [];
@@ -260,37 +306,45 @@ export class JoinBackupsComponent {
           if (addr) contacts.add(addr);
         }
       } else {
-        const smsMatches = f.text.match(/<sms\b/gi) || [];
-        messages = smsMatches.length;
-        const addrMatches = f.text.match(/address=(?:'|")([^'"]+)(?:'|")/gi) || [];
-        for (const m of addrMatches) {
-          const addr = m.replace(/address=("|')|("|')/g, '');
-          if (addr) contacts.add(addr);
-        }
+        const fb = this.fallbackCount(f.text);
+        messages = fb.messages;
+        fallbackContacts = fb.contacts;
       }
       const sample = f.text.length > 500 ? f.text.slice(0, 500) + '...' : f.text;
-      f.details = { messages, contacts: contacts.size, sample };
+      f.details = { messages, contacts: contacts.size || fallbackContacts, sample };
     } catch (e) {
       f.details = { messages: 0, contacts: 0, sample: '', parseError: String((e as any)?.message ?? 'Parse failed') };
     }
   }
 
   updatePreview() {
-    const parser = (window as any)['fastXmlParser']?.XMLParser;
+	const fastXml = this.tryGetFastXml();
+    const parser = fastXml?.XMLParser;
     let messages = 0;
     const contacts = new Set<string>();
     for (const f of this.selectedFiles) {
       if (!f.text) continue;
       try {
-        const p = new parser({ ignoreAttributes: false, attributeNamePrefix: '@_' });
-        const parsed = p.parse(f.text);
-        const root = parsed && parsed[Object.keys(parsed)[0]];
-        const sms = root && root.sms ? (Array.isArray(root.sms) ? root.sms : [root.sms]) : [];
-        messages += sms.length;
-        for (const m of sms) {
-          const addr = m['@_address'] || m.address || '';
-          if (addr) contacts.add(addr);
-        }
+        if (parser) {
+			const p = new parser({ ignoreAttributes: false, attributeNamePrefix: '@_' });
+			const parsed = p.parse(f.text);
+			const root = parsed && parsed[Object.keys(parsed)[0]];
+			const sms = root && root.sms ? (Array.isArray(root.sms) ? root.sms : [root.sms]) : [];
+			messages += sms.length;
+			for (const m of sms) {
+				const addr = m['@_address'] || m.address || '';
+				if (addr) contacts.add(addr);
+			}
+		} else {
+			const fb = this.fallbackCount(f.text);
+			messages += fb.messages;
+			// we can only approximate contacts in fallback; keep best-effort via regex
+			const addrMatches = f.text.match(/address=(?:'|")([^'"]+)(?:'|")/gi) || [];
+			for (const m of addrMatches) {
+				const addr = m.replace(/address=("|')|("|')/g, '');
+				if (addr) contacts.add(addr);
+			}
+		}
       } catch (e) {
         // ignore parse errors for preview
       }
@@ -306,10 +360,14 @@ export class JoinBackupsComponent {
     this.status = 'Merging...';
     try {
 		this.logs.info('Join Backups: merge started', { files: this.selectedFiles.length });
-      const parser = (window as any)['fastXmlParser'].XMLParser;
-      const builder = (window as any)['fastXmlParser'].XMLBuilder;
-      const p = new parser({ ignoreAttributes: false, attributeNamePrefix: '@_' });
-      const b = new builder({ ignoreAttributes: false, attributeNamePrefix: '@_', format: true });
+    const fastXml = await this.ensureFastXmlLoaded();
+    if (!fastXml?.XMLParser || !fastXml?.XMLBuilder) {
+      this.status = 'Merge failed: XML parser not available.';
+      this.logs.error('Join Backups: XML parser not available (fast-xml-parser import failed)');
+      return;
+    }
+    const p = new fastXml.XMLParser({ ignoreAttributes: false, attributeNamePrefix: '@_' });
+    const b = new fastXml.XMLBuilder({ ignoreAttributes: false, attributeNamePrefix: '@_', format: true });
 
       let merged = [];
       let topName: string | null = null;
