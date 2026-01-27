@@ -250,6 +250,7 @@ export class SmsLoaderComponent implements OnInit {
                         contactName: (m.contactName ?? null) as any,
                         type: m.type,
                         timestamp: m.timestamp,
+                        date: new Date(m.dateMs),
                         body: m.body
                     } as any;
                 });
