@@ -1,24 +1,25 @@
-<div>
+<div class="contact-list-root">
     <div class="contact-list-header">
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label contact-filter">
             <input class="mdl-textfield__input" type="text" id="contact-filter" [(ngModel)]="numfilter" />
             <label class="mdl-textfield__label" for="contact-filter">Filter Contacts...</label>
         </div>
     </div>
-    <ul class="demo-list-two mdl-list">
-		<li
+
+	<cdk-virtual-scroll-viewport class="contacts-viewport" [itemSize]="72" [minBufferPx]="720" [maxBufferPx]="1440">
+		<div
 			class="mdl-list__item mdl-list__item--two-line contact-item"
-			*ngFor="let contact of contacts | contactSearchPipe: numfilter; trackBy: trackByContact"
+			*cdkVirtualFor="let contact of (contacts | contactSearchPipe: numfilter); trackBy: trackByContact"
 			(click)="showMessages(contact)"
 			[ngClass]="{ 'selected-contact': contact == selectedContact, 'active-row': contact == selectedContact }">
-            <span class="mdl-list__item-primary-content" >
-                <span>
-                    <span class="contact-title">{{contact.name || contact.address}}</span>
-                    <span *ngIf="contact.name" class="contact-subtitle"><br/>{{contact.address}}</span>
-                </span>
-                <span class="mdl-list__item-sub-title">{{contact.messageCount}} messages</span>
-            </span>
-        </li>
-    </ul>
+			<span class="mdl-list__item-primary-content">
+				<span>
+					<span class="contact-title">{{contact.name || contact.address}}</span>
+					<span *ngIf="contact.name" class="contact-subtitle"><br/>{{contact.address}}</span>
+				</span>
+				<span class="mdl-list__item-sub-title">{{contact.messageCount}} messages</span>
+			</span>
+		</div>
+	</cdk-virtual-scroll-viewport>
 </div>
 

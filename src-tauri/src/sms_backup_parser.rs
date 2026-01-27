@@ -207,8 +207,10 @@ where
   let mut reader = Reader::from_reader(BufReader::new(file));
   reader.config_mut().trim_text(true);
 
-  const BATCH_SIZE: usize = 500;
-  const PROGRESS_EVERY: u64 = 2_000;
+  // Larger batches reduce IPC overhead for very large backups.
+  // Keep this moderate to avoid oversized event payloads.
+  const BATCH_SIZE: usize = 1_000;
+  const PROGRESS_EVERY: u64 = 5_000;
 
   let mut parsed_count: u64 = 0;
   let mut batch: Vec<ParsedMessage> = Vec::with_capacity(BATCH_SIZE);

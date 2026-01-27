@@ -1,15 +1,25 @@
-.demo-list-two {
+
+.contact-list-root {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	min-height: 0;
+}
+
+.contacts-viewport {
+	flex: 1 1 auto;
+	min-height: 0;
+	width: 100%;
+	/* CDK viewport is the scroll container */
+	overflow: auto;
 	padding: 6px;
-	margin: 0;
+	box-sizing: border-box;
 }
 
 .contact-list-header {
 	padding: 14px 14px 10px;
 	background: var(--surface);
 	border-bottom: 1px solid var(--border);
-	position: sticky;
-	top: 0;
-	z-index: 10;
 	border-top-left-radius: var(--radius);
 	border-top-right-radius: var(--radius);
 }

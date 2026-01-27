@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, NgZone } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { SmsLoaderService } from '../sms-loader.service';
 import { SmsStoreService } from '../sms-store.service';
@@ -25,9 +25,12 @@ export class SmsLoaderComponent implements OnInit {
     parsedCount: number = 0;
     totalBytes: number = 0;
     bytesRead: number = 0;
+	private lastUiUpdateAt: number = 0;
+	private readonly UI_UPDATE_EVERY_MS = 120;
     constructor(
         private smsLoaderService: SmsLoaderService,
-        private smsStoreService: SmsStoreService
+                private smsStoreService: SmsStoreService,
+		private ngZone: NgZone
         ) { }
 
     ngOnInit() {
@@ -238,29 +241,43 @@ export class SmsLoaderComponent implements OnInit {
             this.totalBytes = batch.totalBytes ?? this.totalBytes;
             this.parsedCount = batch.parsedCount ?? this.parsedCount;
 
-            const msgs: Message[] = batch.messages.map((m) => {
-                return {
-                    contactAddress: m.contactAddress,
-                    contactName: (m.contactName ?? null) as any,
-                    type: m.type,
-                    timestamp: m.timestamp,
-                    date: new Date(m.dateMs),
-                    body: m.body
-                } as any;
+            // Keep the hot path out of Angular; only re-enter to paint UI periodically.
+            this.ngZone.runOutsideAngular(() => {
+                // Avoid per-message Date allocations; IndexedDB ingest uses timestamp/dateMs.
+                const msgs: Message[] = batch.messages.map((m) => {
+                    return {
+                        contactAddress: m.contactAddress,
+                        contactName: (m.contactName ?? null) as any,
+                        type: m.type,
+                        timestamp: m.timestamp,
+                        body: m.body
+                    } as any;
+                });
+                this.smsStoreService.ingestMessagesBatch(msgs);
             });
-            this.smsStoreService.ingestMessagesBatch(msgs);
-            this.sampleText = this.progressText();
-            this.status = 'busy';
-			this.emitStatus();
+
+            const now = Date.now();
+            if (now - this.lastUiUpdateAt >= this.UI_UPDATE_EVERY_MS) {
+                this.lastUiUpdateAt = now;
+                this.ngZone.run(() => {
+                    this.sampleText = this.progressText();
+                    this.status = 'busy';
+                    this.emitStatus();
+                });
+            }
         });
 
         await this.tauriListen<ParseProgress>('sms_parse_progress', (p) => {
             this.bytesRead = p?.bytesRead ?? this.bytesRead;
             this.totalBytes = p?.totalBytes ?? this.totalBytes;
             this.parsedCount = p?.parsedCount ?? this.parsedCount;
-            this.sampleText = this.progressText();
-            this.status = 'busy';
-			this.emitStatus();
+            const now = Date.now();
+            if (now - this.lastUiUpdateAt >= this.UI_UPDATE_EVERY_MS) {
+                this.lastUiUpdateAt = now;
+                this.sampleText = this.progressText();
+                this.status = 'busy';
+                this.emitStatus();
+            }
         });
 
         await this.tauriListen<string>('sms_parse_error', (err) => {
@@ -277,11 +294,13 @@ export class SmsLoaderComponent implements OnInit {
             this.parsedCount = done?.parsedCount ?? this.parsedCount;
 			await this.smsStoreService.finishIngestAsync();
             this.smsStoreService.broadcastMessagesLoaded(true);
-            this.sampleText = `Loaded! (${this.parsedCount.toLocaleString()} msgs)`;
-            this.status = 'ok';
-            this.loaded = true;
-			this.emitStatus();
-            this.onLoaded.emit(true);
+			this.ngZone.run(() => {
+				this.sampleText = `Loaded! (${this.parsedCount.toLocaleString()} msgs)`;
+				this.status = 'ok';
+				this.loaded = true;
+				this.emitStatus();
+				this.onLoaded.emit(true);
+			});
         });
 
         try {
