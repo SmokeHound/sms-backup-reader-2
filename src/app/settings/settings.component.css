@@ -54,7 +54,12 @@
 }
 
 .settings-close:hover {
-    background: rgba(255, 255, 255, 0.16);
+    display: flex;
+    justify-content: center;
+}
+
+.settings-card .mdl-card__actions.mdl-card--border {
+    justify-content: center;
 }
 
 .settings-description {
